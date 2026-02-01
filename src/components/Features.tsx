@@ -53,7 +53,7 @@ const Features = () => {
                         Engineered for <span className="text-blue-500">Rankers</span>
                     </h2>
                     <p className="text-lg text-slate-400 leading-relaxed">
-                        We don't just provide questions; we provide a scientific ecosystem to maximize your scoring potential.
+                        We don&apos;t just provide questions; we provide a scientific ecosystem to maximize your scoring potential.
                     </p>
                 </div>
 
