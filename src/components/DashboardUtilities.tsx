@@ -14,7 +14,8 @@ export default function DashboardUtilities() {
   const [todos, setTodos] = useState<{ id: string; text: string; done: boolean }[]>(() => {
     if (typeof window === "undefined") return defaultTodos;
     try {
-      const raw = localStorage.getItem("eduman_todos");
+      let raw = localStorage.getItem("xamsathi_todos");
+      if (!raw) raw = localStorage.getItem("eduman_todos");
       if (raw) {
         const parsed = JSON.parse(raw) as { id: string; text: string; done: boolean }[];
         if (Array.isArray(parsed)) return parsed;
@@ -30,13 +31,18 @@ export default function DashboardUtilities() {
   const [profile, setProfile] = useState<{ photo: boolean; bio: boolean; goals: boolean; subjects: boolean }>(() => {
     if (typeof window === "undefined") return { photo: false, bio: false, goals: false, subjects: false };
     try {
-      const raw = localStorage.getItem("eduman_profile");
+      let raw = localStorage.getItem("xamsathi_profile");
+      if (!raw) raw = localStorage.getItem("eduman_profile");
       if (raw) return JSON.parse(raw);
     } catch {}
     return { photo: false, bio: false, goals: false, subjects: false };
   });
   useEffect(() => {
-    try { localStorage.setItem("eduman_profile", JSON.stringify(profile)); } catch {}
+    try {
+      const val = JSON.stringify(profile);
+      localStorage.setItem("xamsathi_profile", val);
+      localStorage.setItem("eduman_profile", val);
+    } catch {}
   }, [profile]);
 
   const completedCount = (profile.photo ? 1 : 0) + (profile.bio ? 1 : 0) + (profile.goals ? 1 : 0) + (profile.subjects ? 1 : 0);
@@ -75,7 +81,11 @@ export default function DashboardUtilities() {
 
 
   useEffect(() => {
-    try { localStorage.setItem("eduman_todos", JSON.stringify(todos)); } catch {}
+    try {
+      const val = JSON.stringify(todos);
+      localStorage.setItem("xamsathi_todos", val);
+      localStorage.setItem("eduman_todos", val);
+    } catch {}
   }, [todos]);
 
   useEffect(() => {

@@ -48,7 +48,7 @@ const Features = () => {
         <section className="py-24 bg-slate-950 relative overflow-hidden">
             <div className="container mx-auto px-4 md:px-6 relative z-10">
                 <div className="text-center max-w-3xl mx-auto mb-20">
-                    <span className="text-blue-500 font-bold tracking-wider text-sm uppercase">Why EduMan?</span>
+                    <span className="text-blue-500 font-bold tracking-wider text-sm uppercase">Why XamSathi?</span>
                     <h2 className="text-3xl md:text-5xl font-bold text-white mt-2 mb-6">
                         Engineered for <span className="text-blue-500">Rankers</span>
                     </h2>

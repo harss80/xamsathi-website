@@ -1,7 +1,9 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const isAuthenticated = Boolean(request.cookies.get('eduman_auth')?.value) || Boolean(request.cookies.get('token')?.value);
+  const isAuthenticated = Boolean(request.cookies.get('xamsathi_auth')?.value)
+    || Boolean(request.cookies.get('eduman_auth')?.value)
+    || Boolean(request.cookies.get('token')?.value);
   const { pathname, search } = request.nextUrl;
 
   // Protect dashboard routes for unauthenticated users

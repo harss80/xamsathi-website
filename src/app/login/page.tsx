@@ -19,10 +19,12 @@ const LoginForm = () => {
 
         // Simulate API call
         setTimeout(() => {
+            localStorage.setItem("xamsathi_auth", "true");
             localStorage.setItem("eduman_auth", "true");
             localStorage.setItem("token", "mock-jwt-token");
             try {
-                document.cookie = `eduman_auth=true; Path=/; Max-Age=${60 * 60 * 24 * 30}`; // 30 days
+                document.cookie = `xamsathi_auth=true; Path=/; Max-Age=${60 * 60 * 24 * 30}`; // 30 days
+                document.cookie = `eduman_auth=true; Path=/; Max-Age=${60 * 60 * 24 * 30}`;
                 document.cookie = `token=mock-jwt-token; Path=/; Max-Age=${60 * 60 * 24 * 30}`;
             } catch { }
             // Dispatch storage event so specialized hooks update immediately

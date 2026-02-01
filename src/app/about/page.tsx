@@ -19,13 +19,13 @@ const AboutHero = () => (
                 transition={{ duration: 0.6 }}
             >
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-blue-400 text-xs font-semibold mb-6 uppercase tracking-widest">
-                    About EduMan
+                    About XamSathi
                 </div>
                 <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
                     Empowering the <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Next Generation</span>
                 </h1>
                 <p className="text-lg text-slate-400 max-w-3xl mx-auto leading-relaxed">
-                    At EduMan, we believe that education is the most powerful weapon which you can use to change the world.
+                    At XamSathi, we believe that education is the most powerful weapon which you can use to change the world.
                     We are building the future of learning, one student at a time.
                 </p>
             </motion.div>

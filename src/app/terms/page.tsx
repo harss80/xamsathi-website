@@ -32,7 +32,7 @@ export default function TermsAndConditions() {
                     <TermSection
                         icon={ScrollText}
                         title="1. Introduction"
-                        content="Welcome to EduMan. By accessing or using our website, mobile application, and services, you agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, you must not use our services."
+                        content="Welcome to XamSathi. By accessing or using our website, mobile application, and services, you agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, you must not use our services."
                     />
 
                     <TermSection
@@ -40,10 +40,10 @@ export default function TermsAndConditions() {
                         title="2. Use of Services"
                         content={
                             <>
-                                <p className="mb-2">You agree to use EduMan for lawful educational purposes only.</p>
+                                <p className="mb-2">You agree to use XamSathi for lawful educational purposes only.</p>
                                 <ul className="list-disc list-inside space-y-1 ml-2 text-slate-400">
                                     <li>You must not share your account credentials with anyone else.</li>
-                                    <li>You must not attempt to copy, distribute, or resell any content solely owned by EduMan.</li>
+                                    <li>You must not attempt to copy, distribute, or resell any content solely owned by XamSathi.</li>
                                     <li>We reserve the right to suspend accounts that violate these usage policies.</li>
                                 </ul>
                             </>
@@ -53,19 +53,19 @@ export default function TermsAndConditions() {
                     <TermSection
                         icon={Shield}
                         title="3. Intellectual Property"
-                        content="All content provided on EduMan, including text, graphics, logos, videos, and test series, is the intellectual property of EduMan and is protected by copyright laws. Unauthorized use of this content is strictly prohibited."
+                        content="All content provided on XamSathi, including text, graphics, logos, videos, and test series, is the intellectual property of XamSathi and is protected by copyright laws. Unauthorized use of this content is strictly prohibited."
                     />
 
                     <TermSection
                         icon={Lock}
                         title="4. User Accounts & Security"
-                        content="You are responsible for maintaining the confidentiality of your account password and for all activities that occur under your account. EduMan is not liable for any loss or damage arising from your failure to protect your account information."
+                        content="You are responsible for maintaining the confidentiality of your account password and for all activities that occur under your account. XamSathi is not liable for any loss or damage arising from your failure to protect your account information."
                     />
 
                     <div className="bg-slate-900/30 border border-slate-800 rounded-2xl p-8">
                         <h2 className="text-xl font-bold text-white mb-4">5. Limitation of Liability</h2>
                         <p className="text-slate-300 leading-relaxed">
-                            EduMan shall not be liable for any indirect, incidental, special, or consequential damages resulting from the use or inability to use our services. We do not guarantee that the platform will be error-free or uninterrupted, though we strive for excellence.
+                            XamSathi shall not be liable for any indirect, incidental, special, or consequential damages resulting from the use or inability to use our services. We do not guarantee that the platform will be error-free or uninterrupted, though we strive for excellence.
                         </p>
                     </div>
 

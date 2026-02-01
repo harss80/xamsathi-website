@@ -93,7 +93,7 @@ export default function PrivacyPolicy() {
                     <p className="text-slate-400 text-sm mb-4">
                         If you have any questions or concerns about our Privacy Policy, please contact us.
                     </p>
-                    <a href="mailto:privacy@eduman.com" className="text-blue-400 hover:text-blue-300">privacy@eduman.com</a>
+                    <a href="mailto:privacy@xamsathi.com" className="text-blue-400 hover:text-blue-300">privacy@xamsathi.com</a>
                 </div>
             </div>
         </main>

@@ -56,7 +56,7 @@ const ContactPage = () => {
                                         </div>
                                         <div>
                                             <p className="text-sm text-slate-400 font-medium mb-1">Email Us</p>
-                                            <p className="text-white text-lg">support@eduman.com</p>
+                                            <p className="text-white text-lg">support@xamsathi.com</p>
                                             <p className="text-slate-500 text-sm">Mon-Fri, 9am-6pm IST</p>
                                         </div>
                                     </div>
@@ -78,7 +78,7 @@ const ContactPage = () => {
                                         </div>
                                         <div>
                                             <p className="text-sm text-slate-400 font-medium mb-1">Visit Us</p>
-                                            <p className="text-white text-lg">EduMan HQ, Tech Park</p>
+                                            <p className="text-white text-lg">XamSathi HQ, Tech Park</p>
                                             <p className="text-slate-500 text-sm">Sector 62, Noida, UP - 201301</p>
                                         </div>
                                     </div>

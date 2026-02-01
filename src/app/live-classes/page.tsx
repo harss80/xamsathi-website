@@ -222,7 +222,7 @@ export default function LiveClassesPage() {
                             <div className="absolute top-0 right-0 p-4 opacity-10">
                                 <Shield className="w-24 h-24 text-blue-500" />
                             </div>
-                            <h3 className="text-xl font-bold mb-6 text-white">EduMan Live Course</h3>
+                            <h3 className="text-xl font-bold mb-6 text-white">XamSathi Live Course</h3>
                             <ul className="space-y-4 text-slate-200">
                                 <li className="flex gap-3"><Check className="text-blue-500" /> Active participation</li>
                                 <li className="flex gap-3"><Check className="text-blue-500" /> Instant doubt resolution</li>

@@ -17,14 +17,19 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<ProfileState>(() => {
     if (typeof window === "undefined") return { photo: false, bio: false, goals: false, subjects: false };
     try {
-      const raw = localStorage.getItem("eduman_profile");
+      let raw = localStorage.getItem("xamsathi_profile");
+      if (!raw) raw = localStorage.getItem("eduman_profile");
       if (raw) return JSON.parse(raw);
     } catch {}
     return { photo: false, bio: false, goals: false, subjects: false };
   });
 
   useEffect(() => {
-    try { localStorage.setItem("eduman_profile", JSON.stringify(profile)); } catch {}
+    try {
+      const val = JSON.stringify(profile);
+      localStorage.setItem("xamsathi_profile", val);
+      localStorage.setItem("eduman_profile", val);
+    } catch {}
   }, [profile]);
 
   const completedCount = (profile.photo ? 1 : 0) + (profile.bio ? 1 : 0) + (profile.goals ? 1 : 0) + (profile.subjects ? 1 : 0);
@@ -90,7 +95,7 @@ export default function ProfilePage() {
           </div>
 
           <div className="flex justify-end">
-            <button onClick={() => { try { localStorage.setItem("eduman_profile", JSON.stringify(profile)); } catch {}; }} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold">
+            <button onClick={() => { try { const val = JSON.stringify(profile); localStorage.setItem("xamsathi_profile", val); localStorage.setItem("eduman_profile", val); } catch {}; }} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold">
               <Save className="w-4 h-4" /> Save
             </button>
           </div>

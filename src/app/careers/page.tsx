@@ -212,7 +212,7 @@ export default function CareerPage() {
             <section className="py-24 overflow-hidden">
                 <div className="container mx-auto px-6">
                     <div className="mb-12">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-4">Life at EduMan</h2>
+                        <h2 className="text-3xl md:text-4xl font-bold mb-4">Life at XamSathi</h2>
                         <p className="text-slate-400 max-w-2xl">We work hard, play hard, and celebrate every win together. Here's a glimpse into our world.</p>
                     </div>
 

@@ -19,7 +19,10 @@ export default function ThemeToggle() {
   const [theme, setTheme] = useState<"light" | "dark">(() => {
     if (typeof window === "undefined") return "light";
     try {
-      const saved = localStorage.getItem("eduman_theme") as "light" | "dark" | null;
+      let saved = localStorage.getItem("xamsathi_theme") as "light" | "dark" | null;
+      if (saved !== "dark" && saved !== "light") {
+        saved = localStorage.getItem("eduman_theme") as "light" | "dark" | null;
+      }
       if (saved === "dark" || saved === "light") return saved;
       if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) return "dark";
     } catch {}
@@ -28,7 +31,10 @@ export default function ThemeToggle() {
 
   useEffect(() => {
     applyTheme(theme);
-    try { localStorage.setItem("eduman_theme", theme); } catch {}
+    try {
+      localStorage.setItem("xamsathi_theme", theme);
+      localStorage.setItem("eduman_theme", theme);
+    } catch {}
   }, [theme]);
 
   return (

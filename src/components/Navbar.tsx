@@ -1,4 +1,4 @@
-"use client";
+https://github.com/xamsathi-sketch/xamsathi-website.git"use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -17,11 +17,11 @@ const Navbar = () => {
 
     const isAuthenticated = typeof window !== "undefined" && (() => {
         try {
-            const keys = ["eduman_auth", "authToken", "token"];
+            const keys = ["xamsathi_auth", "eduman_auth", "authToken", "token"];
             let found = keys.some((k) => !!localStorage.getItem(k));
             if (!found) {
                 const cookies = document.cookie || "";
-                found = /(?:^|; )eduman_auth=/.test(cookies) || /(?:^|; )token=/.test(cookies);
+                found = /(?:^|; )xamsathi_auth=/.test(cookies) || /(?:^|; )eduman_auth=/.test(cookies) || /(?:^|; )token=/.test(cookies);
             }
             return !!found;
         } catch {
@@ -31,12 +31,13 @@ const Navbar = () => {
 
     const handleLogout = () => {
         try {
-            const keys = ["eduman_auth", "authToken", "token"];
+            const keys = ["xamsathi_auth", "eduman_auth", "authToken", "token"];
             if (typeof window !== "undefined") {
                 keys.forEach((k) => localStorage.removeItem(k));
                 window.dispatchEvent(new Event("storage"));
             }
             if (typeof document !== "undefined") {
+                document.cookie = "xamsathi_auth=; Max-Age=0; path=/";
                 document.cookie = "eduman_auth=; Max-Age=0; path=/";
                 document.cookie = "token=; Max-Age=0; path=/";
             }
@@ -129,7 +130,7 @@ const Navbar = () => {
                             <GraduationCap className="w-5 h-5 fill-current" />
                         </div>
                         <span className="text-xl font-bold text-white tracking-tight group-hover:text-blue-200 transition-colors">
-                            EduMan
+                            XamSathi
                         </span>
                     </Link>
 
@@ -271,7 +272,7 @@ const Navbar = () => {
                                     <div className="bg-blue-600 text-white p-1.5 rounded-lg">
                                         <GraduationCap className="w-4 h-4 fill-current" />
                                     </div>
-                                    EduMan
+                                    XamSathi
                                 </span>
                                 <button
                                     onClick={() => setIsMobileMenuOpen(false)}

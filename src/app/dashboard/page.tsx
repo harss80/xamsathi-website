@@ -71,12 +71,13 @@ function DashboardContent() {
 
     const handleLogout = () => {
         try {
-            const keys = ["eduman_auth", "authToken", "token"];
+            const keys = ["xamsathi_auth", "eduman_auth", "authToken", "token"];
             if (typeof window !== "undefined") {
                 keys.forEach((k) => localStorage.removeItem(k));
                 window.dispatchEvent(new Event("storage"));
             }
             if (typeof document !== "undefined") {
+                document.cookie = "xamsathi_auth=; Max-Age=0; path=/";
                 document.cookie = "eduman_auth=; Max-Age=0; path=/";
                 document.cookie = "token=; Max-Age=0; path=/";
             }
@@ -88,7 +89,7 @@ function DashboardContent() {
     useEffect(() => {
         // Mock Auth Check
         const checkAuth = () => {
-            const keys = ["eduman_auth", "authToken", "token"];
+            const keys = ["xamsathi_auth", "eduman_auth", "authToken", "token"];
             const found = keys.some((k) => !!localStorage.getItem(k));
 
             // For development, we can default to true or redirect
@@ -151,7 +152,7 @@ function DashboardContent() {
                             <GraduationCap className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">EduMan</h1>
+                            <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">XamSathi</h1>
                             <p className="text-xs text-slate-500 font-medium">Student Portal</p>
                         </div>
                     </div>
@@ -202,7 +203,7 @@ function DashboardContent() {
                     <header className="sticky top-0 z-20 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/50 px-8 py-5 flex items-center justify-between">
                         <div>
                             <h2 className="text-2xl font-bold text-white capitalize">{activeTab.replace('-', ' ')}</h2>
-                            <p className="text-slate-400 text-sm hidden sm:block">{isAuthenticated ? `Welcome back, ${STUDENT_DATA.name}!` : "Welcome to EduMan"}</p>
+                            <p className="text-slate-400 text-sm hidden sm:block">{isAuthenticated ? `Welcome back, ${STUDENT_DATA.name}!` : "Welcome to XamSathi"}</p>
                         </div>
 
                         <div className="flex items-center gap-4">

@@ -25,7 +25,7 @@ const Footer = () => {
                                     />
                                 </svg>
                             </div>
-                            <span className="text-xl font-bold text-white">EduMan</span>
+                            <span className="text-xl font-bold text-white">XamSathi</span>
                         </Link>
                         <p className="text-sm leading-relaxed mb-6 text-slate-400">
                             Empowering students with accessible, high-quality education and advanced testing tools. Your journey to success starts here.
@@ -80,14 +80,14 @@ const Footer = () => {
                             </li>
                             <li className="flex items-center gap-3 text-slate-400">
                                 <Mail className="w-5 h-5 text-blue-500 shrink-0" />
-                                <span>support@eduman.com</span>
+                                <span>support@xamsathi.com</span>
                             </li>
                         </ul>
                     </div>
                 </div>
 
                 <div className="border-t border-slate-900 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500">
-                    <p>© {new Date().getFullYear()} EduMan. All rights reserved.</p>
+                    <p>© {new Date().getFullYear()} XamSathi. All rights reserved.</p>
                     <div className="flex gap-6">
                         <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
                         <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>

@@ -120,7 +120,7 @@ export default function RefundPolicy() {
                                     To request a refund, please contact our support team with your order details and the reason for the request.
                                 </p>
                                 <div className="bg-slate-950 border border-slate-800 rounded-lg p-4 inline-block">
-                                    <p className="text-white font-mono">support@eduman.com</p>
+                                    <p className="text-white font-mono">support@xamsathi.com</p>
                                 </div>
                             </div>
                         </div>
@@ -128,7 +128,7 @@ export default function RefundPolicy() {
                 </div>
 
                 <div className="mt-16 text-center text-slate-500 text-sm">
-                    <p>EduMan reserves the right to modify this refund policy at any time without prior notice.</p>
+                    <p>XamSathi reserves the right to modify this refund policy at any time without prior notice.</p>
                 </div>
             </div>
         </main>

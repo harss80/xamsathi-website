@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "EduMan - Master Your Exam Preparation",
+  title: "XamSathi - Master Your Exam Preparation",
   description: "Advanced test series and learning platform for JEE, NEET, UPSC, and Foundation students.",
 };
 
