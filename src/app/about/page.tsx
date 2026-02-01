@@ -136,7 +136,7 @@ const JoinCTA = () => (
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Ready to shape the future?</h2>
             <p className="text-lg text-slate-400 mb-10 max-w-2xl mx-auto">
                 Join our mission to democratize education. Whether you are an educator, developer, or creative,
-                there is a place for you at EduMan.
+                there is a place for you at XamSathi.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button className="px-8 py-4 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-lg hover:shadow-blue-600/25 flex items-center justify-center gap-2">
