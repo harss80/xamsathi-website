@@ -65,9 +65,23 @@ function DashboardContent() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
-    const [activeTab, setActiveTab] = useState("overview");
     const searchParams = useSearchParams();
     const pathname = usePathname();
+
+    const activeTabRaw = searchParams.get("tab");
+    const activeTab = (activeTabRaw && (ALLOWED_TABS as readonly string[]).includes(activeTabRaw))
+        ? activeTabRaw
+        : "overview";
+
+    const handleTabChange = (tabId: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+        if (tabId === "overview") {
+            params.delete("tab");
+        } else {
+            params.set("tab", tabId);
+        }
+        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    };
 
     const handleLogout = () => {
         try {
@@ -87,41 +101,14 @@ function DashboardContent() {
     };
 
     useEffect(() => {
-        // Mock Auth Check
         const checkAuth = () => {
             const keys = ["xamsathi_auth", "eduman_auth", "authToken", "token"];
             const found = keys.some((k) => !!localStorage.getItem(k));
-
-            // For development, we can default to true or redirect
-            // Uncomment next line to enforce auth
-            // if (!found) router.push("/login");
-
             setIsAuthenticated(!!found);
-
-            // Simulate loading a bit for smoothness
             setTimeout(() => setIsLoading(false), 800);
         };
         checkAuth();
-    }, [router]);
-
-    // Initialize tab from ?tab= query
-    useEffect(() => {
-        const t = searchParams.get("tab");
-        if (t && (ALLOWED_TABS as readonly string[]).includes(t) && t !== activeTab) {
-            setActiveTab(t);
-        }
-        // If no tab in URL, keep default 'overview'
-    }, [searchParams, activeTab]);
-
-    // Keep URL in sync when activeTab changes
-    useEffect(() => {
-        const current = searchParams.get("tab") || "overview";
-        if (current !== activeTab) {
-            const params = new URLSearchParams(searchParams.toString());
-            if (activeTab === "overview") params.delete("tab"); else params.set("tab", activeTab);
-            router.replace(pathname + (params.toString() ? `?${params}` : ""), { scroll: false });
-        }
-    }, [activeTab, router, pathname, searchParams]);
+    }, []);
 
     if (isLoading) {
         return (
@@ -147,13 +134,9 @@ function DashboardContent() {
 
                 {/* Sidebar */}
                 <aside className="hidden lg:flex flex-col w-72 h-full bg-slate-900/50 backdrop-blur-xl border-r border-slate-800/50 p-6">
-                    <div className="flex items-center gap-3 mb-10 px-2">
-                        <div className="bg-gradient-to-tr from-blue-600 to-indigo-600 p-2 rounded-xl shadow-lg shadow-blue-900/20">
-                            <GraduationCap className="w-6 h-6 text-white" />
-                        </div>
-                        <div>
-                            <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">XamSathi</h1>
-                            <p className="text-xs text-slate-500 font-medium">Student Portal</p>
+                    <div className="flex items-center gap-3 mb-10 px-2 justify-center">
+                        <div className="">
+                            <Image src="/Brand.png" alt="XamSathi Logo" width={240} height={240} className="w-36 h-auto" />
                         </div>
                     </div>
 
@@ -167,7 +150,7 @@ function DashboardContent() {
                         ].map((item) => (
                             <button
                                 key={item.id}
-                                onClick={() => setActiveTab(item.id)}
+                                onClick={() => handleTabChange(item.id)}
                                 className={cn(
                                     "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200",
                                     activeTab === item.id
@@ -293,7 +276,7 @@ function DashboardContent() {
                                                     <h3 className="text-2xl font-bold text-white mb-2">Ready to crush your goals today?</h3>
                                                     <p className="text-blue-100 max-w-md">You have a Physics test scheduled for tomorrow. Take a quick mock test to prepare.</p>
                                                 </div>
-                                                <button onClick={() => setActiveTab('tests')} className="px-6 py-3 bg-white text-blue-600 font-bold rounded-xl shadow-xl hover:bg-blue-50 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-2 whitespace-nowrap">
+                                                <button onClick={() => handleTabChange('tests')} className="px-6 py-3 bg-white text-blue-600 font-bold rounded-xl shadow-xl hover:bg-blue-50 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-2 whitespace-nowrap">
                                                     <PlayCircle className="w-5 h-5" />
                                                     Start Practice
                                                 </button>
@@ -312,7 +295,7 @@ function DashboardContent() {
                                                     <Calendar className="w-5 h-5 text-blue-500" />
                                                     Today&apos;s Schedule
                                                 </h3>
-                                                <button onClick={() => setActiveTab('schedule')} className="text-sm text-blue-400 hover:text-blue-300 font-medium flex items-center gap-1">
+                                                <button onClick={() => handleTabChange('schedule')} className="text-sm text-blue-400 hover:text-blue-300 font-medium flex items-center gap-1">
                                                     View Full <ChevronRight className="w-4 h-4" />
                                                 </button>
                                             </div>
@@ -383,7 +366,7 @@ function DashboardContent() {
                                                     </div>
                                                 ))}
                                             </div>
-                                            <button onClick={() => setActiveTab('reports')} className="w-full mt-6 py-2.5 text-sm font-bold text-slate-300 hover:text-white border border-slate-800 hover:bg-slate-800 rounded-xl transition-all">
+                                            <button onClick={() => handleTabChange('reports')} className="w-full mt-6 py-2.5 text-sm font-bold text-slate-300 hover:text-white border border-slate-800 hover:bg-slate-800 rounded-xl transition-all">
                                                 View Full Report
                                             </button>
                                         </motion.div>

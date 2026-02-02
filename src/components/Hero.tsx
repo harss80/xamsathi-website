@@ -1,197 +1,99 @@
 "use client";
 
-import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
+import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, Play, CheckCircle, MonitorPlay, Users } from "lucide-react";
-import { MouseEvent } from "react";
+import { ArrowRight, Play, CheckCircle2, Star } from "lucide-react";
+import Image from "next/image";
 
 const Hero = () => {
-    // Mouse Tilt Logic for Hero Image
-    const x = useMotionValue(0.5);
-    const y = useMotionValue(0.5);
-
-    const mouseX = useSpring(x, { stiffness: 300, damping: 30 });
-    const mouseY = useSpring(y, { stiffness: 300, damping: 30 });
-
-    const rotateX = useTransform(mouseY, [0, 1], [5, -5]);
-    const rotateY = useTransform(mouseX, [0, 1], [-5, 5]);
-
-    const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const width = rect.width;
-        const height = rect.height;
-        const mouseXVal = e.clientX - rect.left;
-        const mouseYVal = e.clientY - rect.top;
-        const xPct = mouseXVal / width;
-        const yPct = mouseYVal / height;
-        x.set(xPct);
-        y.set(yPct);
-    };
-
-    const handleMouseLeave = () => {
-        x.set(0.5);
-        y.set(0.5);
-    };
-
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.1,
-                delayChildren: 0.2,
-            },
-        },
-    };
-
-    const itemVariants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-    };
-
     return (
-        <section className="relative pt-20 pb-16 lg:pt-24 lg:pb-24 overflow-hidden bg-slate-950 isolate">
-            {/* Advanced Animated Grid Background */}
-            <div className="absolute inset-0 z-0 opacity-[0.04] pointer-events-none">
-                <div className="absolute inset-0"
-                    style={{
-                        backgroundImage: 'linear-gradient(#94a3b8 1px, transparent 1px), linear-gradient(90deg, #94a3b8 1px, transparent 1px)',
-                        backgroundSize: '50px 50px',
-                    }}
-                />
+        <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-slate-950 border-b border-slate-900">
+            {/* Simple Background Pattern */}
+            <div className="absolute inset-0 z-0">
+                <div className="absolute inset-0 bg-slate-950" />
+                <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:32px_32px] opacity-20" />
             </div>
 
-            {/* Ambient Spotlight (Subtle) */}
-            <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-blue-900/10 rounded-full blur-[120px] -z-10" />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-900/10 rounded-full blur-[100px] -z-10" />
-
             <div className="container mx-auto px-4 md:px-6 relative z-10">
-                <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+                <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+
                     {/* Left Content */}
-                    <motion.div
-                        variants={containerVariants}
-                        initial="hidden"
-                        animate="visible"
-                        className="max-w-2xl"
-                    >
+                    <div className="flex-1 text-center lg:text-left max-w-2xl mx-auto lg:mx-0">
 
 
-                        <motion.h1
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.2 }}
-                            className="text-4xl md:text-5xl lg:text-7xl font-bold text-white leading-[1.1] mb-6 tracking-tight"
-                        >
-                            India's Most Trusted <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">
-                                Learning Platform
-                            </span>
-                        </motion.h1>
+                        <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tight leading-[1.15] mb-6">
+                            Master Your Exams with <br />
+                            <span className="text-blue-500">Structured Learning</span>
+                        </h1>
 
-                        <motion.p variants={itemVariants} className="text-lg text-slate-400 mb-8 max-w-lg leading-relaxed">
-                            Prepare for competitive exams with top educators, comprehensive study material, and AI-driven performance analysis.
-                        </motion.p>
+                        <p className="text-lg text-slate-400 mb-8 leading-relaxed max-w-xl mx-auto lg:mx-0">
+                            Get access to India's best educators, comprehensive study material, and real-time performance analytics. Start your journey today.
+                        </p>
 
-                        <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 mb-12">
-                            <Link
-                                href="/register"
-                                className="group relative inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white transition-all duration-200 bg-blue-600 rounded-xl hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-900/20 hover:-translate-y-0.5 overflow-hidden"
-                            >
-                                <span className="relative z-10 flex items-center">
-                                    Start Free Trial
-                                    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                                </span>
-                                {/* Shine Effect */}
-                                <div className="absolute inset-0 -translate-x-full group-hover:animate-shine bg-gradient-to-r from-transparent via-white/10 to-transparent z-0" />
+                        <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start mb-12">
+                            <Link href="/register" className="w-full sm:w-auto px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2">
+                                Start Free Trial
+                                <ArrowRight className="w-4 h-4" />
                             </Link>
-                            <button className="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-slate-300 transition-all duration-200 bg-slate-900/50 border border-slate-700 rounded-xl hover:bg-slate-900 hover:border-slate-500 hover:text-white backdrop-blur-sm">
-                                <Play className="w-5 h-5 mr-3 text-blue-500 fill-current" />
-                                View Demo Class
+                            <button className="w-full sm:w-auto px-8 py-3.5 bg-white hover:bg-slate-100 text-slate-900 font-semibold rounded-lg transition-colors border border-slate-200 flex items-center justify-center gap-2">
+                                <Play className="w-4 h-4 fill-current" />
+                                View Demo
                             </button>
-                        </motion.div>
+                        </div>
 
-                        <motion.div variants={itemVariants} className="grid grid-cols-3 gap-6 pt-8 border-t border-slate-800/60">
-                            <div>
-                                <h4 className="text-3xl font-bold text-white">5M+</h4>
-                                <p className="text-sm text-slate-500 font-medium mt-1">Happy Students</p>
+                        {/* Social Proof */}
+                        <div className="flex flex-col sm:flex-row items-center gap-6 justify-center lg:justify-start pt-8 border-t border-slate-900">
+                            <div className="flex items-center -space-x-3">
+                                {[1, 2, 3, 4].map((i) => (
+                                    <div key={i} className="w-10 h-10 rounded-full border-2 border-slate-950 bg-slate-800 overflow-hidden relative">
+                                        <Image src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i}`} alt="User" fill className="object-cover" />
+                                    </div>
+                                ))}
+                                <div className="w-10 h-10 rounded-full border-2 border-slate-950 bg-slate-800 flex items-center justify-center text-xs font-bold text-white relative">
+                                    +2k
+                                </div>
                             </div>
-                            <div>
-                                <h4 className="text-3xl font-bold text-white">10k+</h4>
-                                <p className="text-sm text-slate-500 font-medium mt-1">Video Lectures</p>
+                            <div className="flex flex-col items-center sm:items-start">
+                                <div className="flex gap-0.5 text-yellow-500">
+                                    {[1, 2, 3, 4, 5].map((i) => <Star key={i} className="w-4 h-4 fill-current" />)}
+                                </div>
+                                <p className="text-sm text-slate-400 mt-1">4.9/5 Rating from students</p>
                             </div>
-                            <div>
-                                <h4 className="text-3xl font-bold text-white">200+</h4>
-                                <p className="text-sm text-slate-500 font-medium mt-1">Expert Faculty</p>
-                            </div>
-                        </motion.div>
-                    </motion.div>
+                        </div>
+                    </div>
 
-                    {/* Right Visuals - Advanced 3D Tilt Card */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9, rotate: 1 }}
-                        animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                        transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-                        className="relative hidden lg:block perspective-1000"
-                        onMouseMove={handleMouseMove}
-                        onMouseLeave={handleMouseLeave}
-                    >
-                        <motion.div
-                            style={{
-                                rotateX,
-                                rotateY,
-                                transformStyle: "preserve-3d"
-                            }}
-                            className="relative z-10 w-full rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden group"
-                        >
-                            {/* Image */}
-                            <div className="relative aspect-[4/3] overflow-hidden">
-                                <div className="absolute inset-0 bg-slate-900/10 z-10 group-hover:bg-transparent transition-colors duration-500" />
-                                <img
-                                    src="/hero-students.png"
-                                    alt="Students studying"
-                                    className="w-full h-full object-cover transform scale-105 group-hover:scale-110 transition-transform duration-700 ease-out"
-                                />
-                            </div>
+                    {/* Right Image */}
+                    <div className="flex-1 w-full relative">
+                        <div className="relative rounded-2xl overflow-hidden border border-slate-800 shadow-2xl bg-slate-900 aspect-[4/3]">
+                            <Image
+                                src="/hero-students.png"
+                                alt="Students learning"
+                                fill
+                                className="object-cover"
+                            />
+                            {/* Simple Overlay Gradient for text readability if needed, kept minimal */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent opacity-60" />
 
-                            {/* Floating Badge 1 (Selections) */}
+                            {/* Clean Floating Card */}
                             <motion.div
-                                animate={{ y: [0, -10, 0] }}
-                                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                                className="absolute bottom-8 left-8 z-20"
-                                style={{ transform: "translateZ(50px)" }} // Pop out in 3D
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.5 }}
+                                className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-md rounded-xl p-4 shadow-lg flex items-center gap-4 max-w-md mx-auto"
                             >
-                                <div className="bg-slate-900/95 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-slate-700/50 flex items-center gap-4 max-w-[240px]">
-                                    <div className="bg-green-500/10 p-2.5 rounded-xl">
-                                        <CheckCircle className="w-6 h-6 text-green-500" />
-                                    </div>
-                                    <div>
-                                        <p className="text-base font-bold text-white">10k+ Selections</p>
-                                        <p className="text-xs text-slate-400 font-medium">In Top Govt. Colleges</p>
-                                    </div>
+                                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center shrink-0">
+                                    <CheckCircle2 className="w-6 h-6 text-green-600" />
+                                </div>
+                                <div>
+                                    <p className="text-slate-900 font-bold text-sm">Course Completed!</p>
+                                    <p className="text-slate-600 text-xs mt-0.5">You have mastered Physics: Mechanics</p>
                                 </div>
                             </motion.div>
+                        </div>
 
-                            {/* Floating Badge 2 (Video Lectures) */}
-                            <motion.div
-                                animate={{ y: [0, 10, 0] }} // Opposite phase
-                                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                                className="absolute top-8 right-8 z-20"
-                                style={{ transform: "translateZ(30px)" }}
-                            >
-                                <div className="bg-slate-900/95 backdrop-blur-md p-3 rounded-xl shadow-xl border border-slate-700/50 flex items-center gap-3">
-                                    <div className="bg-blue-500/10 p-2 rounded-lg">
-                                        <MonitorPlay className="w-5 h-5 text-blue-500" />
-                                    </div>
-                                    <div>
-                                        <p className="text-sm font-bold text-white">Daily Live Classes</p>
-                                    </div>
-                                </div>
-                            </motion.div>
-                        </motion.div>
-
-                        {/* Decorative background blur behind the card */}
-                        <div className="absolute -inset-4 bg-gradient-to-tr from-blue-600/20 to-purple-600/20 rounded-[2.5rem] blur-2xl -z-10 opacity-70" />
-                    </motion.div>
+                        {/* Subtle decoration behind image */}
+                        <div className="absolute -inset-2 bg-slate-800/50 rounded-[1.2rem] -z-10 translate-x-2 translate-y-2" />
+                    </div>
                 </div>
             </div>
         </section>

@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Facebook, Twitter, Instagram, Linkedin, Youtube, Mail, Phone, MapPin } from "lucide-react";
+import Image from "next/image";
+import { Facebook, Twitter, Instagram, Linkedin, Youtube, Mail, Phone, MapPin, GraduationCap } from "lucide-react";
 
 const Footer = () => {
     return (
@@ -9,23 +10,9 @@ const Footer = () => {
                     {/* Brand Column */}
                     <div>
                         <Link href="/" className="flex items-center gap-2 mb-6">
-                            <div className="bg-blue-600 text-white p-1.5 rounded-lg">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={2.5}
-                                    stroke="currentColor"
-                                    className="w-6 h-6"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.499 5.216 50.552 50.552 0 00-2.658.814m-15.482 0A50.55 50.55 0 0112 13.489a50.55 50.55 0 0112-13.489M12 10.5a.75.75 0 110-1.5.75.75 0 010 1.5zm0-4.5a.75.75 0 110-1.5.75.75 0 010 1.5z"
-                                    />
-                                </svg>
+                            <div className="">
+                                <Image src="/Brand.png" alt="XamSathi Logo" width={240} height={240} className="w-36 h-auto" />
                             </div>
-                            <span className="text-xl font-bold text-white">XamSathi</span>
                         </Link>
                         <p className="text-sm leading-relaxed mb-6 text-slate-400">
                             Empowering students with accessible, high-quality education and advanced testing tools. Your journey to success starts here.
@@ -57,12 +44,12 @@ const Footer = () => {
                     <div>
                         <h3 className="text-white font-semibold text-lg mb-6">Popular Exams</h3>
                         <ul className="space-y-3">
-                            <li><Link href="#" className="hover:text-blue-400 transition-colors text-slate-400">JEE Main & Advanced</Link></li>
-                            <li><Link href="#" className="hover:text-blue-400 transition-colors text-slate-400">NEET UG</Link></li>
-                            <li><Link href="#" className="hover:text-blue-400 transition-colors text-slate-400">UPSC CSE</Link></li>
-                            <li><Link href="#" className="hover:text-blue-400 transition-colors text-slate-400">SSC CGL</Link></li>
-                            <li><Link href="#" className="hover:text-blue-400 transition-colors text-slate-400">Banking Exams</Link></li>
-                            <li><Link href="#" className="hover:text-blue-400 transition-colors text-slate-400">CBSE Class 10 & 12</Link></li>
+                            <li><Link href="/exams/jee-main-advanced" className="hover:text-blue-400 transition-colors text-slate-400">JEE Main & Advanced</Link></li>
+                            <li><Link href="/exams/neet-ug" className="hover:text-blue-400 transition-colors text-slate-400">NEET UG</Link></li>
+                            <li><Link href="/exams/upsc-cse" className="hover:text-blue-400 transition-colors text-slate-400">UPSC CSE</Link></li>
+                            <li><Link href="/exams/ssc-cgl" className="hover:text-blue-400 transition-colors text-slate-400">SSC CGL</Link></li>
+                            <li><Link href="/exams/banking-exams" className="hover:text-blue-400 transition-colors text-slate-400">Banking Exams</Link></li>
+                            <li><Link href="/exams/cbse-class-10-12" className="hover:text-blue-400 transition-colors text-slate-400">CBSE Class 10 & 12</Link></li>
                         </ul>
                     </div>
 

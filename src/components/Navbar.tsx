@@ -112,21 +112,23 @@ const Navbar = () => {
         <nav
             className={cn(
                 "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-                isScrolled
-                    ? "bg-slate-950/80 backdrop-blur-xl border-b border-slate-800 shadow-xl shadow-black/20"
-                    : "bg-slate-950/70 backdrop-blur-xl border-b border-slate-800/60"
+                isScrolled ? "py-2" : "py-4"
             )}
         >
             <div className={cn(
-                "container mx-auto px-4 md:px-6 transition-all duration-300 max-w-7xl py-0"
+                "container mx-auto px-4 md:px-6 transition-all duration-300",
+                isScrolled ? "max-w-6xl" : "max-w-7xl"
             )}>
                 <div className={cn(
-                    "flex items-center justify-between"
+                    "flex items-center justify-between px-6 py-2 rounded-2xl transition-all duration-300 border",
+                    isScrolled
+                        ? "bg-slate-950/80 backdrop-blur-xl border-slate-800 shadow-xl shadow-black/20"
+                        : "bg-transparent border-transparent"
                 )}>
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-2 group shrink-0">
-                        <div className="group-hover:scale-105 transition-transform duration-300 py-0">
-                            <Image src="/logo.svg" alt="XamSathi Logo" width={240} height={240} className="w-56 h-auto max-h-[120px] md:max-h-[160px] object-contain" />
+                        <div className="group-hover:scale-105 transition-transform duration-300 py-1">
+                            <Image src="/Brand.png" alt="XamSathi Logo" width={200} height={200} className="w-36 h-auto p-2" />
                         </div>
                     </Link>
 
@@ -266,7 +268,7 @@ const Navbar = () => {
                             <div className="flex justify-between items-center mb-10">
                                 <span className="text-xl font-bold text-white flex items-center gap-2">
                                     <div className="">
-                                        <Image src="/logo.svg" alt="XamSathi Logo" width={240} height={240} className="w-56 h-auto" />
+                                        <Image src="/Brand.png" alt="XamSathi Logo" width={160} height={160} className="w-28 h-auto" />
                                     </div>
                                 </span>
                                 <button

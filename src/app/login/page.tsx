@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, Mail, Lock, Github } from "lucide-react";
@@ -52,11 +53,8 @@ const LoginForm = () => {
                 <div className="text-center mb-8">
                     <Link href="/" className="inline-block mb-4">
                         <div className="flex items-center gap-2 justify-center">
-                            <div className="bg-blue-600 text-white p-2 rounded-lg">
-                                {/* Simple Logo SVG */}
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                                </svg>
+                            <div className="">
+                                <Image src="/Brand.png" alt="XamSathi Logo" width={64} height={64} className="w-16 h-auto" />
                             </div>
                         </div>
                     </Link>
