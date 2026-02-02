@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -70,14 +71,14 @@ const Navbar = () => {
             } else {
                 document.body.style.overflow = "";
             }
-        } catch {}
+        } catch { }
 
         const onKeyDown = (e: KeyboardEvent) => {
             if (e.key === "Escape") setIsMobileMenuOpen(false);
         };
         if (isMobileMenuOpen) window.addEventListener("keydown", onKeyDown);
         return () => {
-            try { document.body.style.overflow = ""; } catch {}
+            try { document.body.style.overflow = ""; } catch { }
             window.removeEventListener("keydown", onKeyDown);
         };
     }, [isMobileMenuOpen]);
@@ -111,34 +112,29 @@ const Navbar = () => {
         <nav
             className={cn(
                 "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-                isScrolled ? "py-4" : "py-6"
+                isScrolled
+                    ? "bg-slate-950/80 backdrop-blur-xl border-b border-slate-800 shadow-xl shadow-black/20"
+                    : "bg-slate-950/70 backdrop-blur-xl border-b border-slate-800/60"
             )}
         >
             <div className={cn(
-                "container mx-auto px-4 md:px-6 transition-all duration-300",
-                isScrolled ? "max-w-6xl" : "max-w-7xl"
+                "container mx-auto px-4 md:px-6 transition-all duration-300 max-w-7xl py-0"
             )}>
                 <div className={cn(
-                    "flex items-center justify-between px-6 py-3 rounded-2xl transition-all duration-300 border",
-                    isScrolled
-                        ? "bg-slate-950/80 backdrop-blur-xl border-slate-800 shadow-xl shadow-black/20"
-                        : "bg-transparent border-transparent"
+                    "flex items-center justify-between"
                 )}>
                     {/* Logo */}
-                    <Link href="/" className="flex items-center gap-2 group">
-                        <div className="bg-gradient-to-tr from-blue-600 to-indigo-600 text-white p-2 rounded-xl shadow-lg shadow-blue-900/20 group-hover:scale-105 transition-transform duration-300">
-                            <GraduationCap className="w-5 h-5 fill-current" />
+                    <Link href="/" className="flex items-center gap-2 group shrink-0">
+                        <div className="group-hover:scale-105 transition-transform duration-300 py-0">
+                            <Image src="/logo.svg" alt="XamSathi Logo" width={240} height={240} className="w-56 h-auto max-h-[120px] md:max-h-[160px] object-contain" />
                         </div>
-                        <span className="text-xl font-bold text-white tracking-tight group-hover:text-blue-200 transition-colors">
-                            XamSathi
-                        </span>
                     </Link>
 
                     {/* Desktop Navigation */}
                     <div className="hidden lg:flex items-center gap-8">
                         <Link
                             href="/"
-                            className={cn("text-sm font-semibold py-2", pathname === "/" ? "text-white" : "text-slate-300 hover:text-white transition-colors")}
+                            className={cn("text-sm font-semibold py-1", pathname === "/" ? "text-white" : "text-slate-300 hover:text-white transition-colors")}
                         >
                             Home
                         </Link>
@@ -151,7 +147,7 @@ const Navbar = () => {
                                 onMouseLeave={() => setHoveredNav(null)}
                             >
                                 <button className={cn(
-                                    "flex items-center gap-1 text-sm font-semibold py-2 outline-none",
+                                    "flex items-center gap-1 text-sm font-semibold py-1 outline-none",
                                     nav.items.some((item) => pathname?.startsWith(item.href))
                                         ? "text-white"
                                         : "text-slate-300 group-hover:text-white transition-colors"
@@ -269,10 +265,9 @@ const Navbar = () => {
                         >
                             <div className="flex justify-between items-center mb-10">
                                 <span className="text-xl font-bold text-white flex items-center gap-2">
-                                    <div className="bg-blue-600 text-white p-1.5 rounded-lg">
-                                        <GraduationCap className="w-4 h-4 fill-current" />
+                                    <div className="">
+                                        <Image src="/logo.svg" alt="XamSathi Logo" width={240} height={240} className="w-56 h-auto" />
                                     </div>
-                                    XamSathi
                                 </span>
                                 <button
                                     onClick={() => setIsMobileMenuOpen(false)}
