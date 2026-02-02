@@ -13,6 +13,15 @@ const faqs = [
 
 const FAQ = () => {
     const [openIndex, setOpenIndex] = useState<number | null>(0);
+    const faqSchema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: faqs.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+        })),
+    } as const;
 
     return (
         <section className="py-20 bg-slate-950">
@@ -20,6 +29,11 @@ const FAQ = () => {
                 <div className="text-center mb-12">
                     <h2 className="text-3xl font-bold text-white">Frequently Asked Questions</h2>
                 </div>
+                <script
+                    type="application/ld+json"
+                    suppressHydrationWarning
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+                />
 
                 <div className="space-y-4">
                     {faqs.map((faq, idx) => (
