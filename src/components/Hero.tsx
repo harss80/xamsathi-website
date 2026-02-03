@@ -17,7 +17,7 @@ const Hero = () => {
             <div className="container mx-auto px-4 md:px-6 relative z-10">
                 <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
 
-                    {/* Left Content */}
+                    {/* Left Content - Centered on Mobile, Left on Desktop */}
                     <div className="flex-1 text-center lg:text-left max-w-2xl mx-auto lg:mx-0">
 
 

@@ -128,7 +128,7 @@ const Navbar = () => {
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-2 group shrink-0">
                         <div className="group-hover:scale-105 transition-transform duration-300 py-1">
-                            <Image src="/Brand.png" alt="XamSathi Logo" width={200} height={200} className="w-36 h-auto p-2" />
+                            <Image src="/Brand.png" alt="XamSathi Brand Logo" width={200} height={200} className="w-36 h-auto p-2" />
                         </div>
                     </Link>
 
