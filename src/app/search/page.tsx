@@ -1,12 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Search as SearchIcon } from "lucide-react";
 import { coursesData } from "@/lib/coursesData";
 
-export default function SearchPage() {
+function SearchContent() {
   const params = useSearchParams();
   const q = (params.get("q") || "").trim();
 
@@ -65,5 +65,13 @@ export default function SearchPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <SearchContent />
+    </Suspense>
   );
 }
