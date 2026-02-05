@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: xamsathi-backend
+    env: node
+    plan: free
+    rootDirectory: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_DB
+        value: xamsathi_user
+      - key: ADMIN_PANEL_SECRET
+        sync: false
+      - key: ALLOWED_ORIGIN
+        value: https://www.xamsathi.in
+      - key: NEXT_PUBLIC_BACKEND_URL
+        sync: false
