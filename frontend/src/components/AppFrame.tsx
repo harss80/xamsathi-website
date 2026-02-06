@@ -8,7 +8,7 @@ import ShortcutHelp from "@/components/ShortcutHelp";
 
 export default function AppFrame({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const hideNavbar = pathname?.startsWith("/dashboard");
+  const hideNavbar = pathname?.startsWith("/dashboard") || pathname?.startsWith("/admin");
 
   if (hideNavbar) {
     return <>
