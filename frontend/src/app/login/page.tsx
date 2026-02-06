@@ -60,8 +60,12 @@ const LoginForm = () => {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
+                className="w-full max-w-md bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-2xl p-8 shadow-2xl relative z-10"
+            >
+                <div className="mb-8 text-center">
+                    <h2 className="text-3xl font-bold text-white mb-2">Welcome Back</h2>
+                    <p className="text-slate-400">Enter your credentials to access your account</p>
                 </div>
-            )}
 
             <form onSubmit={handleLogin} className="space-y-5">
                 <div className="space-y-2">
@@ -74,12 +78,7 @@ const LoginForm = () => {
                             className="w-full bg-slate-950 border border-slate-800 text-white rounded-xl py-3.5 pl-12 pr-4 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-slate-600"
                             placeholder="name@example.com"
                         />
-                            <input
-                                type="email"
-                                required
-                                className="w-full bg-slate-950 border border-slate-800 text-white rounded-xl py-3.5 pl-12 pr-4 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-slate-600"
-                                placeholder="name@example.com"
-                            />
+
                         </div>
                     </div>
 
