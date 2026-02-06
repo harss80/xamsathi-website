@@ -16,7 +16,7 @@ import {
   Cell
 } from "recharts";
 import Sidebar from "@/components/admin/Sidebar";
-import { Search, Plus, Upload, Trash2, Edit, MoreVertical, CheckCircle, XCircle, Bell, Filter, Calendar } from "lucide-react";
+import { Search, Plus, Upload, Trash2, Edit, MoreVertical, CheckCircle, XCircle, Bell, Filter, Calendar, BookOpen, FileText, History, Users } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Animation Variants
