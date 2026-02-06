@@ -13,27 +13,39 @@ const LoginForm = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState("");
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
+        setError("");
 
-        // Simulate API call
-        setTimeout(() => {
-            localStorage.setItem("xamsathi_auth", "true");
-            localStorage.setItem("eduman_auth", "true");
-            localStorage.setItem("token", "mock-jwt-token");
-            try {
-                document.cookie = `xamsathi_auth=true; Path=/; Max-Age=${60 * 60 * 24 * 30}`; // 30 days
-                document.cookie = `eduman_auth=true; Path=/; Max-Age=${60 * 60 * 24 * 30}`;
-                document.cookie = `token=mock-jwt-token; Path=/; Max-Age=${60 * 60 * 24 * 30}`;
-            } catch { }
-            // Dispatch storage event so specialized hooks update immediately
-            window.dispatchEvent(new Event("storage"));
+        try {
+            const base = process.env.NEXT_PUBLIC_BACKEND_URL || "";
+            const url = base ? new URL("/api/auth/login", base).toString() : "/api/auth/login";
+            const res = await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: "student@example.com", password: "password123" }),
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+                setError(data.error || "Login failed");
+                return;
+            }
+
+            // Save token and user data
+            localStorage.setItem("xamsathi_token", data.token);
+            localStorage.setItem("xamsathi_user", JSON.stringify(data.user));
             const next = searchParams?.get("next");
             const safeNext = next && next.startsWith("/") ? next : "/dashboard";
             router.push(safeNext);
-        }, 1500);
+        } catch (err) {
+            setError("Network error. Try again.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -48,25 +60,20 @@ const LoginForm = () => {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
-                className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl relative z-10"
-            >
-                <div className="text-center mb-8">
-                    <Link href="/" className="inline-block mb-4">
-                        <div className="flex items-center gap-2 justify-center">
-                            <div className="">
-                                <Image src="/Brand.png" alt="XamSathi Logo" width={64} height={64} className="w-16 h-auto" />
-                            </div>
-                        </div>
-                    </Link>
-                    <h2 className="text-3xl font-bold text-white mb-2">Welcome Back</h2>
-                    <p className="text-slate-400">Sign in to continue your learning journey</p>
                 </div>
+            )}
 
-                <form onSubmit={handleLogin} className="space-y-5">
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-slate-300 ml-1">Email Address</label>
-                        <div className="relative">
-                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+            <form onSubmit={handleLogin} className="space-y-5">
+                <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-300 ml-1">Email Address</label>
+                    <div className="relative">
+                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                        <input
+                            type="email"
+                            required
+                            className="w-full bg-slate-950 border border-slate-800 text-white rounded-xl py-3.5 pl-12 pr-4 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-slate-600"
+                            placeholder="name@example.com"
+                        />
                             <input
                                 type="email"
                                 required
