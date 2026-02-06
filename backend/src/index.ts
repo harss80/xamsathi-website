@@ -6,6 +6,7 @@ import adminRouter from './routes/admin';
 import testsRouter from './routes/tests';
 import meRouter from './routes/me';
 import type { Request, Response, NextFunction } from 'express';
+import mongoose from 'mongoose';
 
 dotenv.config();
 
@@ -22,6 +23,17 @@ app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
 app.use(express.json({ limit: '1mb' }));
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const started = Date.now();
+  const mongoStatusIn = mongoose.connection.readyState === 1 ? 'connected' : `state-${mongoose.connection.readyState}`;
+  console.log(`[REQ] ${req.method} ${req.originalUrl} mongo=${mongoStatusIn}`);
+  res.on('finish', () => {
+    const mongoStatusOut = mongoose.connection.readyState === 1 ? 'connected' : `state-${mongoose.connection.readyState}`;
+    console.log(`[RES] ${req.method} ${req.originalUrl} ${res.statusCode} ${Date.now() - started}ms mongo=${mongoStatusOut}`);
+  });
+  next();
+});
 
 app.get('/api/health', (_req: Request, res: Response) => res.json({ ok: true }));
 
@@ -40,6 +52,7 @@ app.use('/api/tests', testsRouter);
 app.use('/api/me', meRouter);
 
 const port = process.env.PORT || 3001;
+connectMongo().catch((e) => console.error('Mongo: startup connect error', (e as Error).message));
 app.listen(port, () => {
   console.log(`Backend listening on ${port}`);
 });

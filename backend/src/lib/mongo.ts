@@ -12,12 +12,17 @@ const cached: { conn: typeof mongoose | null; promise: Promise<typeof mongoose> 
 };
 
 export async function connectMongo() {
-  if (cached.conn) return cached.conn;
+  if (cached.conn) {
+    console.log(`Mongo: using cached connection (readyState=${mongoose.connection.readyState})`);
+    return cached.conn;
+  }
   if (!cached.promise) {
+    console.log('Mongo: connecting...');
     cached.promise = mongoose.connect(MONGODB_URI, {
       dbName: process.env.MONGODB_DB || undefined,
     });
   }
   cached.conn = await cached.promise;
+  console.log(`Mongo: connected (readyState=${mongoose.connection.readyState})`);
   return cached.conn;
 }
