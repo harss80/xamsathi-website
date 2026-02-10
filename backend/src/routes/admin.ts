@@ -3,6 +3,7 @@ import Course from '../models/Course';
 import Test from '../models/Test';
 import Question from '../models/Question';
 import Attempt from '../models/Attempt';
+import { PipelineStage } from 'mongoose';
 
 const router = Router();
 
@@ -71,7 +72,7 @@ router.get('/questions', requireAdmin, async (req: Request, res: Response) => {
   const limit = Number(req.query.limit || 50);
   const page = Number(req.query.page || 1);
   const skip = (page - 1) * limit;
-  const questions = await Question.find({}).sort({ createdAt: -1 }).skip(skip).limit(limit).lean();
+  const questions = await Question.find({}).sort({ createdAt: -1 as const }).skip(skip).limit(limit).lean();
   return res.json({ items: questions });
 });
 
@@ -79,7 +80,7 @@ router.get('/attempts', requireAdmin, async (req: Request, res: Response) => {
   const limit = Number(req.query.limit || 50);
   const page = Number(req.query.page || 1);
   const skip = (page - 1) * limit;
-  const attempts = await Attempt.find({}).sort({ started_at: -1 }).skip(skip).limit(limit).lean();
+  const attempts = await Attempt.find({}).sort({ started_at: -1 as const }).skip(skip).limit(limit).lean();
   return res.json({ items: attempts });
 });
 
@@ -88,7 +89,7 @@ router.get('/users', requireAdmin, async (req: Request, res: Response) => {
   const limit = Number(req.query.limit || 50);
   const page = Number(req.query.page || 1);
   const skip = (page - 1) * limit;
-  const pipeline = [
+  const pipeline: PipelineStage[] = [
     {
       $group: {
         _id: '$user_id',
@@ -97,7 +98,7 @@ router.get('/users', requireAdmin, async (req: Request, res: Response) => {
         avg_score: { $avg: { $cond: [{ $ne: ['$score', null] }, { $divide: ['$score', '$total'] }, null] } },
       },
     },
-    { $sort: { attempt_count: -1 } },
+    { $sort: { attempt_count: -1 as const } },
     { $skip: skip },
     { $limit: limit },
     { $project: { user_id: '$_id', class_grade: 1, attempt_count: 1, avg_score: 1, _id: 0 } },

@@ -26,8 +26,8 @@ export function initGoogleSignIn() {
 
 async function handleGoogleSignIn(response: any) {
   try {
-    const base = process.env.NEXT_PUBLIC_BACKEND_URL || '';
-    const url = base ? new URL('/api/auth/google', base).toString() : '/api/auth/google';
+    const base = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001';
+    const url = new URL('/api/auth/google', base).toString();
     
     const res = await fetch(url, {
       method: 'POST',
