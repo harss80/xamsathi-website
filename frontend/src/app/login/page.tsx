@@ -14,6 +14,7 @@ const LoginForm = () => {
     const searchParams = useSearchParams();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
+    const [form, setForm] = useState({ email: "", password: "" });
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -21,12 +22,12 @@ const LoginForm = () => {
         setError("");
 
         try {
-            const base = process.env.NEXT_PUBLIC_BACKEND_URL || "";
-            const url = base ? new URL("/api/auth/login", base).toString() : "/api/auth/login";
+            const base = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+            const url = new URL("/api/auth/login", base).toString();
             const res = await fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email: "student@example.com", password: "password123" }),
+                body: JSON.stringify(form),
             });
 
             const data = await res.json();
@@ -75,6 +76,8 @@ const LoginForm = () => {
                         <input
                             type="email"
                             required
+                            value={form.email}
+                            onChange={(e) => setForm({ ...form, email: e.target.value })}
                             className="w-full bg-slate-950 border border-slate-800 text-white rounded-xl py-3.5 pl-12 pr-4 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-slate-600"
                             placeholder="name@example.com"
                         />
@@ -92,6 +95,8 @@ const LoginForm = () => {
                             <input
                                 type="password"
                                 required
+                                value={form.password}
+                                onChange={(e) => setForm({ ...form, password: e.target.value })}
                                 className="w-full bg-slate-950 border border-slate-800 text-white rounded-xl py-3.5 pl-12 pr-4 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-slate-600"
                                 placeholder="••••••••"
                             />
