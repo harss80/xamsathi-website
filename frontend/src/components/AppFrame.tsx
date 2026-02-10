@@ -5,12 +5,13 @@ import Navbar from "@/components/Navbar";
 import DashboardUtilities from "@/components/DashboardUtilities";
 import ThemeToggle from "@/components/ThemeToggle";
 import ShortcutHelp from "@/components/ShortcutHelp";
+import Footer from "@/components/Footer";
 
 export default function AppFrame({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const hideNavbar = pathname?.startsWith("/dashboard") || pathname?.startsWith("/admin") || pathname?.startsWith("/login") || pathname?.startsWith("/signup");
+  const hideLayout = pathname?.startsWith("/dashboard") || pathname?.startsWith("/admin") || pathname?.startsWith("/login") || pathname?.startsWith("/signup") || pathname?.startsWith("/register");
 
-  if (hideNavbar) {
+  if (hideLayout) {
     return <>
       {children}
       <DashboardUtilities />
@@ -23,6 +24,7 @@ export default function AppFrame({ children }: { children: React.ReactNode }) {
     <>
       <Navbar />
       {children}
+      <Footer />
       <ThemeToggle />
       <ShortcutHelp />
     </>

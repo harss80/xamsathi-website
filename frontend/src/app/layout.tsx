@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google"; // Keep Geist, it's good
 import "./globals.css";
 import AppFrame from "@/components/AppFrame";
-import Footer from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -124,7 +123,6 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased text-gray-900 bg-white`}
       >
         <AppFrame>{children}</AppFrame>
-        <Footer />
       </body>
     </html>
   );
