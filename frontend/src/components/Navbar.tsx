@@ -18,7 +18,7 @@ const Navbar = () => {
 
     const isAuthenticated = typeof window !== "undefined" && (() => {
         try {
-            const keys = ["xamsathi_auth", "eduman_auth", "authToken", "token"];
+            const keys = ["xamsathi_token", "xamsathi_auth", "eduman_auth", "authToken", "token"];
             let found = keys.some((k) => !!localStorage.getItem(k));
             if (!found) {
                 const cookies = document.cookie || "";
@@ -32,7 +32,7 @@ const Navbar = () => {
 
     const handleLogout = () => {
         try {
-            const keys = ["xamsathi_auth", "eduman_auth", "authToken", "token"];
+            const keys = ["xamsathi_token", "xamsathi_user", "xamsathi_auth", "eduman_auth", "authToken", "token"];
             if (typeof window !== "undefined") {
                 keys.forEach((k) => localStorage.removeItem(k));
                 window.dispatchEvent(new Event("storage"));

@@ -26,8 +26,15 @@ const LoginForm = () => {
     };
 
     useEffect(() => {
+        try {
+            const t = localStorage.getItem("xamsathi_token");
+            if (t) {
+                router.replace("/dashboard");
+                return;
+            }
+        } catch {}
         loadGoogleScript(["google-signin-button-login"]);
-    }, []);
+    }, [router]);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();

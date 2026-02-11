@@ -20,8 +20,15 @@ export default function SignUpPage() {
   const router = useRouter();
 
   useEffect(() => {
+    try {
+      const t = localStorage.getItem("xamsathi_token");
+      if (t) {
+        router.replace("/dashboard");
+        return;
+      }
+    } catch {}
     loadGoogleScript(["google-signin-button-signup"]);
-  }, []);
+  }, [router]);
 
   const getBackendBase = () => {
     const envBase = (process.env.NEXT_PUBLIC_BACKEND_URL || "").trim();

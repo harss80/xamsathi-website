@@ -85,7 +85,7 @@ function DashboardContent() {
 
     const handleLogout = () => {
         try {
-            const keys = ["xamsathi_auth", "eduman_auth", "authToken", "token"];
+            const keys = ["xamsathi_token", "xamsathi_user", "xamsathi_auth", "eduman_auth", "authToken", "token"];
             if (typeof window !== "undefined") {
                 keys.forEach((k) => localStorage.removeItem(k));
                 window.dispatchEvent(new Event("storage"));
@@ -102,13 +102,16 @@ function DashboardContent() {
 
     useEffect(() => {
         const checkAuth = () => {
-            const keys = ["xamsathi_auth", "eduman_auth", "authToken", "token"];
+            const keys = ["xamsathi_token", "xamsathi_auth", "eduman_auth", "authToken", "token"];
             const found = keys.some((k) => !!localStorage.getItem(k));
-            setIsAuthenticated(!!found);
+            setIsAuthenticated(found);
+            if (!found) {
+                router.replace("/login?next=/dashboard");
+            }
             setTimeout(() => setIsLoading(false), 800);
         };
         checkAuth();
-    }, []);
+    }, [router]);
 
     if (isLoading) {
         return (
