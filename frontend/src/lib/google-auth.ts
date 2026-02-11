@@ -106,6 +106,12 @@ async function handleGoogleSignIn(response: GoogleCredentialResponse) {
     localStorage.setItem('xamsathi_token', data.token);
     localStorage.setItem('xamsathi_user', JSON.stringify(data.user));
 
+    try {
+      const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+      const secure = isHttps ? '; Secure' : '';
+      document.cookie = `xamsathi_token=${encodeURIComponent(data.token)}; Path=/; Domain=.xamsathi.in; Max-Age=${60 * 60 * 24 * 30}; SameSite=Lax${secure}`;
+    } catch {}
+
     // Redirect to dashboard
     window.location.href = '/dashboard';
   } catch (error) {

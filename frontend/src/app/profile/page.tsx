@@ -14,23 +14,30 @@ type ProfileState = {
 };
 
 export default function ProfilePage() {
-  const [profile, setProfile] = useState<ProfileState>(() => {
-    if (typeof window === "undefined") return { photo: false, bio: false, goals: false, subjects: false };
+  const [profile, setProfile] = useState<ProfileState>({ photo: false, bio: false, goals: false, subjects: false });
+  const [hydrated] = useState(() => typeof window !== "undefined");
+
+  useEffect(() => {
     try {
       let raw = localStorage.getItem("xamsathi_profile");
       if (!raw) raw = localStorage.getItem("eduman_profile");
-      if (raw) return JSON.parse(raw);
+      if (raw) {
+        const parsed = JSON.parse(raw) as ProfileState;
+        if (parsed && typeof parsed === "object") window.setTimeout(() => setProfile(parsed), 0);
+      }
     } catch {}
-    return { photo: false, bio: false, goals: false, subjects: false };
-  });
+  }, []);
 
   useEffect(() => {
+    if (!hydrated) return;
     try {
       const val = JSON.stringify(profile);
       localStorage.setItem("xamsathi_profile", val);
       localStorage.setItem("eduman_profile", val);
     } catch {}
-  }, [profile]);
+  }, [profile, hydrated]);
+
+  if (!hydrated) return null;
 
   const completedCount = (profile.photo ? 1 : 0) + (profile.bio ? 1 : 0) + (profile.goals ? 1 : 0) + (profile.subjects ? 1 : 0);
   const percent = Math.round((completedCount / 4) * 100);

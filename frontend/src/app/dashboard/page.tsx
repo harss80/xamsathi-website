@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Sidebar from "@/components/dashboard/Sidebar";
 import Header from "@/components/dashboard/Header";
 import Overview from "@/components/dashboard/Overview";
-import { BookOpen, FileText, Settings, Calendar, BarChart3 } from "lucide-react";
+import { BookOpen, FileText, Calendar, BarChart3 } from "lucide-react";
 
 // --- Mock Data (Centralized or passed down) ---
 const STUDENT_DATA = {
@@ -17,11 +17,19 @@ const STUDENT_DATA = {
 const ALLOWED_TABS = ["overview", "courses", "tests", "schedule", "reports"] as const;
 
 function DashboardContent() {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const router = useRouter();
     const searchParams = useSearchParams();
+
+    const getCookie = (name: string) => {
+        try {
+            const m = document.cookie.match(new RegExp(`(?:^|; )${name.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&")}=([^;]*)`));
+            return m ? decodeURIComponent(m[1]) : null;
+        } catch {
+            return null;
+        }
+    };
 
     // Determine active tab
     const activeTabRaw = searchParams.get("tab");
@@ -40,6 +48,7 @@ function DashboardContent() {
                 document.cookie = "xamsathi_auth=; Max-Age=0; path=/";
                 document.cookie = "eduman_auth=; Max-Age=0; path=/";
                 document.cookie = "token=; Max-Age=0; path=/";
+                document.cookie = "xamsathi_token=; Max-Age=0; path=/; Domain=.xamsathi.in";
             }
         } finally {
             router.push("/");
@@ -48,11 +57,13 @@ function DashboardContent() {
 
     useEffect(() => {
         const checkAuth = () => {
-            const keys = ["xamsathi_token", "xamsathi_user", "xamsathi_auth", "eduman_auth", "authToken", "token"];
-            const found = keys.some((k) => {
-                const item = localStorage.getItem(k);
-                return !!item;
-            });
+            const cookieToken = getCookie("xamsathi_token");
+            if (cookieToken) {
+                try { localStorage.setItem("xamsathi_token", cookieToken); } catch {}
+            }
+
+            const keys = ["xamsathi_token", "xamsathi_auth", "eduman_auth", "authToken", "token"];
+            const found = keys.some((k) => !!localStorage.getItem(k)) || !!cookieToken;
 
             // We can also try to load user name from local storage if available
             const savedUser = localStorage.getItem("xamsathi_user");
@@ -61,10 +72,9 @@ function DashboardContent() {
                     const parsed = JSON.parse(savedUser);
                     if (parsed.name) STUDENT_DATA.name = parsed.name;
                     // We can add more fields updates here
-                } catch (e) { }
+                } catch { }
             }
 
-            setIsAuthenticated(found);
             if (!found) {
                 router.replace("/login?next=/dashboard");
             }

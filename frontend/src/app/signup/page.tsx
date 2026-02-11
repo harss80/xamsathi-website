@@ -19,15 +19,33 @@ export default function SignUpPage() {
   const [error, setError] = useState("");
   const router = useRouter();
 
+  const setAuthCookie = (token: string) => {
+    try {
+      const isHttps = typeof window !== "undefined" && window.location.protocol === "https:";
+      const secure = isHttps ? "; Secure" : "";
+      document.cookie = `xamsathi_token=${encodeURIComponent(token)}; Path=/; Domain=.xamsathi.in; Max-Age=${60 * 60 * 24 * 30}; SameSite=Lax${secure}`;
+    } catch { }
+  };
+
+  const getCookie = (name: string) => {
+    try {
+      const m = document.cookie.match(new RegExp(`(?:^|; )${name.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&")}=([^;]*)`));
+      return m ? decodeURIComponent(m[1]) : null;
+    } catch {
+      return null;
+    }
+  };
+
   useEffect(() => {
     // Remove automatic redirect to prevent loops if token is invalid
-    // try {
-    //   const t = localStorage.getItem("xamsathi_token");
-    //   if (t) {
-    //     router.replace("/dashboard");
-    //     // return; // Don't return, allow script loading
-    //   }
-    // } catch {}
+    try {
+      const t = localStorage.getItem("xamsathi_token") || getCookie("xamsathi_token");
+      if (t) {
+        localStorage.setItem("xamsathi_token", t);
+        router.replace("/dashboard");
+        return;
+      }
+    } catch { }
     loadGoogleScript(["google-signin-button-signup"]);
   }, [router]);
 
@@ -67,6 +85,7 @@ export default function SignUpPage() {
       // Save token and user data
       localStorage.setItem("xamsathi_token", data.token);
       localStorage.setItem("xamsathi_user", JSON.stringify(data.user));
+      setAuthCookie(data.token);
       router.push("/dashboard");
     } catch (e) {
       const msg = e instanceof Error ? e.message : "";

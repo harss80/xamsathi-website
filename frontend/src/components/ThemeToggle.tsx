@@ -16,18 +16,29 @@ function applyTheme(theme: "light" | "dark") {
 }
 
 export default function ThemeToggle() {
-  const [theme, setTheme] = useState<"light" | "dark">(() => {
-    if (typeof window === "undefined") return "light";
+  const [mounted] = useState(() => typeof window !== "undefined");
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+
+  useEffect(() => {
+    let next: "light" | "dark" = "light";
     try {
       let saved = localStorage.getItem("xamsathi_theme") as "light" | "dark" | null;
       if (saved !== "dark" && saved !== "light") {
         saved = localStorage.getItem("eduman_theme") as "light" | "dark" | null;
       }
-      if (saved === "dark" || saved === "light") return saved;
-      if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) return "dark";
+      if (saved === "dark" || saved === "light") {
+        next = saved;
+      }
     } catch {}
-    return "light";
-  });
+    try {
+      if (next === "light" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        next = "dark";
+      }
+    } catch {}
+
+    applyTheme(next);
+    window.setTimeout(() => setTheme(next), 0);
+  }, []);
 
   useEffect(() => {
     applyTheme(theme);
@@ -37,14 +48,15 @@ export default function ThemeToggle() {
     } catch {}
   }, [theme]);
 
+  if (!mounted) return null;
+
   return (
     <button
-      onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
       aria-label="Toggle theme"
-      className="fixed bottom-6 left-6 z-40 rounded-full px-3 py-2 bg-slate-900 border border-slate-800 text-slate-100 hover:bg-slate-800 shadow-lg"
-      title={theme === "dark" ? "Switch to light" : "Switch to dark"}
+      onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
+      className="fixed bottom-6 left-6 z-50 rounded-full p-3 bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800 shadow-xl"
     >
-      {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+      {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
     </button>
   );
 }

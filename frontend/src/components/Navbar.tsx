@@ -41,6 +41,7 @@ const Navbar = () => {
                 document.cookie = "xamsathi_auth=; Max-Age=0; path=/";
                 document.cookie = "eduman_auth=; Max-Age=0; path=/";
                 document.cookie = "token=; Max-Age=0; path=/";
+                document.cookie = "xamsathi_token=; Max-Age=0; path=/; Domain=.xamsathi.in";
             }
         } finally {
             router.push("/");
