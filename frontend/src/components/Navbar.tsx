@@ -223,11 +223,11 @@ const Navbar = () => {
                                     <span className="inline-flex items-center gap-2"><LogIn className="w-4 h-4" />Login</span>
                                 </Link>
                                 <Link
-                                    href="/register"
+                                    href="/signup"
                                     className="group relative inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-white text-slate-950 text-sm font-bold rounded-xl transition-all hover:bg-blue-50 shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)] hover:shadow-[0_0_25px_-5px_rgba(255,255,255,0.5)] active:scale-95"
                                 >
                                     <UserPlus className="w-4 h-4 text-blue-600" />
-                                    <span>Sign up</span>
+                                    Sign up
                                 </Link>
                             </>
                         ))}
@@ -341,11 +341,11 @@ const Navbar = () => {
                                                 Login
                                             </Link>
                                             <Link
-                                                href="/register"
+                                                href="/signup"
                                                 onClick={() => setIsMobileMenuOpen(false)}
                                                 className="w-full flex items-center justify-center gap-2 py-3 bg-white text-slate-950 font-bold rounded-xl"
                                             >
-                                                <UserPlus className="w-5 h-5 text-blue-600" />
+                                                <UserPlus className="w-4 h-4 text-blue-600" />
                                                 Sign up
                                             </Link>
                                         </div>

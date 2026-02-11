@@ -1,34 +1,84 @@
 // Google OAuth configuration
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
-const REDIRECT_URI = typeof window !== 'undefined' ? `${window.location.origin}/api/auth/google/callback` : '';
 
-export function initGoogleSignIn() {
-  if (typeof window === 'undefined' || !window.google) return;
+function getBackendBase(): string {
+  const envBase = (process.env.NEXT_PUBLIC_BACKEND_URL || '').trim();
+  if (envBase) return envBase;
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1') return 'http://localhost:3001';
+  }
+  throw new Error('Missing NEXT_PUBLIC_BACKEND_URL');
+}
 
-  window.google.accounts.id.initialize({
-    client_id: GOOGLE_CLIENT_ID,
-    callback: handleGoogleSignIn,
-  });
+// Load Google OAuth script
+export function loadGoogleScript(buttonIds?: string[]) {
+  if (typeof window === 'undefined') return;
 
-  const buttonElement = document.getElementById('google-signin-button');
-  if (buttonElement) {
-    window.google.accounts.id.renderButton(
-      buttonElement,
-      {
-        theme: 'filled_blue',
-        size: 'large',
-        text: 'signin_with',
-        shape: 'rectangular',
+  // Check if script is already loaded
+  if (document.querySelector('script[src="https://accounts.google.com/gsi/client"]')) {
+    // If script is already loaded but button not rendered (e.g., navigation), try to init again
+    initGoogleSignIn(buttonIds);
+    return;
+  }
+
+  const script = document.createElement('script');
+  script.src = 'https://accounts.google.com/gsi/client';
+  script.async = true;
+  script.defer = true;
+  script.onload = () => initGoogleSignIn(buttonIds);
+  document.head.appendChild(script);
+}
+
+export function initGoogleSignIn(buttonIds: string[] = ['google-signin-button']) {
+  if (typeof window === 'undefined') return;
+  const google = window.google;
+  if (!google) return;
+
+  if (!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID === 'your-google-client-id') {
+    console.error('Google Client ID is missing or invalid in .env.local');
+    // Optional: Show a visual error in the button placeholder
+    buttonIds.forEach((id) => {
+      const buttonElement = document.getElementById(id);
+      if (buttonElement) {
+        buttonElement.innerHTML = '<span style="color:red; font-size: 0.8rem;">Error: Missing Google Client ID</span>';
       }
-    );
+    });
+    return;
+  }
+
+  try {
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: handleGoogleSignIn,
+    });
+
+    buttonIds.forEach((id) => {
+      const buttonElement = document.getElementById(id);
+      if (!buttonElement) return;
+      buttonElement.innerHTML = '';
+      google.accounts.id.renderButton(buttonElement, {
+        theme: 'outline',
+        size: 'large',
+        text: 'continue_with',
+        shape: 'pill',
+      });
+    });
+  } catch (error) {
+    console.error('Error initializing Google Sign-In:', error);
   }
 }
 
-async function handleGoogleSignIn(response: any) {
+type GoogleCredentialResponse = {
+  credential?: string;
+};
+
+async function handleGoogleSignIn(response: GoogleCredentialResponse) {
   try {
-    const base = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001';
+    const base = getBackendBase();
     const url = new URL('/api/auth/google', base).toString();
-    
+    if (!response.credential) throw new Error('Missing credential');
+
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -43,7 +93,7 @@ async function handleGoogleSignIn(response: any) {
     // Save token and user data
     localStorage.setItem('xamsathi_token', data.token);
     localStorage.setItem('xamsathi_user', JSON.stringify(data.user));
-    
+
     // Redirect to dashboard
     window.location.href = '/dashboard';
   } catch (error) {
@@ -52,26 +102,14 @@ async function handleGoogleSignIn(response: any) {
   }
 }
 
-// Load Google OAuth script
-export function loadGoogleScript() {
-  if (typeof window === 'undefined') return;
-  
-  const script = document.createElement('script');
-  script.src = 'https://accounts.google.com/gsi/client';
-  script.async = true;
-  script.defer = true;
-  script.onload = initGoogleSignIn;
-  document.head.appendChild(script);
-}
-
 // TypeScript declarations
 declare global {
   interface Window {
     google?: {
       accounts: {
         id: {
-          initialize: (config: any) => void;
-          renderButton: (element: HTMLElement, options: any) => void;
+          initialize: (config: { client_id: string; callback: (r: GoogleCredentialResponse) => void }) => void;
+          renderButton: (element: HTMLElement, options: Record<string, unknown>) => void;
           prompt: () => void;
         };
       };

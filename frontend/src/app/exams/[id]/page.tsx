@@ -163,7 +163,7 @@ export default function ExamPage() {
                         </p>
                         <div className="flex flex-wrap justify-center gap-4">
                             <Link
-                                href="/register"
+                                href="/signup"
                                 className={`px-8 py-4 rounded-xl bg-gradient-to-r ${exam.gradient} text-white font-bold hover:shadow-lg hover:shadow-blue-500/25 transition-all flex items-center gap-2`}
                             >
                                 Start Preparing Now
@@ -261,11 +261,11 @@ export default function ExamPage() {
                         <h2 className="text-3xl font-bold text-white mb-6 relative z-10">
                             Ready to Ace {exam.title}?
                         </h2>
-                        <p className="text-slate-400 mb-8 max-w-xl mx-auto relative z-10">
+                        <p className="text-slate-300/90 text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
                             Join thousands of successful aspirants who trusted XamSathi for their exam preparation journey.
                         </p>
                         <Link
-                            href="/register"
+                            href="/signup"
                             className={`relative z-10 inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r ${exam.gradient} text-white font-bold hover:shadow-lg hover:shadow-blue-500/25 transition-all`}
                         >
                             Get Started for Free
