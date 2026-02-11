@@ -75,7 +75,19 @@ type GoogleCredentialResponse = {
 
 async function handleGoogleSignIn(response: GoogleCredentialResponse) {
   try {
-    const base = getBackendBase();
+    let base = '';
+    try {
+      base = getBackendBase();
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : '';
+      console.error('Google sign-in error:', e);
+      if (msg.includes('NEXT_PUBLIC_BACKEND_URL')) {
+        alert('Backend configuration missing. Please refresh after latest deployment.');
+        return;
+      }
+      alert('Google sign-in failed. Please try again.');
+      return;
+    }
     const url = new URL('/api/auth/google', base).toString();
     if (!response.credential) throw new Error('Missing credential');
 

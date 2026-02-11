@@ -55,8 +55,13 @@ const LoginForm = () => {
             const next = searchParams?.get("next");
             const safeNext = next && next.startsWith("/") ? next : "/dashboard";
             router.push(safeNext);
-        } catch {
-            setError("Network error. Try again.");
+        } catch (e) {
+            const msg = e instanceof Error ? e.message : "";
+            if (msg.includes("NEXT_PUBLIC_BACKEND_URL")) {
+                setError("Backend configuration missing. Please try again after deployment update.");
+            } else {
+                setError("Network error. Try again.");
+            }
         } finally {
             setIsLoading(false);
         }

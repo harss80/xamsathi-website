@@ -60,8 +60,13 @@ export default function SignUpPage() {
       localStorage.setItem("xamsathi_token", data.token);
       localStorage.setItem("xamsathi_user", JSON.stringify(data.user));
       router.push("/dashboard");
-    } catch (err) {
-      setError("Network error. Try again.");
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "";
+      if (msg.includes("NEXT_PUBLIC_BACKEND_URL")) {
+        setError("Backend configuration missing. Please try again after deployment update.");
+      } else {
+        setError("Network error. Try again.");
+      }
     } finally {
       setIsLoading(false);
     }
