@@ -20,13 +20,14 @@ export default function SignUpPage() {
   const router = useRouter();
 
   useEffect(() => {
-    try {
-      const t = localStorage.getItem("xamsathi_token");
-      if (t) {
-        router.replace("/dashboard");
-        return;
-      }
-    } catch {}
+    // Remove automatic redirect to prevent loops if token is invalid
+    // try {
+    //   const t = localStorage.getItem("xamsathi_token");
+    //   if (t) {
+    //     router.replace("/dashboard");
+    //     // return; // Don't return, allow script loading
+    //   }
+    // } catch {}
     loadGoogleScript(["google-signin-button-signup"]);
   }, [router]);
 
