@@ -11,32 +11,40 @@ export default function DashboardUtilities() {
     { id: "t1", text: "Finish today’s practice", done: false },
     { id: "t2", text: "Review mistakes from last mock test", done: false },
   ];
-  const [todos, setTodos] = useState<{ id: string; text: string; done: boolean }[]>(() => {
-    if (typeof window === "undefined") return defaultTodos;
-    try {
-      let raw = localStorage.getItem("xamsathi_todos");
-      if (!raw) raw = localStorage.getItem("eduman_todos");
-      if (raw) {
-        const parsed = JSON.parse(raw) as { id: string; text: string; done: boolean }[];
-        if (Array.isArray(parsed)) return parsed;
-      }
-    } catch {}
-    return defaultTodos;
-  });
+  const [todos, setTodos] = useState<{ id: string; text: string; done: boolean }[]>(defaultTodos);
   const [newTodo, setNewTodo] = useState("");
   const awaitingSecondKey = useRef(false);
   const gTimer = useRef<number | null>(null);
 
   // Profile completion (persisted)
-  const [profile, setProfile] = useState<{ photo: boolean; bio: boolean; goals: boolean; subjects: boolean }>(() => {
-    if (typeof window === "undefined") return { photo: false, bio: false, goals: false, subjects: false };
+  const [profile, setProfile] = useState<{ photo: boolean; bio: boolean; goals: boolean; subjects: boolean }>({
+    photo: false,
+    bio: false,
+    goals: false,
+    subjects: false,
+  });
+
+  useEffect(() => {
+    try {
+      let raw = localStorage.getItem("xamsathi_todos");
+      if (!raw) raw = localStorage.getItem("eduman_todos");
+      if (raw) {
+        const parsed = JSON.parse(raw) as { id: string; text: string; done: boolean }[];
+        if (Array.isArray(parsed)) setTodos(parsed);
+      }
+    } catch {}
+
     try {
       let raw = localStorage.getItem("xamsathi_profile");
       if (!raw) raw = localStorage.getItem("eduman_profile");
-      if (raw) return JSON.parse(raw);
+      if (raw) {
+        const parsed = JSON.parse(raw) as { photo: boolean; bio: boolean; goals: boolean; subjects: boolean };
+        if (parsed && typeof parsed === 'object') setProfile(parsed);
+      }
     } catch {}
-    return { photo: false, bio: false, goals: false, subjects: false };
-  });
+    // run once
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   useEffect(() => {
     try {
       const val = JSON.stringify(profile);
