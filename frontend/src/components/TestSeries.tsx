@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight, Clock, FileCheck, Users, Star } from "lucide-react";
+import { trackLead } from "@/lib/trackLead";
 
 const tests = [
     {
@@ -109,7 +110,18 @@ const TestSeries = () => {
                                     <span className="text-xs text-slate-500 line-through mr-2">{test.oldPrice}</span>
                                     <span className="text-lg font-bold text-white">{test.price}</span>
                                 </div>
-                                <button className="w-10 h-10 rounded-full bg-slate-900 border border-slate-700 flex items-center justify-center text-slate-400 group-hover:bg-blue-600 group-hover:border-blue-600 group-hover:text-white transition-all shadow-sm">
+                                <button
+                                    onClick={() => {
+                                        trackLead({
+                                            action: "testseries_card_click",
+                                            entity_type: "test_series",
+                                            entity_id: String(test.id),
+                                            meta: { title: test.title, price: test.price },
+                                        });
+                                    }}
+                                    className="w-10 h-10 rounded-full bg-slate-900 border border-slate-700 flex items-center justify-center text-slate-400 group-hover:bg-blue-600 group-hover:border-blue-600 group-hover:text-white transition-all shadow-sm"
+                                    aria-label="View test series"
+                                >
                                     <ArrowRight className="w-5 h-5" />
                                 </button>
                             </div>
@@ -118,7 +130,12 @@ const TestSeries = () => {
                 </div>
 
                 <div className="mt-12 text-center">
-                    <button className="px-8 py-3 bg-white text-slate-900 font-semibold rounded-lg hover:bg-slate-200 transition-colors shadow-lg shadow-white/5">
+                    <button
+                        onClick={() => {
+                            trackLead({ action: "testseries_explore_all", entity_type: "test_series" });
+                        }}
+                        className="px-8 py-3 bg-white text-slate-900 font-semibold rounded-lg hover:bg-slate-200 transition-colors shadow-lg shadow-white/5"
+                    >
                         Explore All Test Series
                     </button>
                 </div>

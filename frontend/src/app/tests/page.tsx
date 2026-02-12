@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { FileText, ArrowLeft, Search, GraduationCap, ArrowRight } from "lucide-react";
+import { trackLead } from "@/lib/trackLead";
 
 const TEST_CATEGORIES = [
   {
@@ -91,6 +92,14 @@ export default function TestsPage() {
             <Link
               key={test.id}
               href={`/exams/${test.id}`}
+              onClick={() => {
+                trackLead({
+                  action: "testseries_view_details",
+                  entity_type: "test_category",
+                  entity_id: test.id,
+                  meta: { title: test.title },
+                });
+              }}
               className="group relative p-6 rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition-all hover:shadow-xl hover:-translate-y-1 overflow-hidden"
             >
               <div className={`absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity bg-${test.color}-500 blur-2xl rounded-bl-3xl w-24 h-24`} />

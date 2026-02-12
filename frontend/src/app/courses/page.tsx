@@ -6,6 +6,7 @@ import { coursesData, Course } from "@/lib/coursesData";
 import AppCTA from "@/components/AppCTA";
 import FAQ from "@/components/FAQ";
 import { motion, AnimatePresence } from "framer-motion";
+import { trackLead } from "@/lib/trackLead";
 
 // --- Components ---
 
@@ -29,7 +30,17 @@ const CourseCard = ({ course }: { course: Course }) => {
                     {course.subCategory}
                 </div>
                 <div className="absolute bottom-4 left-4 right-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                    <button className="w-full bg-white/90 backdrop-blur-md text-slate-900 font-bold py-2 rounded-lg text-sm shadow-lg hover:bg-white">
+                    <button
+                        onClick={() => {
+                            trackLead({
+                                action: "course_view_details",
+                                entity_type: "course",
+                                entity_id: course.id,
+                                meta: { title: course.title, category: course.category, subCategory: course.subCategory },
+                            });
+                        }}
+                        className="w-full bg-white/90 backdrop-blur-md text-slate-900 font-bold py-2 rounded-lg text-sm shadow-lg hover:bg-white"
+                    >
                         View Details
                     </button>
                 </div>
