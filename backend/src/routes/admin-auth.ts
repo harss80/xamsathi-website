@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
+import crypto from 'crypto';
 import User from '../models/User';
-import { authenticateUser, generateToken, verifyToken } from '../lib/auth';
+import { authenticateUser, generateToken, hashPassword, verifyToken } from '../lib/auth';
 
 const router = Router();
 
@@ -30,6 +31,10 @@ function readCookie(req: Request, name: string): string | null {
     return decodeURIComponent(p.slice(eq + 1));
   }
   return null;
+}
+
+function sha256Hex(input: string): string {
+  return crypto.createHash('sha256').update(input).digest('hex');
 }
 
 router.post('/login', async (req: Request, res: Response) => {
@@ -90,6 +95,66 @@ router.get('/me', async (req: Request, res: Response) => {
     });
   } catch {
     return res.status(401).json({ error: 'unauthorized' });
+  }
+});
+
+router.post('/forgot-password', async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body as { email?: string };
+    const normalizedEmail = (email || '').trim().toLowerCase();
+    if (!normalizedEmail) return res.status(400).json({ error: 'email required' });
+
+    const user = await User.findOne({ email: normalizedEmail, active: true });
+    if (!user || user.role !== 'admin') {
+      return res.json({ ok: true });
+    }
+
+    const rawToken = crypto.randomBytes(32).toString('hex');
+    const tokenHash = sha256Hex(rawToken);
+
+    user.reset_password_token_hash = tokenHash;
+    user.reset_password_expires_at = new Date(Date.now() + 1000 * 60 * 30);
+    await user.save();
+
+    const baseUrl = (process.env.ADMIN_RESET_BASE_URL || '').trim() || 'https://www.xamsathi.in/admin';
+    const resetLink = `${baseUrl}?reset_token=${rawToken}`;
+
+    if (process.env.NODE_ENV !== 'production') {
+      return res.json({ ok: true, reset_link: resetLink });
+    }
+
+    console.log('Admin reset link:', resetLink);
+    return res.json({ ok: true });
+  } catch (e) {
+    console.error('Admin forgot-password error:', e);
+    return res.status(500).json({ error: 'internal server error' });
+  }
+});
+
+router.post('/reset-password', async (req: Request, res: Response) => {
+  try {
+    const { token, new_password } = req.body as { token?: string; new_password?: string };
+    if (!token || !new_password) return res.status(400).json({ error: 'token and new_password required' });
+    if (new_password.length < 8) return res.status(400).json({ error: 'password too short' });
+
+    const tokenHash = sha256Hex(token);
+    const user = await User.findOne({
+      reset_password_token_hash: tokenHash,
+      reset_password_expires_at: { $gt: new Date() },
+      active: true,
+      role: 'admin',
+    });
+    if (!user) return res.status(400).json({ error: 'invalid or expired token' });
+
+    user.password = await hashPassword(new_password);
+    user.reset_password_token_hash = undefined;
+    user.reset_password_expires_at = undefined;
+    await user.save();
+
+    return res.json({ ok: true });
+  } catch (e) {
+    console.error('Admin reset-password error:', e);
+    return res.status(500).json({ error: 'internal server error' });
   }
 });
 

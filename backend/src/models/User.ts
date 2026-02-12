@@ -12,6 +12,8 @@ export interface IUser extends Document {
   updated_at: Date;
   last_login?: Date;
   active: boolean;
+  reset_password_token_hash?: string;
+  reset_password_expires_at?: Date;
 }
 
 const UserSchema = new Schema<IUser>({
@@ -26,6 +28,8 @@ const UserSchema = new Schema<IUser>({
   updated_at: { type: Date, default: Date.now },
   last_login: { type: Date },
   active: { type: Boolean, default: true },
+  reset_password_token_hash: { type: String },
+  reset_password_expires_at: { type: Date },
 });
 
 UserSchema.pre('save', function (next) {
