@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google"; // Keep Geist, it's good
 import "./globals.css";
 import AppFrame from "@/components/AppFrame";
+import TrackPageView from "@/components/TrackPageView";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -122,6 +123,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased text-gray-900 bg-white`}
       >
+        <TrackPageView />
         <AppFrame>{children}</AppFrame>
       </body>
     </html>

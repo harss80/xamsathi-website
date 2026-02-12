@@ -8,6 +8,7 @@ import meRouter from './routes/me';
 import authRouter from './routes/auth';
 import authGoogleRouter from './routes/auth-google';
 import adminAuthRouter from './routes/admin-auth';
+import trackRouter from './routes/track';
 import type { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
 import { ensureBootstrapAdmin } from './lib/bootstrap-admin';
@@ -65,6 +66,7 @@ app.use(async (_req: Request, _res: Response, next: NextFunction) => {
 
 app.use('/api/admin', adminRouter);
 app.use('/api/admin-auth', adminAuthRouter);
+app.use('/api/track', trackRouter);
 app.use('/api/tests', testsRouter);
 app.use('/api/me', meRouter);
 app.use('/api/auth', authRouter);
