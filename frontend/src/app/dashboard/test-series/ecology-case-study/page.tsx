@@ -461,8 +461,8 @@ export default function CaseStudyTestPage() {
                                                         key={optIdx}
                                                         onClick={() => handleAnswer(q.id, optIdx)}
                                                         className={`text-left p-4 rounded-xl border-2 transition-all flex items-center gap-3 ${isSelected
-                                                                ? 'border-emerald-500 bg-emerald-500/10 text-white'
-                                                                : 'border-slate-800 bg-slate-900/30 text-slate-400 hover:bg-slate-800'
+                                                            ? 'border-emerald-500 bg-emerald-500/10 text-white'
+                                                            : 'border-slate-800 bg-slate-900/30 text-slate-400 hover:bg-slate-800'
                                                             }`}
                                                     >
                                                         <div className={`w-6 h-6 rounded-full border flex items-center justify-center text-xs ${isSelected ? 'border-emerald-500 bg-emerald-500' : 'border-slate-600'}`}>
@@ -482,7 +482,7 @@ export default function CaseStudyTestPage() {
                                         disabled={currentCaseIndex === 0}
                                         className="px-6 py-3 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-800 disabled:opacity-50 flex items-center gap-2"
                                     >
-                                        <ChevronLeft className="w-5 h-5" /> Previous Case
+                                        <ChevronLeft className="w-5 h-5" /> <span className="hidden sm:inline">Previous Case</span>
                                     </button>
 
                                     {currentCaseIndex < CASE_STUDIES.length - 1 ? (
@@ -493,7 +493,7 @@ export default function CaseStudyTestPage() {
                                             }}
                                             className="px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-emerald-900/20 flex items-center gap-2"
                                         >
-                                            Next Case Study <ChevronRight className="w-5 h-5" />
+                                            <span className="hidden sm:inline">Next Case Study</span> <ChevronRight className="w-5 h-5" />
                                         </button>
                                     ) : (
                                         <button

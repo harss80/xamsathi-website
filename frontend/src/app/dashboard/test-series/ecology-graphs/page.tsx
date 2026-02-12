@@ -482,8 +482,8 @@ export default function GraphInterpretationTestPage() {
                                                         key={optIdx}
                                                         onClick={() => handleAnswer(q.id, optIdx)}
                                                         className={`text-left p-4 rounded-xl border-2 transition-all flex items-center gap-3 ${isSelected
-                                                                ? 'border-blue-500 bg-blue-500/10 text-white'
-                                                                : 'border-slate-800 bg-slate-900/30 text-slate-400 hover:bg-slate-800'
+                                                            ? 'border-blue-500 bg-blue-500/10 text-white'
+                                                            : 'border-slate-800 bg-slate-900/30 text-slate-400 hover:bg-slate-800'
                                                             }`}
                                                     >
                                                         <div className={`w-6 h-6 rounded-full border flex items-center justify-center text-xs ${isSelected ? 'border-blue-500 bg-blue-500' : 'border-slate-600'}`}>
@@ -503,7 +503,7 @@ export default function GraphInterpretationTestPage() {
                                         disabled={currentCaseIndex === 0}
                                         className="px-6 py-3 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-800 disabled:opacity-50 flex items-center gap-2"
                                     >
-                                        <ChevronLeft className="w-5 h-5" /> Previous Graph
+                                        <ChevronLeft className="w-5 h-5" /> <span className="hidden sm:inline">Previous Graph</span>
                                     </button>
 
                                     {currentCaseIndex < GRAPH_CASES.length - 1 ? (
@@ -514,7 +514,7 @@ export default function GraphInterpretationTestPage() {
                                             }}
                                             className="px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg shadow-blue-900/20 flex items-center gap-2"
                                         >
-                                            Next Graph <ChevronRight className="w-5 h-5" />
+                                            <span className="hidden sm:inline">Next Graph</span> <ChevronRight className="w-5 h-5" />
                                         </button>
                                     ) : (
                                         <button

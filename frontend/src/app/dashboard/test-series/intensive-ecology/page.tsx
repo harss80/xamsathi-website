@@ -462,8 +462,8 @@ export default function IntensiveEcologyPage() {
                                                 key={idx}
                                                 onClick={() => handleAnswer(idx)}
                                                 className={`text-left p-4 md:p-6 rounded-xl border-2 transition-all flex items-center gap-4 group ${isSelected
-                                                        ? 'border-orange-500 bg-orange-500/10'
-                                                        : 'border-slate-800 bg-slate-900/50 hover:border-slate-700 hover:bg-slate-800'
+                                                    ? 'border-orange-500 bg-orange-500/10'
+                                                    : 'border-slate-800 bg-slate-900/50 hover:border-slate-700 hover:bg-slate-800'
                                                     }`}
                                             >
                                                 <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold border ${isSelected ? 'bg-orange-500 border-orange-500 text-white' : 'border-slate-600 text-slate-400 group-hover:border-slate-500'
@@ -485,16 +485,16 @@ export default function IntensiveEcologyPage() {
                                             disabled={currentQuestionIndex === 0}
                                             className="px-6 py-2.5 rounded-lg border border-slate-700 text-slate-300 hover:bg-slate-800 disabled:opacity-50 flex items-center gap-2"
                                         >
-                                            <ChevronLeft className="w-4 h-4" /> Prev
+                                            <ChevronLeft className="w-4 h-4" /> <span className="hidden sm:inline">Prev</span>
                                         </button>
                                         <button
                                             onClick={toggleMarkForReview}
                                             className={`px-6 py-2.5 rounded-lg border flex items-center gap-2 transition-colors ${markedForReview.has(currentQ.id)
-                                                    ? 'border-yellow-500 bg-yellow-500/10 text-yellow-400'
-                                                    : 'border-slate-700 text-slate-400 hover:bg-slate-800'
+                                                ? 'border-yellow-500 bg-yellow-500/10 text-yellow-400'
+                                                : 'border-slate-700 text-slate-400 hover:bg-slate-800'
                                                 }`}
                                         >
-                                            <Flag className="w-4 h-4" /> Review
+                                            <Flag className="w-4 h-4" /> <span className="hidden sm:inline">Review</span>
                                         </button>
                                     </div>
 
@@ -503,7 +503,7 @@ export default function IntensiveEcologyPage() {
                                         disabled={currentQuestionIndex === QUESTIONS.length - 1}
                                         className="px-8 py-2.5 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-lg shadow-lg shadow-orange-900/20 disabled:opacity-50 flex items-center gap-2"
                                     >
-                                        Next <ChevronRight className="w-4 h-4" />
+                                        <span className="hidden sm:inline">Next</span> <ChevronRight className="w-4 h-4" />
                                     </button>
                                 </div>
                             </div>
