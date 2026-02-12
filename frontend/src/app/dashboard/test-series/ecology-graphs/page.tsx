@@ -6,6 +6,7 @@ import {
     RotateCcw, BarChart2, TrendingUp, Activity, PieChart, LineChart
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 // --- Types ---
 type GraphCase = {
@@ -14,7 +15,8 @@ type GraphCase = {
     description: string;
     icon: React.ElementType;
     questions: Question[];
-    graphType: "line" | "bar" | "area" | "scatter"; // Visual hint for the type of graph discussed
+    graphType: "line" | "bar" | "area" | "scatter";
+    imagePath: string;
 };
 
 type Question = {
@@ -33,6 +35,7 @@ const GRAPH_CASES: GraphCase[] = [
         description: "The graph displays two distinct population growth curves over time. Curve A shows a J-shaped trajectory where population size increases rapidly without limit. Curve B shows an S-shaped (Sigmoid) trajectory where the population initially grows, then slows down, and finally reaches a plateau at 500 individuals.",
         icon: TrendingUp,
         graphType: "line",
+        imagePath: "/assets/graphs/logistic_exponential.svg",
         questions: [
             {
                 id: 1,
@@ -77,6 +80,7 @@ const GRAPH_CASES: GraphCase[] = [
         description: "A graph is plotted with Log Area on the X-axis and Log Species Richness on the Y-axis. The resulting plot is a straight line with a slope (Z-value) of 0.15.",
         icon: BarChart2,
         graphType: "scatter",
+        imagePath: "/assets/graphs/species_area.svg",
         questions: [
             {
                 id: 6,
@@ -123,6 +127,7 @@ const GRAPH_CASES: GraphCase[] = [
         description: "A bar graph (pyramid) displays the energy content at successive trophic levels: Producers (10,000 kcal), Primary Consumers (1,000 kcal), Secondary Consumers (100 kcal), and Tertiary Consumers (10 kcal).",
         icon: Activity,
         graphType: "bar",
+        imagePath: "/assets/graphs/energy_pyramid.svg",
         questions: [
             {
                 id: 11,
@@ -167,6 +172,7 @@ const GRAPH_CASES: GraphCase[] = [
         description: "A line graph plots two variables downstream from a sewage discharge point. As the concentration of organic waste increases, the Dissolved Oxygen (DO) curve drops sharply, while the Biochemical Oxygen Demand (BOD) curve rises to a peak.",
         icon: LineChart,
         graphType: "line",
+        imagePath: "/assets/graphs/do_bod.svg",
         questions: [
             {
                 id: 16,
@@ -211,6 +217,7 @@ const GRAPH_CASES: GraphCase[] = [
         description: "A temporal graph shows cyclic fluctuations in the populations of Hare (Prey) and Lynx (Predator). The Prey population peak is consistently followed by a Predator population peak after a lag period.",
         icon: Activity,
         graphType: "line",
+        imagePath: "/assets/graphs/predator_prey.svg",
         questions: [
             {
                 id: 21,
@@ -434,12 +441,14 @@ export default function GraphInterpretationTestPage() {
                             <h3 className="text-2xl text-white font-bold mb-4">{currentCase.title}</h3>
 
                             {/* Simulated Graph Placeholder */}
-                            <div className="w-full aspect-video bg-slate-800 rounded-xl mb-6 border border-slate-700 flex items-center justify-center relative overflow-hidden group">
-                                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5" />
-                                <div className="text-center p-4">
-                                    <BarChart2 className="w-12 h-12 text-slate-500 mx-auto mb-2 opacity-50" />
-                                    <p className="text-slate-400 text-sm font-mono">[Visual Graph Representation of {currentCase.title}]</p>
-                                </div>
+                            {/* Actual Graph Image */}
+                            <div className="w-full aspect-video bg-white rounded-xl mb-6 border border-slate-700 relative overflow-hidden group">
+                                <Image
+                                    src={currentCase.imagePath}
+                                    alt={currentCase.title}
+                                    fill
+                                    className="object-contain p-4"
+                                />
                             </div>
 
                             <div className="prose prose-invert prose-lg text-slate-300 leading-relaxed font-serif">
@@ -454,7 +463,14 @@ export default function GraphInterpretationTestPage() {
                                 <h3 className="text-blue-400 font-bold mb-2 flex items-center gap-2">
                                     <BarChart2 className="w-4 h-4" /> Graph {currentCase.id}: {currentCase.title}
                                 </h3>
-                                <div className="bg-slate-800 p-3 rounded-lg mb-2 text-xs text-slate-400 text-center font-mono">[Graph Image Placeholder]</div>
+                                <div className="w-full aspect-video bg-white rounded-lg mb-4 relative overflow-hidden border border-slate-700">
+                                    <Image
+                                        src={currentCase.imagePath}
+                                        alt={currentCase.title}
+                                        fill
+                                        className="object-contain p-2"
+                                    />
+                                </div>
                                 <p className="text-slate-300 text-sm leading-relaxed border-l-2 border-blue-500 pl-3">{currentCase.description}</p>
                             </div>
 

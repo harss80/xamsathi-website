@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#f8fafc" />
+  
+  <text x="50%" y="20" font-family="sans-serif" font-size="20" fill="#334155" text-anchor="middle" font-weight="bold">Predator-Prey Cycles</text>
+  
+  <line x1="50" y1="250" x2="350" y2="250" stroke="#334155" stroke-width="2" />
+  <line x1="50" y1="250" x2="50" y2="50" stroke="#334155" stroke-width="2" />
+  
+  <text x="320" y="270" font-family="sans-serif" font-size="14" fill="#64748b">Time</text>
+  <text x="10" y="30" font-family="sans-serif" font-size="14" fill="#64748b" transform="rotate(-90 10,30)">Population Size</text>
+  
+  <!-- Prey Curve (Green): Oscillating -->
+  <path d="M50,150 Q75,50 100,150 T150,150 T200,150 T250,150 T300,150 T350,150" fill="none" stroke="#22c55e" stroke-width="2" />
+  <!-- Oops, better sine wave -->
+  <path d="M50,150 C70,50 130,50 150,150 C170,250 230,250 250,150 C270,50 330,50 350,150" fill="none" stroke="#22c55e" stroke-width="3" />
+  <text x="80" y="60" font-family="sans-serif" font-size="14" fill="#22c55e" font-weight="bold">Prey (Hare)</text>
+  
+  <!-- Predator Curve (Red): Lagged behind Prey -->
+  <!-- Peaks later -->
+  <path d="M50,200 C70,200 130,200 150,200 C170,100 230,100 250,200 C270,300 330,300 350,200" fill="none" stroke="#ef4444" stroke-width="3" stroke-dasharray="4,2" />
+  <!-- Wait, let's align peaks. Prey peak ~100. Pred Peak ~200? No, Pred peak follows Prey peak. -->
+  <path d="M50,220 C90,220 110,120 130,220 C150,320 210,320 230,220 C250,120 310,120 330,220" fill="none" stroke="#ef4444" stroke-width="3" stroke-dasharray="5,5" />
+  <text x="260" y="110" font-family="sans-serif" font-size="14" fill="#ef4444" font-weight="bold">Predator (Lynx)</text>
+  
+</svg>

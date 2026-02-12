@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400">
+  <!-- Background -->
+  <rect width="600" height="400" fill="#f8fafc" />
+  
+  <!-- Axes -->
+  <line x1="50" y1="350" x2="550" y2="350" stroke="#334155" stroke-width="2" />
+  <line x1="50" y1="350" x2="50" y2="50" stroke="#334155" stroke-width="2" />
+  
+  <!-- Labels -->
+  <text x="500" y="380" font-family="sans-serif" font-size="14" fill="#334155">Time (t)</text>
+  <text x="20" y="40" font-family="sans-serif" font-size="14" fill="#334155" transform="rotate(-90 20,40)">Population Size (N)</text>
+  
+  <!-- K Line (Carrying Capacity) -->
+  <line x1="50" y1="150" x2="550" y2="150" stroke="#94a3b8" stroke-width="2" stroke-dasharray="5,5" />
+  <text x="560" y="155" font-family="sans-serif" font-size="14" fill="#64748b">K</text>
+  
+  <!-- Curve A: Exponential (J-shaped) -->
+  <!-- Starts at (50, 340) goes up exponentially -->
+  <path d="M50,340 Q300,340 450,50" fill="none" stroke="#ef4444" stroke-width="3" />
+  <text x="460" y="60" font-family="sans-serif" font-size="14" fill="#ef4444" font-weight="bold">Exponential (A)</text>
+  <text x="350" y="250" font-family="sans-serif" font-size="12" fill="#ef4444">dN/dt = rN</text>
+
+  <!-- Curve B: Logistic (S-shaped) -->
+  <!-- Starts at (50, 340), grows, inflects, approaches K (y=150) -->
+  <path d="M50,340 C200,340 250,155 540,152" fill="none" stroke="#3b82f6" stroke-width="3" />
+  <text x="400" y="130" font-family="sans-serif" font-size="14" fill="#3b82f6" font-weight="bold">Logistic (B)</text>
+  <text x="400" y="180" font-family="sans-serif" font-size="12" fill="#3b82f6">dN/dt = rN((K-N)/K)</text>
+</svg>
