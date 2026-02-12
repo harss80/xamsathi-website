@@ -52,6 +52,30 @@ type AdminTest = {
   created_at?: string;
 };
 
+type AdminAttempt = {
+  id: string;
+  user_id: string;
+  test_id: string;
+  score: number;
+  total: number;
+  started_at?: string;
+};
+
+type AdminUser = {
+  user_id: string;
+  class_grade: number;
+  attempt_count: number;
+  avg_score: number;
+};
+
+type AdminJob = {
+  id: string;
+  title: string;
+  type: string;
+  status: string;
+  posted_at?: string;
+};
+
 export default function AdminPanel() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const base = process.env.NEXT_PUBLIC_BACKEND_URL || "";
@@ -66,9 +90,9 @@ export default function AdminPanel() {
   const [courses, setCourses] = useState<AdminCourse[]>([]);
   const [tests, setTests] = useState<AdminTest[]>([]);
   const [questions, setQuestions] = useState<Array<Record<string, unknown>>>([]);
-  const [attempts, setAttempts] = useState<Array<Record<string, unknown>>>([]);
-  const [users, setUsers] = useState<Array<Record<string, unknown>>>([]);
-  const [jobs, setJobs] = useState<Array<Record<string, unknown>>>([]);
+  const [attempts, setAttempts] = useState<AdminAttempt[]>([]);
+  const [users, setUsers] = useState<AdminUser[]>([]);
+  const [jobs, setJobs] = useState<AdminJob[]>([]);
   const [analytics, setAnalytics] = useState<Record<string, unknown>>({});
 
   // Form States
@@ -206,7 +230,7 @@ export default function AdminPanel() {
   async function fetchAttempts() {
     const url = base ? new URL("/api/admin/attempts", base).toString() : "/api/admin/attempts";
     const res = await fetch(url + "?limit=200", { credentials: "include" });
-    if (res.ok) setAttempts((await res.json()).items || []);
+    if (res.ok) setAttempts(((await res.json()).items || []) as AdminAttempt[]);
   }
 
   async function fetchQuestions() {
@@ -218,13 +242,13 @@ export default function AdminPanel() {
   async function fetchUsers() {
     const url = base ? new URL("/api/admin/users", base).toString() : "/api/admin/users";
     const res = await fetch(url + "?limit=200", { credentials: "include" });
-    if (res.ok) setUsers((await res.json()).items || []);
+    if (res.ok) setUsers(((await res.json()).items || []) as AdminUser[]);
   }
 
   async function fetchJobs() {
     const url = base ? new URL("/api/admin/jobs", base).toString() : "/api/admin/jobs";
     const res = await fetch(url + "?limit=200", { credentials: "include" });
-    if (res.ok) setJobs((await res.json()).items || []);
+    if (res.ok) setJobs(((await res.json()).items || []) as AdminJob[]);
   }
 
   async function fetchAnalytics() {
@@ -267,7 +291,7 @@ export default function AdminPanel() {
     const url = base ? new URL("/api/admin-auth/logout", base).toString() : "/api/admin-auth/logout";
     try {
       await fetch(url, { method: "POST", credentials: "include" });
-    } catch {}
+    } catch { }
     setAdmin(null);
   }
 
