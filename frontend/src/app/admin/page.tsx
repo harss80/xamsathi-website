@@ -101,21 +101,19 @@ export default function AdminPanel() {
         ? ((data as Record<string, unknown>).items as unknown[])
         : [];
 
-    const normalized: AdminCourse[] = items
-      .map((raw) => {
-        if (!raw || typeof raw !== "object") return null;
-        const r = raw as Record<string, unknown>;
+    const normalized: AdminCourse[] = items.flatMap((raw) => {
+      if (!raw || typeof raw !== "object") return [];
+      const r = raw as Record<string, unknown>;
 
-        const id = typeof r.id === "string" ? r.id : typeof r._id === "string" ? r._id : "";
-        const title = typeof r.title === "string" ? r.title : "";
-        const description = typeof r.description === "string" ? r.description : "";
-        const created_at = typeof r.created_at === "string" ? r.created_at : undefined;
-        const class_grade = typeof r.class_grade === "number" ? r.class_grade : undefined;
+      const id = typeof r.id === "string" ? r.id : typeof r._id === "string" ? r._id : "";
+      const title = typeof r.title === "string" ? r.title : "";
+      const description = typeof r.description === "string" ? r.description : "";
+      const created_at = typeof r.created_at === "string" ? r.created_at : undefined;
+      const class_grade = typeof r.class_grade === "number" ? r.class_grade : undefined;
 
-        if (!id || !title) return null;
-        return { id, title, description, created_at, class_grade };
-      })
-      .filter((x): x is AdminCourse => Boolean(x));
+      if (!id || !title) return [];
+      return [{ id, title, description, created_at, class_grade }];
+    });
 
     setCourses(normalized);
   }
