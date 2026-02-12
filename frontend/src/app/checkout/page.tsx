@@ -7,12 +7,12 @@ export default function CheckoutPage() {
   const [courseId, setCourseId] = useState("course_demo");
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 px-4 py-16">
+    <main className="min-h-screen bg-slate-950 text-slate-100 px-4 py-10 sm:py-16">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-4xl font-black text-white">Checkout</h1>
+        <h1 className="text-3xl sm:text-4xl font-black text-white">Checkout</h1>
         <p className="text-slate-400 mt-2">This is the starting point for Buy/Enroll tracking.</p>
 
-        <div className="mt-8 bg-slate-900/60 border border-white/10 rounded-3xl p-6">
+        <div className="mt-6 sm:mt-8 bg-slate-900/60 border border-white/10 rounded-3xl p-4 sm:p-6">
           <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Course Id</label>
           <input
             value={courseId}

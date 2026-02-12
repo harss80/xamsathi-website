@@ -1042,8 +1042,8 @@ export default function AdminPanel() {
             )}
 
             {selectedUser && (
-              <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setSelectedUser(null)}>
-                <div className="w-full max-w-5xl bg-slate-950 border border-white/10 rounded-3xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
+              <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4" onClick={() => setSelectedUser(null)}>
+                <div className="w-full max-w-5xl bg-slate-950 border border-white/10 rounded-3xl overflow-hidden max-h-[92vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
                   <div className="p-6 border-b border-white/10 flex items-center justify-between">
                     <div>
                       <div className="text-white font-black text-xl">{selectedUser.name || 'User'}</div>
@@ -1054,7 +1054,7 @@ export default function AdminPanel() {
                     </button>
                   </div>
 
-                  <div className="p-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-2 gap-6 overflow-y-auto">
                     <div className="bg-slate-900/40 border border-white/5 rounded-2xl overflow-hidden">
                       <div className="p-4 border-b border-white/5 text-white font-bold">Attempts</div>
                       <div className="overflow-x-auto">
@@ -1192,8 +1192,9 @@ export default function AdminPanel() {
 
             {activeTab === "attempts" && (
               <motion.div variants={fadeIn} className="bg-slate-900/60 backdrop-blur-xl border border-white/5 rounded-3xl overflow-hidden shadow-xl">
-                <div className="p-6 border-b border-white/5"><h3 className="font-bold text-lg text-white">Student Attempts</h3></div>
-                <table className="w-full text-left text-sm text-slate-400">
+                <div className="p-4 sm:p-6 border-b border-white/5"><h3 className="font-bold text-lg text-white">Student Attempts</h3></div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm text-slate-400 min-w-[860px]">
                   <thead className="bg-white/5 text-slate-200 font-semibold uppercase tracking-wider text-xs">
                     <tr>
                       <th className="px-6 py-5">Student</th>
@@ -1218,78 +1219,83 @@ export default function AdminPanel() {
                       </tr>
                     ))}
                   </tbody>
-                </table>
+                  </table>
+                </div>
               </motion.div>
             )}
 
             {activeTab === "users" && (
               <motion.div variants={fadeIn} className="bg-slate-900/60 backdrop-blur-xl border border-white/5 rounded-3xl overflow-hidden shadow-xl">
-                <div className="p-6 border-b border-white/5"><h3 className="font-bold text-lg text-white">Registered Users</h3></div>
-                <table className="w-full text-left text-sm text-slate-400">
-                  <thead className="bg-white/5 text-slate-200 font-semibold uppercase tracking-wider text-xs">
-                    <tr>
-                      <th className="px-6 py-5">User</th>
-                      <th className="px-6 py-5">Email</th>
-                      <th className="px-6 py-5">Class</th>
-                      <th className="px-6 py-5">Phone</th>
-                      <th className="px-6 py-5">Created</th>
-                      <th className="px-6 py-5">Last Login</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-white/5">
-                    {users.map((u) => (
-                      <tr
-                        key={u.id}
-                        className="hover:bg-white/5 transition-colors cursor-pointer"
-                        onClick={() => {
-                          setSelectedUser(u);
-                          setSelectedUserAttempts([]);
-                          setSelectedUserLeads([]);
-                          fetchUserAttempts(u.id);
-                          fetchUserLeads(u.id);
-                        }}
-                      >
-                        <td className="px-6 py-5 font-medium text-white">
-                          {u.name || '-'}
-                        </td>
-                        <td className="px-6 py-5 text-slate-300">{u.email}</td>
-                        <td className="px-6 py-5">{typeof u.class_grade === 'number' ? `Class ${u.class_grade}` : '-'}</td>
-                        <td className="px-6 py-5">{u.phone || '-'}</td>
-                        <td className="px-6 py-5">{u.created_at ? new Date(u.created_at).toLocaleDateString() : '-'}</td>
-                        <td className="px-6 py-5">{u.last_login ? new Date(u.last_login).toLocaleDateString() : '-'}</td>
+                <div className="p-4 sm:p-6 border-b border-white/5"><h3 className="font-bold text-lg text-white">Registered Users</h3></div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm text-slate-400 min-w-[980px]">
+                    <thead className="bg-white/5 text-slate-200 font-semibold uppercase tracking-wider text-xs">
+                      <tr>
+                        <th className="px-6 py-5">User</th>
+                        <th className="px-6 py-5">Email</th>
+                        <th className="px-6 py-5">Class</th>
+                        <th className="px-6 py-5">Phone</th>
+                        <th className="px-6 py-5">Created</th>
+                        <th className="px-6 py-5">Last Login</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {users.map((u) => (
+                        <tr
+                          key={u.id}
+                          className="hover:bg-white/5 transition-colors cursor-pointer"
+                          onClick={() => {
+                            setSelectedUser(u);
+                            setSelectedUserAttempts([]);
+                            setSelectedUserLeads([]);
+                            fetchUserAttempts(u.id);
+                            fetchUserLeads(u.id);
+                          }}
+                        >
+                          <td className="px-6 py-5 font-medium text-white">
+                            {u.name || '-'}
+                          </td>
+                          <td className="px-6 py-5 text-slate-300">{u.email}</td>
+                          <td className="px-6 py-5">{typeof u.class_grade === 'number' ? `Class ${u.class_grade}` : '-'}</td>
+                          <td className="px-6 py-5">{u.phone || '-'}</td>
+                          <td className="px-6 py-5">{u.created_at ? new Date(u.created_at).toLocaleDateString() : '-'}</td>
+                          <td className="px-6 py-5">{u.last_login ? new Date(u.last_login).toLocaleDateString() : '-'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </motion.div>
             )}
 
             {activeTab === "jobs" && (
               <motion.div variants={fadeIn} className="bg-slate-900/60 backdrop-blur-xl border border-white/5 rounded-3xl overflow-hidden shadow-xl">
-                <div className="p-6 border-b border-white/5"><h3 className="font-bold text-lg text-white">Job Listings</h3></div>
-                <table className="w-full text-left text-sm text-slate-400">
-                  <thead className="bg-white/5 text-slate-200 font-semibold uppercase tracking-wider text-xs">
-                    <tr>
-                      <th className="px-6 py-5">Job Title</th>
-                      <th className="px-6 py-5">Type</th>
-                      <th className="px-6 py-5">Status</th>
-                      <th className="px-6 py-5">Posted</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-white/5">
-                    {jobs.map((j) => (
-                      <tr key={j.id} className="hover:bg-white/5 transition-colors">
-                        <td className="px-6 py-5 font-bold text-white">{j.title}</td>
-                        <td className="px-6 py-5"><span className="border border-white/10 rounded px-2 py-1 text-xs uppercase tracking-wide bg-slate-800">{j.type}</span></td>
-                        <td className="px-6 py-5 text-blue-400 flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
-                          {j.status}
-                        </td>
-                        <td className="px-6 py-5">{j.posted_at ? new Date(j.posted_at).toLocaleDateString() : "-"}</td>
+                <div className="p-4 sm:p-6 border-b border-white/5"><h3 className="font-bold text-lg text-white">Job Listings</h3></div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm text-slate-400 min-w-[820px]">
+                    <thead className="bg-white/5 text-slate-200 font-semibold uppercase tracking-wider text-xs">
+                      <tr>
+                        <th className="px-6 py-5">Job Title</th>
+                        <th className="px-6 py-5">Type</th>
+                        <th className="px-6 py-5">Status</th>
+                        <th className="px-6 py-5">Posted</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {jobs.map((j) => (
+                        <tr key={j.id} className="hover:bg-white/5 transition-colors">
+                          <td className="px-6 py-5 font-bold text-white">{j.title}</td>
+                          <td className="px-6 py-5"><span className="border border-white/10 rounded px-2 py-1 text-xs uppercase tracking-wide bg-slate-800">{j.type}</span></td>
+                          <td className="px-6 py-5 text-blue-400 flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                            {j.status}
+                          </td>
+                          <td className="px-6 py-5">{j.posted_at ? new Date(j.posted_at).toLocaleDateString() : "-"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </motion.div>
             )}
 

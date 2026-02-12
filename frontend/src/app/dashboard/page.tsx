@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import Sidebar from "@/components/dashboard/Sidebar";
 import Header from "@/components/dashboard/Header";
 import Overview from "@/components/dashboard/Overview";
@@ -60,7 +61,7 @@ function DashboardContent() {
         const checkAuth = () => {
             const cookieToken = getCookie("xamsathi_token");
             if (cookieToken) {
-                try { localStorage.setItem("xamsathi_token", cookieToken); } catch {}
+                try { localStorage.setItem("xamsathi_token", cookieToken); } catch { }
             }
 
             const keys = ["xamsathi_token", "xamsathi_auth", "eduman_auth", "authToken", "token"];
@@ -142,20 +143,50 @@ function DashboardContent() {
                         )}
 
                         {activeTab === "tests" && (
-                            <div className="flex flex-col items-center justify-center py-20 text-center bg-slate-900/50 rounded-3xl border border-slate-800">
-                                <div className="p-6 bg-slate-900 rounded-full mb-6">
-                                    <FileText className="w-12 h-12 text-slate-600" />
-                                </div>
-                                <h3 className="text-2xl font-bold text-white mb-2">Test Series</h3>
-                                <p className="text-slate-400 mb-6 max-w-md">Practice with full-length mock tests and analyze your performance.</p>
-                                <button
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <Link
+                                    href="/dashboard/test-series/neet"
                                     onClick={() => {
-                                        trackLead({ action: "dashboard_view_tests", entity_type: "dashboard" });
+                                        trackLead({ action: "dashboard_start_neet_test", entity_type: "test_series" });
                                     }}
-                                    className="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition-colors"
+                                    className="group relative p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-indigo-500/50 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden"
                                 >
-                                    View Tests
-                                </button>
+                                    <div className="absolute top-0 right-0 p-20 opacity-10 group-hover:opacity-20 transition-opacity bg-indigo-600 blur-[60px] rounded-full" />
+
+                                    <div className="flex items-start justify-between mb-6">
+                                        <div className="p-4 rounded-2xl bg-indigo-500/10 text-indigo-400 group-hover:bg-indigo-500 group-hover:text-white transition-colors">
+                                            <FileText className="w-8 h-8" />
+                                        </div>
+                                        <div className="px-3 py-1 rounded-full bg-green-500/10 text-green-400 text-xs font-bold border border-green-500/20">
+                                            LIVE NOW
+                                        </div>
+                                    </div>
+
+                                    <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-indigo-300 transition-colors">
+                                        NEET UG Full Mock
+                                    </h3>
+                                    <p className="text-slate-400 text-sm mb-6 line-clamp-2">
+                                        Complete 180 Questions (Physics, Chemistry, Biology) with negative marking and detailed analysis.
+                                    </p>
+
+                                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-800">
+                                        <div className="flex items-center gap-2 text-xs text-slate-500">
+                                            <Calendar className="w-4 h-4" /> 3 Hrs 20 Mins
+                                        </div>
+                                        <div className="flex items-center gap-2 text-sm font-bold text-indigo-400 group-hover:translate-x-1 transition-transform">
+                                            Start Test <FileText className="w-4 h-4" />
+                                        </div>
+                                    </div>
+                                </Link>
+
+                                {/* Placeholder for other tests */}
+                                <div className="p-6 rounded-3xl bg-slate-900/50 border border-slate-800 border-dashed flex flex-col items-center justify-center text-center opacity-50 hover:opacity-100 transition-opacity">
+                                    <div className="p-4 rounded-full bg-slate-800 mb-4">
+                                        <BookOpen className="w-8 h-8 text-slate-600" />
+                                    </div>
+                                    <h3 className="text-lg font-bold text-slate-300">More Tests Coming Soon</h3>
+                                    <p className="text-slate-500 text-sm">JEE Main, AIIMS, and more.</p>
+                                </div>
                             </div>
                         )}
 
