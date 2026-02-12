@@ -16,7 +16,7 @@ import {
   Cell
 } from "recharts";
 import Sidebar from "@/components/admin/Sidebar";
-import { Search, Plus, Upload, Trash2, Edit, MoreVertical, CheckCircle, XCircle, Bell, Filter, Calendar, BookOpen, FileText, History, Users } from "lucide-react";
+import { Search, Plus, Upload, Trash2, Edit, MoreVertical, CheckCircle, XCircle, Bell, Filter, Calendar, BookOpen, FileText, History, Users, Menu } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Animation Variants
@@ -37,6 +37,7 @@ const staggerContainer = {
 
 export default function AdminPanel() {
   const [secret, setSecret] = useState("");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const base = process.env.NEXT_PUBLIC_BACKEND_URL || "";
 
   // Data States
@@ -185,20 +186,28 @@ export default function AdminPanel() {
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/10 rounded-full blur-[120px] animate-pulse delay-1000" />
       </div>
 
-      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
-      <main className="flex-1 ml-72 p-8 h-screen overflow-y-auto relative z-10 custom-scrollbar">
+      <main className="flex-1 w-full lg:w-auto p-4 lg:p-8 h-screen overflow-y-auto relative z-10 custom-scrollbar transition-all duration-300">
         {/* Header */}
-        <header className="flex justify-between items-center mb-10 bg-slate-900/40 backdrop-blur-xl border border-white/5 p-4 rounded-3xl sticky top-0 z-40 shadow-xl">
-          <div className="flex items-center gap-4">
-            <div className="p-2 bg-blue-500/10 rounded-xl text-blue-400">
-              <Search size={20} />
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 bg-slate-900/40 backdrop-blur-xl border border-white/5 p-4 rounded-3xl sticky top-0 z-40 shadow-xl gap-4">
+          <div className="flex items-center gap-4 w-full md:w-auto">
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="p-2 bg-slate-800/50 rounded-xl text-slate-400 hover:text-white lg:hidden transition-colors"
+            >
+              <Menu size={20} />
+            </button>
+            <div className="flex items-center gap-4 flex-1">
+              <div className="p-2 bg-blue-500/10 rounded-xl text-blue-400">
+                <Search size={20} />
+              </div>
+              <input
+                type="text"
+                placeholder="Search anything..."
+                className="bg-transparent border-none text-sm w-full md:w-64 text-slate-300 placeholder:text-slate-500 focus:outline-none"
+              />
             </div>
-            <input
-              type="text"
-              placeholder="Search anything..."
-              className="bg-transparent border-none text-sm w-64 text-slate-300 placeholder:text-slate-500 focus:outline-none"
-            />
           </div>
 
           <div className="flex items-center gap-6">

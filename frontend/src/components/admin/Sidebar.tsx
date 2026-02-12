@@ -9,16 +9,20 @@ import {
     Users,
     Briefcase,
     LogOut,
-    ChevronRight
+    Menu,
+    X
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 interface SidebarProps {
     activeTab: string;
     setActiveTab: (tab: string) => void;
+    isOpen: boolean;
+    onClose: () => void;
 }
 
-export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
+export default function Sidebar({ activeTab, setActiveTab, isOpen, onClose }: SidebarProps) {
     const menuItems = [
         { id: "analytics", label: "Overview", icon: LayoutDashboard },
         { id: "courses", label: "Courses", icon: BookOpen },
@@ -30,81 +34,101 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
     ];
 
     return (
-        <aside className="w-72 h-screen flex flex-col fixed left-0 top-0 z-50 bg-slate-950/80 backdrop-blur-xl border-r border-white/5 shadow-2xl">
-            {/* Logo Section */}
-            <div className="p-8 pb-8 relative overflow-hidden">
-                <div className="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 bg-blue-500/20 blur-3xl rounded-full pointer-events-none" />
-                <h1 className="text-2xl font-black tracking-tight text-white flex items-center gap-2 relative z-10">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/25">
-                        <span className="text-lg font-bold">X</span>
-                    </div>
-                    <span>XamSathi</span>
-                </h1>
-                <p className="text-xs font-medium text-slate-500 mt-2 ml-10 tracking-wide uppercase">Admin Console</p>
-            </div>
+        <>
+            {/* Mobile Overlay */}
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={onClose}
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+                    />
+                )}
+            </AnimatePresence>
 
-            {/* Navigation */}
-            <nav className="flex-1 overflow-y-auto px-4 space-y-2 custom-scrollbar">
-                <div className="text-xs font-semibold text-slate-500 px-4 mb-2 uppercase tracking-wider">Main Menu</div>
-                {menuItems.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = activeTab === item.id;
-
-                    return (
-                        <button
-                            key={item.id}
-                            onClick={() => setActiveTab(item.id)}
-                            className={`w-full relative flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-300 group ${isActive ? "text-white" : "text-slate-400 hover:text-white"
-                                }`}
-                        >
-                            {isActive && (
-                                <motion.div
-                                    layoutId="activeTab"
-                                    className="absolute inset-0 bg-blue-600/10 border border-blue-500/20 rounded-xl"
-                                    initial={false}
-                                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                />
-                            )}
-
-                            <div className={`relative p-2 rounded-lg transition-colors duration-300 ${isActive ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25' : 'bg-slate-800/50 group-hover:bg-slate-800'}`}>
-                                <Icon size={18} strokeWidth={2} />
-                            </div>
-
-                            <span className="relative font-medium text-sm tracking-wide">{item.label}</span>
-
-                            {isActive && (
-                                <motion.div
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    className="ml-auto"
-                                >
-                                    <ChevronRight size={14} className="text-blue-400" />
-                                </motion.div>
-                            )}
-                        </button>
-                    );
-                })}
-            </nav>
-
-            {/* User Profile */}
-            <div className="p-4 mt-auto">
-                <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-4 border border-white/5 shadow-xl relative overflow-hidden group hover:border-white/10 transition-colors">
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
+            <motion.aside
+                initial={false}
+                animate={{
+                    x: isOpen ? 0 : "-100%",
+                }}
+                className={cn(
+                    "fixed top-0 left-0 z-50 h-screen w-72 bg-slate-950/90 backdrop-blur-xl border-r border-white/5 shadow-2xl lg:translate-x-0 lg:static lg:h-auto lg:shadow-none flex flex-col transition-transform duration-300 ease-in-out lg:!transform-none"
+                )}
+                // Force reset transform on desktop to ensure it's visible
+                style={{}}
+            >
+                {/* Logo Section */}
+                <div className="p-6 pb-6 relative overflow-hidden flex items-center justify-between">
+                    <div className="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 bg-blue-500/20 blur-3xl rounded-full pointer-events-none" />
                     <div className="flex items-center gap-3 relative z-10">
-                        <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center border-2 border-slate-600 overflow-hidden">
-                            <img src="https://ui-avatars.com/api/?name=Owner+Admin&background=0D8ABC&color=fff" alt="Admin" />
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/25">
+                            <span className="text-xl font-black text-white">X</span>
                         </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-sm font-bold text-white truncate">Owner Admin</p>
-                            <p className="text-xs text-slate-400 truncate">admin@xamsathi.com</p>
+                        <div>
+                            <h1 className="text-xl font-bold tracking-tight text-white leading-none">XamSathi</h1>
+                            <p className="text-[10px] font-bold text-blue-400 uppercase tracking-widest mt-1">Admin Panel</p>
                         </div>
-                        <button className="text-slate-400 hover:text-white transition-colors">
-                            <LogOut size={18} />
-                        </button>
+                    </div>
+                    <button onClick={onClose} className="lg:hidden p-2 text-slate-400 hover:text-white transition-colors">
+                        <X size={20} />
+                    </button>
+                </div>
+
+                {/* Navigation */}
+                <nav className="flex-1 overflow-y-auto px-4 space-y-2 custom-scrollbar py-4">
+                    <div className="text-xs font-bold text-slate-600 px-4 mb-3 uppercase tracking-wider">Main Menu</div>
+                    {menuItems.map((item) => {
+                        const Icon = item.icon;
+                        const isActive = activeTab === item.id;
+
+                        return (
+                            <button
+                                key={item.id}
+                                onClick={() => {
+                                    setActiveTab(item.id);
+                                    onClose(); // Close sidebar on mobile when clicked
+                                }}
+                                className={cn(
+                                    "w-full relative flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-300 group font-medium text-sm",
+                                    isActive
+                                        ? "text-white bg-blue-600 shadow-lg shadow-blue-600/20"
+                                        : "text-slate-400 hover:text-white hover:bg-white/5"
+                                )}
+                            >
+                                <Icon size={20} strokeWidth={isActive ? 2.5 : 2} className={isActive ? "text-white" : "text-slate-500 group-hover:text-white transition-colors"} />
+                                <span className="relative z-10">{item.label}</span>
+                                {isActive && (
+                                    <motion.div
+                                        layoutId="activeTabIndicator"
+                                        className="absolute right-4 w-1.5 h-1.5 rounded-full bg-white shadow-lg shadow-white/50"
+                                    />
+                                )}
+                            </button>
+                        );
+                    })}
+                </nav>
+
+                {/* User Profile */}
+                <div className="p-4 mt-auto border-t border-white/5">
+                    <div className="bg-slate-900/50 rounded-2xl p-3 border border-white/5 shadow-xl relative overflow-hidden group hover:border-white/10 transition-all cursor-pointer">
+                        <div className="flex items-center gap-3 relative z-10">
+                            <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center border border-white/10 overflow-hidden">
+                                <img src="https://ui-avatars.com/api/?name=Admin+User&background=3b82f6&color=fff" alt="Admin" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm font-bold text-white truncate">Administrator</p>
+                                <p className="text-xs text-slate-400 truncate">admin@xamsathi.in</p>
+                            </div>
+                            <button className="text-slate-500 hover:text-red-400 transition-colors p-2 hover:bg-white/5 rounded-lg">
+                                <LogOut size={18} />
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </aside>
+            </motion.aside>
+        </>
     );
 }
+
