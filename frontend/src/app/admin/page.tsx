@@ -62,10 +62,15 @@ type AdminAttempt = {
 };
 
 type AdminUser = {
-  user_id: string;
-  class_grade: number;
-  attempt_count: number;
-  avg_score: number;
+  id: string;
+  name: string;
+  email: string;
+  role?: string;
+  class_grade?: number;
+  phone?: string;
+  created_at?: string;
+  last_login?: string;
+  active?: boolean;
 };
 
 type AdminJob = {
@@ -85,6 +90,12 @@ export default function AdminPanel() {
   const [authError, setAuthError] = useState("");
   const [adminEmail, setAdminEmail] = useState("");
   const [adminPassword, setAdminPassword] = useState("");
+
+  const [authMode, setAuthMode] = useState<"login" | "forgot" | "reset">("login");
+  const [resetToken, setResetToken] = useState("");
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [resetNewPassword, setResetNewPassword] = useState("");
+  const [authInfo, setAuthInfo] = useState("");
 
   // Data States
   const [courses, setCourses] = useState<AdminCourse[]>([]);
@@ -230,7 +241,27 @@ export default function AdminPanel() {
   async function fetchAttempts() {
     const url = base ? new URL("/api/admin/attempts", base).toString() : "/api/admin/attempts";
     const res = await fetch(url + "?limit=200", { credentials: "include" });
-    if (res.ok) setAttempts(((await res.json()).items || []) as AdminAttempt[]);
+    if (!res.ok) return;
+    const data: unknown = await res.json();
+    const items =
+      data && typeof data === "object" && Array.isArray((data as Record<string, unknown>).items)
+        ? ((data as Record<string, unknown>).items as unknown[])
+        : [];
+
+    const normalized: AdminAttempt[] = items.flatMap((raw) => {
+      if (!raw || typeof raw !== "object") return [];
+      const r = raw as Record<string, unknown>;
+      const id = typeof r.id === "string" ? r.id : typeof r._id === "string" ? r._id : "";
+      const user_id = typeof r.user_id === "string" ? r.user_id : "";
+      const test_id = typeof r.test_id === "string" ? r.test_id : "";
+      const score = typeof r.score === "number" ? r.score : 0;
+      const total = typeof r.total === "number" ? r.total : 0;
+      const started_at = typeof r.started_at === "string" ? r.started_at : undefined;
+      if (!id || !user_id || !test_id) return [];
+      return [{ id, user_id, test_id, score, total, started_at }];
+    });
+
+    setAttempts(normalized);
   }
 
   async function fetchQuestions() {
@@ -242,13 +273,57 @@ export default function AdminPanel() {
   async function fetchUsers() {
     const url = base ? new URL("/api/admin/users", base).toString() : "/api/admin/users";
     const res = await fetch(url + "?limit=200", { credentials: "include" });
-    if (res.ok) setUsers(((await res.json()).items || []) as AdminUser[]);
+    if (!res.ok) return;
+    const data: unknown = await res.json();
+    const items =
+      data && typeof data === "object" && Array.isArray((data as Record<string, unknown>).items)
+        ? ((data as Record<string, unknown>).items as unknown[])
+        : [];
+
+    const normalized: AdminUser[] = items.flatMap((raw) => {
+      if (!raw || typeof raw !== "object") return [];
+      const r = raw as Record<string, unknown>;
+
+      const id = typeof r.id === "string" ? r.id : typeof r._id === "string" ? r._id : "";
+      const name = typeof r.name === "string" ? r.name : "";
+      const email = typeof r.email === "string" ? r.email : "";
+      const role = typeof r.role === "string" ? r.role : undefined;
+      const class_grade = typeof r.class_grade === "number" ? r.class_grade : undefined;
+      const phone = typeof r.phone === "string" ? r.phone : undefined;
+      const created_at = typeof r.created_at === "string" ? r.created_at : undefined;
+      const last_login = typeof r.last_login === "string" ? r.last_login : undefined;
+      const active = typeof r.active === "boolean" ? r.active : undefined;
+
+      if (!id || !email) return [];
+      return [{ id, name, email, role, class_grade, phone, created_at, last_login, active }];
+    });
+
+    setUsers(normalized);
   }
 
   async function fetchJobs() {
     const url = base ? new URL("/api/admin/jobs", base).toString() : "/api/admin/jobs";
     const res = await fetch(url + "?limit=200", { credentials: "include" });
-    if (res.ok) setJobs(((await res.json()).items || []) as AdminJob[]);
+    if (!res.ok) return;
+    const data: unknown = await res.json();
+    const items =
+      data && typeof data === "object" && Array.isArray((data as Record<string, unknown>).items)
+        ? ((data as Record<string, unknown>).items as unknown[])
+        : [];
+
+    const normalized: AdminJob[] = items.flatMap((raw) => {
+      if (!raw || typeof raw !== "object") return [];
+      const r = raw as Record<string, unknown>;
+      const id = typeof r.id === "string" ? r.id : typeof r._id === "string" ? r._id : "";
+      const title = typeof r.title === "string" ? r.title : "";
+      const type = typeof r.type === "string" ? r.type : "";
+      const status = typeof r.status === "string" ? r.status : "";
+      const posted_at = typeof r.posted_at === "string" ? r.posted_at : undefined;
+      if (!id || !title) return [];
+      return [{ id, title, type, status, posted_at }];
+    });
+
+    setJobs(normalized);
   }
 
   async function fetchAnalytics() {
@@ -271,6 +346,7 @@ export default function AdminPanel() {
 
   async function adminLogin() {
     setAuthError("");
+    setAuthInfo("");
     const url = base ? new URL("/api/admin-auth/login", base).toString() : "/api/admin-auth/login";
     const res = await fetch(url, {
       method: "POST",
@@ -287,6 +363,44 @@ export default function AdminPanel() {
     setAdminPassword("");
   }
 
+  async function adminForgotPassword() {
+    setAuthError("");
+    setAuthInfo("");
+    const url = base ? new URL("/api/admin-auth/forgot-password", base).toString() : "/api/admin-auth/forgot-password";
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ email: forgotEmail }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      setAuthError(data.error || "Request failed");
+      return;
+    }
+    setAuthInfo("If the email exists, a reset link has been generated.");
+  }
+
+  async function adminResetPassword() {
+    setAuthError("");
+    setAuthInfo("");
+    const url = base ? new URL("/api/admin-auth/reset-password", base).toString() : "/api/admin-auth/reset-password";
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ token: resetToken, new_password: resetNewPassword }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      setAuthError(data.error || "Reset failed");
+      return;
+    }
+    setAuthInfo("Password updated. Please sign in.");
+    setAuthMode("login");
+    setResetNewPassword("");
+  }
+
   async function adminLogout() {
     const url = base ? new URL("/api/admin-auth/logout", base).toString() : "/api/admin-auth/logout";
     try {
@@ -296,6 +410,20 @@ export default function AdminPanel() {
   }
 
   useEffect(() => {
+    const tokenFromUrl = (() => {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('reset_token') || '';
+      } catch {
+        return '';
+      }
+    })();
+
+    if (tokenFromUrl) {
+      setResetToken(tokenFromUrl);
+      setAuthMode('reset');
+    }
+
     const run = async () => {
       setAuthLoading(true);
       await fetchAdminMe();
@@ -330,8 +458,12 @@ export default function AdminPanel() {
     return (
       <div className="min-h-screen bg-slate-950 text-slate-200 flex items-center justify-center p-4">
         <div className="w-full max-w-md bg-slate-900/40 border border-white/10 rounded-3xl p-6 backdrop-blur-xl">
-          <h1 className="text-2xl font-black text-white mb-2">Admin Login</h1>
-          <p className="text-sm text-slate-400 mb-6">Sign in with your admin account</p>
+          <h1 className="text-2xl font-black text-white mb-2">Admin</h1>
+          <p className="text-sm text-slate-400 mb-6">
+            {authMode === 'login' && 'Sign in with your admin account'}
+            {authMode === 'forgot' && 'Request a password reset link'}
+            {authMode === 'reset' && 'Set a new password'}
+          </p>
 
           {authError && (
             <div className="mb-4 text-sm text-red-300 bg-red-500/10 border border-red-500/20 rounded-xl p-3">
@@ -339,27 +471,108 @@ export default function AdminPanel() {
             </div>
           )}
 
-          <div className="space-y-3">
-            <input
-              value={adminEmail}
-              onChange={(e) => setAdminEmail(e.target.value)}
-              placeholder="Email"
-              className="w-full bg-slate-950/50 border border-slate-700 text-slate-200 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40"
-            />
-            <input
-              value={adminPassword}
-              onChange={(e) => setAdminPassword(e.target.value)}
-              placeholder="Password"
-              type="password"
-              className="w-full bg-slate-950/50 border border-slate-700 text-slate-200 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40"
-            />
-            <button
-              onClick={adminLogin}
-              className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition"
-            >
-              Sign in
-            </button>
-          </div>
+          {authInfo && (
+            <div className="mb-4 text-sm text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3">
+              {authInfo}
+            </div>
+          )}
+
+          {authMode === 'login' && (
+            <div className="space-y-3">
+              <input
+                value={adminEmail}
+                onChange={(e) => setAdminEmail(e.target.value)}
+                placeholder="Email"
+                className="w-full bg-slate-950/50 border border-slate-700 text-slate-200 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+              />
+              <input
+                value={adminPassword}
+                onChange={(e) => setAdminPassword(e.target.value)}
+                placeholder="Password"
+                type="password"
+                className="w-full bg-slate-950/50 border border-slate-700 text-slate-200 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+              />
+              <button
+                onClick={adminLogin}
+                className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition"
+              >
+                Sign in
+              </button>
+
+              <button
+                onClick={() => {
+                  setForgotEmail(adminEmail);
+                  setAuthMode('forgot');
+                  setAuthError('');
+                  setAuthInfo('');
+                }}
+                className="w-full text-slate-300 hover:text-white text-sm font-semibold py-2"
+              >
+                Forgot password?
+              </button>
+            </div>
+          )}
+
+          {authMode === 'forgot' && (
+            <div className="space-y-3">
+              <input
+                value={forgotEmail}
+                onChange={(e) => setForgotEmail(e.target.value)}
+                placeholder="Admin email"
+                className="w-full bg-slate-950/50 border border-slate-700 text-slate-200 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+              />
+              <button
+                onClick={adminForgotPassword}
+                className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition"
+              >
+                Send reset link
+              </button>
+              <button
+                onClick={() => {
+                  setAuthMode('login');
+                  setAuthError('');
+                  setAuthInfo('');
+                }}
+                className="w-full text-slate-300 hover:text-white text-sm font-semibold py-2"
+              >
+                Back to login
+              </button>
+            </div>
+          )}
+
+          {authMode === 'reset' && (
+            <div className="space-y-3">
+              <input
+                value={resetToken}
+                onChange={(e) => setResetToken(e.target.value)}
+                placeholder="Reset token"
+                className="w-full bg-slate-950/50 border border-slate-700 text-slate-200 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+              />
+              <input
+                value={resetNewPassword}
+                onChange={(e) => setResetNewPassword(e.target.value)}
+                placeholder="New password"
+                type="password"
+                className="w-full bg-slate-950/50 border border-slate-700 text-slate-200 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+              />
+              <button
+                onClick={adminResetPassword}
+                className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition"
+              >
+                Update password
+              </button>
+              <button
+                onClick={() => {
+                  setAuthMode('login');
+                  setAuthError('');
+                  setAuthInfo('');
+                }}
+                className="w-full text-slate-300 hover:text-white text-sm font-semibold py-2"
+              >
+                Back to login
+              </button>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -734,25 +947,24 @@ export default function AdminPanel() {
                   <thead className="bg-white/5 text-slate-200 font-semibold uppercase tracking-wider text-xs">
                     <tr>
                       <th className="px-6 py-5">User</th>
+                      <th className="px-6 py-5">Email</th>
                       <th className="px-6 py-5">Class</th>
-                      <th className="px-6 py-5">Engagement</th>
-                      <th className="px-6 py-5">Performance</th>
+                      <th className="px-6 py-5">Phone</th>
+                      <th className="px-6 py-5">Created</th>
+                      <th className="px-6 py-5">Last Login</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
                     {users.map((u) => (
-                      <tr key={u.user_id} className="hover:bg-white/5 transition-colors">
-                        <td className="px-6 py-5 font-medium text-white flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold border border-white/10">{u.user_id.slice(-2)}</div>
-                          {u.user_id}
+                      <tr key={u.id} className="hover:bg-white/5 transition-colors">
+                        <td className="px-6 py-5 font-medium text-white">
+                          {u.name || '-'}
                         </td>
-                        <td className="px-6 py-5">Class {u.class_grade}</td>
-                        <td className="px-6 py-5">{u.attempt_count} Exams</td>
-                        <td className="px-6 py-5">
-                          <span className={`px-2 py-1 rounded-md text-xs font-bold ${u.avg_score > 0.7 ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
-                            {(u.avg_score * 100).toFixed(0)}%
-                          </span>
-                        </td>
+                        <td className="px-6 py-5 text-slate-300">{u.email}</td>
+                        <td className="px-6 py-5">{typeof u.class_grade === 'number' ? `Class ${u.class_grade}` : '-'}</td>
+                        <td className="px-6 py-5">{u.phone || '-'}</td>
+                        <td className="px-6 py-5">{u.created_at ? new Date(u.created_at).toLocaleDateString() : '-'}</td>
+                        <td className="px-6 py-5">{u.last_login ? new Date(u.last_login).toLocaleDateString() : '-'}</td>
                       </tr>
                     ))}
                   </tbody>
