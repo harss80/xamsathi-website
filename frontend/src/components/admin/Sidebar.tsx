@@ -21,9 +21,10 @@ interface SidebarProps {
     setActiveTab: (tab: string) => void;
     isOpen: boolean;
     onClose: () => void;
+    onLogout: () => void;
 }
 
-export default function Sidebar({ activeTab, setActiveTab, isOpen, onClose }: SidebarProps) {
+export default function Sidebar({ activeTab, setActiveTab, isOpen, onClose, onLogout }: SidebarProps) {
     const menuItems = [
         { id: "analytics", label: "Overview", icon: LayoutDashboard },
         { id: "courses", label: "Courses", icon: BookOpen },
@@ -123,7 +124,11 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, onClose }: Si
                                 <p className="text-sm font-bold text-white truncate">Administrator</p>
                                 <p className="text-xs text-slate-400 truncate">admin@xamsathi.in</p>
                             </div>
-                            <button className="text-slate-500 hover:text-red-400 transition-colors p-2 hover:bg-white/5 rounded-lg">
+                            <button
+                                onClick={onLogout}
+                                className="text-slate-500 hover:text-red-400 transition-colors p-2 hover:bg-white/5 rounded-lg"
+                                aria-label="Logout"
+                            >
                                 <LogOut size={18} />
                             </button>
                         </div>

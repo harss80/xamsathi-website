@@ -705,7 +705,7 @@ export default function AdminPanel() {
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/10 rounded-full blur-[120px] animate-pulse delay-1000" />
       </div>
 
-      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} onLogout={adminLogout} />
 
       <main className="flex-1 w-full lg:w-auto p-4 lg:p-8 h-screen overflow-y-auto relative z-10 custom-scrollbar transition-all duration-300">
         {/* Header */}
