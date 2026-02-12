@@ -43,6 +43,15 @@ type AdminCourse = {
   created_at?: string;
 };
 
+type AdminTest = {
+  id: string;
+  title: string;
+  course_id?: string;
+  duration_min?: number;
+  difficulty?: string;
+  created_at?: string;
+};
+
 export default function AdminPanel() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const base = process.env.NEXT_PUBLIC_BACKEND_URL || "";
@@ -55,7 +64,7 @@ export default function AdminPanel() {
 
   // Data States
   const [courses, setCourses] = useState<AdminCourse[]>([]);
-  const [tests, setTests] = useState<Array<Record<string, unknown>>>([]);
+  const [tests, setTests] = useState<AdminTest[]>([]);
   const [questions, setQuestions] = useState<Array<Record<string, unknown>>>([]);
   const [attempts, setAttempts] = useState<Array<Record<string, unknown>>>([]);
   const [users, setUsers] = useState<Array<Record<string, unknown>>>([]);
@@ -138,7 +147,29 @@ export default function AdminPanel() {
     const url = new URL("/api/admin/tests", _base);
     if (courseId) url.searchParams.set("course_id", courseId);
     const res = await fetch(url.toString(), { credentials: "include" });
-    if (res.ok) setTests((await res.json()).items || []);
+    if (!res.ok) return;
+    const data: unknown = await res.json();
+    const items =
+      data && typeof data === "object" && Array.isArray((data as Record<string, unknown>).items)
+        ? ((data as Record<string, unknown>).items as unknown[])
+        : [];
+
+    const normalized: AdminTest[] = items.flatMap((raw) => {
+      if (!raw || typeof raw !== "object") return [];
+      const r = raw as Record<string, unknown>;
+
+      const id = typeof r.id === "string" ? r.id : typeof r._id === "string" ? r._id : "";
+      const title = typeof r.title === "string" ? r.title : "";
+      const course_id = typeof r.course_id === "string" ? r.course_id : undefined;
+      const duration_min = typeof r.duration_min === "number" ? r.duration_min : undefined;
+      const difficulty = typeof r.difficulty === "string" ? r.difficulty : undefined;
+      const created_at = typeof r.created_at === "string" ? r.created_at : undefined;
+
+      if (!id || !title) return [];
+      return [{ id, title, course_id, duration_min, difficulty, created_at }];
+    });
+
+    setTests(normalized);
   }
 
   async function createTest() {
