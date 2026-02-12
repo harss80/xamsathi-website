@@ -65,6 +65,9 @@ export default function AdminPanel() {
   const [testDifficulty, setTestDifficulty] = useState("");
   const [testDuration, setTestDuration] = useState<number>(60);
 
+  const attemptsOverTime = Array.isArray(analytics.attemptsOverTime) ? analytics.attemptsOverTime : [];
+  const scoreDistribution = Array.isArray(analytics.scoreDistribution) ? analytics.scoreDistribution : [];
+
   const [questionsJson, setQuestionsJson] = useState<string>(
     JSON.stringify([
       {
@@ -394,7 +397,7 @@ export default function AdminPanel() {
                       </select>
                     </div>
                     <ResponsiveContainer width="100%" height={300}>
-                      <LineChart data={analytics.attemptsOverTime || []}>
+                      <LineChart data={attemptsOverTime}>
                         <defs>
                           <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
                             <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
@@ -426,7 +429,7 @@ export default function AdminPanel() {
                     <ResponsiveContainer width="100%" height={300}>
                       <PieChart>
                         <Pie
-                          data={analytics.scoreDistribution || []}
+                          data={scoreDistribution}
                           dataKey="count"
                           nameKey="range"
                           cx="50%"
@@ -436,7 +439,7 @@ export default function AdminPanel() {
                           paddingAngle={5}
                           stroke="none"
                         >
-                          {(analytics.scoreDistribution || []).map((_entry: unknown, index: number) => (
+                          {scoreDistribution.map((_entry: unknown, index: number) => (
                             <Cell key={`cell-${index}`} fill={['#3b82f6', '#10b981', '#f59e0b', '#ef4444'][index % 4]} stroke="none" />
                           ))}
                         </Pie>
