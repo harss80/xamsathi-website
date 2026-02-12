@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Menu, X, ChevronDown, LayoutDashboard, Sparkles, BookOpen, Users, Phone, GraduationCap, PlayCircle, FileText, LogIn, UserPlus, LogOut } from "lucide-react";
@@ -12,23 +12,39 @@ const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [hoveredNav, setHoveredNav] = useState<string | null>(null);
-    const [hasMounted, setHasMounted] = useState(false);
     const pathname = usePathname();
     const router = useRouter();
 
-    const isAuthenticated = typeof window !== "undefined" && (() => {
-        try {
-            const keys = ["xamsathi_token", "xamsathi_auth", "eduman_auth", "authToken", "token"];
-            let found = keys.some((k) => !!localStorage.getItem(k));
-            if (!found) {
-                const cookies = document.cookie || "";
-                found = /(?:^|; )xamsathi_auth=/.test(cookies) || /(?:^|; )eduman_auth=/.test(cookies) || /(?:^|; )token=/.test(cookies);
+    const isAuthenticated = useSyncExternalStore(
+        (onStoreChange) => {
+            if (typeof window === "undefined") return () => { };
+            const handler = () => onStoreChange();
+            window.addEventListener("storage", handler);
+            window.addEventListener("xamsathi-auth", handler as EventListener);
+            return () => {
+                window.removeEventListener("storage", handler);
+                window.removeEventListener("xamsathi-auth", handler as EventListener);
+            };
+        },
+        () => {
+            try {
+                const keys = ["xamsathi_token", "xamsathi_auth", "eduman_auth", "authToken", "token"];
+                let found = keys.some((k) => !!localStorage.getItem(k));
+                if (!found) {
+                    const cookies = document.cookie || "";
+                    found =
+                        /(?:^|; )xamsathi_token=/.test(cookies) ||
+                        /(?:^|; )xamsathi_auth=/.test(cookies) ||
+                        /(?:^|; )eduman_auth=/.test(cookies) ||
+                        /(?:^|; )token=/.test(cookies);
+                }
+                return !!found;
+            } catch {
+                return false;
             }
-            return !!found;
-        } catch {
-            return false;
-        }
-    })();
+        },
+        () => false
+    );
 
     const handleLogout = () => {
         try {
@@ -57,7 +73,9 @@ const Navbar = () => {
     }, []);
 
     useEffect(() => {
-        setHasMounted(true);
+        try {
+            window.dispatchEvent(new Event("xamsathi-auth"));
+        } catch { }
     }, []);
 
     // Close mobile menu on route change and lock body scroll when open
@@ -198,7 +216,7 @@ const Navbar = () => {
 
                     {/* Right Actions */}
                     <div className="hidden lg:flex items-center gap-4">
-                        {hasMounted && (isAuthenticated ? (
+                        {isAuthenticated ? (
                             <>
                                 <Link
                                     href="/dashboard"
@@ -231,7 +249,7 @@ const Navbar = () => {
                                     Sign up
                                 </Link>
                             </>
-                        ))}
+                        )}
                     </div>
 
                     {/* Mobile Menu Button */}
@@ -312,7 +330,7 @@ const Navbar = () => {
                                 ))}
 
                                 <div className="mt-8 pt-8 border-t border-slate-800">
-                                    {hasMounted && (isAuthenticated ? (
+                                    {isAuthenticated ? (
                                         <div className="grid grid-cols-2 gap-3">
                                             <Link
                                                 href="/dashboard"
@@ -350,7 +368,7 @@ const Navbar = () => {
                                                 Sign up
                                             </Link>
                                         </div>
-                                    ))}
+                                    )}
                                 </div>
                             </div>
                         </motion.div>
