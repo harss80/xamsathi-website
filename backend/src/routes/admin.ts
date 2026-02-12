@@ -4,6 +4,7 @@ import Test from '../models/Test';
 import Question from '../models/Question';
 import Attempt from '../models/Attempt';
 import Lead from '../models/Lead';
+import Visit from '../models/Visit';
 import { verifyToken } from '../lib/auth';
 import User from '../models/User';
 
@@ -229,6 +230,65 @@ router.get('/analytics', requireAdmin, async (req: Request, res: Response) => {
   // Attempts over time (last 30 days)
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+  const leadsOverTime = await Lead.aggregate([
+    { $match: { created_at: { $gte: thirtyDaysAgo } } },
+    {
+      $group: {
+        _id: { $dateToString: { format: '%Y-%m-%d', date: '$created_at' } },
+        count: { $sum: 1 },
+      },
+    },
+    { $sort: { _id: 1 } },
+    { $project: { date: '$_id', count: 1, _id: 0 } },
+  ]);
+
+  const visitsOverTime = await Visit.aggregate([
+    { $match: { created_at: { $gte: thirtyDaysAgo } } },
+    {
+      $group: {
+        _id: { $dateToString: { format: '%Y-%m-%d', date: '$created_at' } },
+        count: { $sum: 1 },
+      },
+    },
+    { $sort: { _id: 1 } },
+    { $project: { date: '$_id', count: 1, _id: 0 } },
+  ]);
+
+  const topCountries = await Visit.aggregate([
+    { $match: { country: { $exists: true, $nin: [null, ''] } } },
+    { $group: { _id: '$country', count: { $sum: 1 } } },
+    { $sort: { count: -1 } },
+    { $limit: 10 },
+    { $project: { country: '$_id', count: 1, _id: 0 } },
+  ]);
+
+  const topRegions = await Visit.aggregate([
+    { $match: { region: { $exists: true, $nin: [null, ''] } } },
+    { $group: { _id: '$region', count: { $sum: 1 } } },
+    { $sort: { count: -1 } },
+    { $limit: 10 },
+    { $project: { region: '$_id', count: 1, _id: 0 } },
+  ]);
+
+  const topEntitiesByLeads = await Lead.aggregate([
+    {
+      $group: {
+        _id: { entity_type: '$entity_type', entity_id: '$entity_id' },
+        count: { $sum: 1 },
+      },
+    },
+    { $sort: { count: -1 } },
+    { $limit: 10 },
+    {
+      $project: {
+        entity_type: '$_id.entity_type',
+        entity_id: '$_id.entity_id',
+        count: 1,
+        _id: 0,
+      },
+    },
+  ]);
   const attemptsOverTime = await Attempt.aggregate([
     { $match: { started_at: { $gte: thirtyDaysAgo } } },
     {
@@ -306,6 +366,11 @@ router.get('/analytics', requireAdmin, async (req: Request, res: Response) => {
     attemptsByClass,
     scoreDistribution,
     topTests,
+    leadsOverTime,
+    visitsOverTime,
+    topCountries,
+    topRegions,
+    topEntitiesByLeads,
   });
 });
 

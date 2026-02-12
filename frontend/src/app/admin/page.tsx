@@ -136,7 +136,11 @@ export default function AdminPanel() {
   const [testDuration, setTestDuration] = useState<number>(60);
 
   const attemptsOverTime = Array.isArray(analytics.attemptsOverTime) ? analytics.attemptsOverTime : [];
+  const leadsOverTime = Array.isArray(analytics.leadsOverTime) ? analytics.leadsOverTime : [];
+  const visitsOverTime = Array.isArray(analytics.visitsOverTime) ? analytics.visitsOverTime : [];
   const scoreDistribution = Array.isArray(analytics.scoreDistribution) ? analytics.scoreDistribution : [];
+  const topCountries = Array.isArray(analytics.topCountries) ? analytics.topCountries : [];
+  const topEntitiesByLeads = Array.isArray(analytics.topEntitiesByLeads) ? analytics.topEntitiesByLeads : [];
 
   const [questionsJson, setQuestionsJson] = useState<string>(
     JSON.stringify([
@@ -865,6 +869,93 @@ export default function AdminPanel() {
                         </div>
                       ))}
                     </div>
+                  </motion.div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  <motion.div variants={fadeIn} className="lg:col-span-2 bg-slate-900/60 backdrop-blur-xl border border-white/5 rounded-3xl p-8 shadow-xl">
+                    <h3 className="font-bold text-lg text-white mb-8">Leads Over Time</h3>
+                    <ResponsiveContainer width="100%" height={280}>
+                      <LineChart data={leadsOverTime}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+                        <XAxis dataKey="date" stroke="#64748b" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                        <YAxis stroke="#64748b" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                        <Tooltip
+                          contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '12px' }}
+                          itemStyle={{ color: '#e2e8f0' }}
+                        />
+                        <Line type="monotone" dataKey="count" stroke="#10b981" strokeWidth={4} dot={{ r: 3 }} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                    <div className="mt-6 text-xs text-slate-500">Visits tracked: {Array.isArray(visitsOverTime) ? visitsOverTime.reduce((sum: number, x: unknown) => {
+                      if (!x || typeof x !== 'object') return sum;
+                      const count = (x as Record<string, unknown>).count;
+                      return sum + (typeof count === 'number' ? count : 0);
+                    }, 0) : 0}</div>
+                  </motion.div>
+
+                  <motion.div variants={fadeIn} className="bg-slate-900/60 backdrop-blur-xl border border-white/5 rounded-3xl p-8 shadow-xl">
+                    <h3 className="font-bold text-lg text-white mb-6">Top Countries</h3>
+                    <div className="space-y-3">
+                      {topCountries.slice(0, 10).map((c: unknown, idx: number) => (
+                        <div key={idx} className="flex items-center justify-between text-sm">
+                          <div className="text-slate-300">{(() => {
+                            if (!c || typeof c !== 'object') return '-';
+                            const country = (c as Record<string, unknown>).country;
+                            return typeof country === 'string' && country ? country : '-';
+                          })()}</div>
+                          <div className="text-slate-500 font-mono">{(() => {
+                            if (!c || typeof c !== 'object') return 0;
+                            const count = (c as Record<string, unknown>).count;
+                            return typeof count === 'number' ? count : 0;
+                          })()}</div>
+                        </div>
+                      ))}
+                      {topCountries.length === 0 && <div className="text-sm text-slate-500">No data yet</div>}
+                    </div>
+                  </motion.div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <motion.div variants={fadeIn} className="bg-slate-900/60 backdrop-blur-xl border border-white/5 rounded-3xl p-8 shadow-xl">
+                    <h3 className="font-bold text-lg text-white mb-6">Top Entities by Leads</h3>
+                    <div className="space-y-3">
+                      {topEntitiesByLeads.slice(0, 10).map((e: unknown, idx: number) => (
+                        <div key={idx} className="flex items-center justify-between text-sm">
+                          <div className="text-slate-300">
+                            {(() => {
+                              if (!e || typeof e !== 'object') return '-';
+                              const entity_type = (e as Record<string, unknown>).entity_type;
+                              return typeof entity_type === 'string' && entity_type ? entity_type : '-';
+                            })()}
+                            {(() => {
+                              if (!e || typeof e !== 'object') return '';
+                              const entity_id = (e as Record<string, unknown>).entity_id;
+                              return typeof entity_id === 'string' && entity_id ? `: ${entity_id}` : '';
+                            })()}
+                          </div>
+                          <div className="text-slate-500 font-mono">{(() => {
+                            if (!e || typeof e !== 'object') return 0;
+                            const count = (e as Record<string, unknown>).count;
+                            return typeof count === 'number' ? count : 0;
+                          })()}</div>
+                        </div>
+                      ))}
+                      {topEntitiesByLeads.length === 0 && <div className="text-sm text-slate-500">No data yet</div>}
+                    </div>
+                  </motion.div>
+
+                  <motion.div variants={fadeIn} className="bg-slate-900/60 backdrop-blur-xl border border-white/5 rounded-3xl p-8 shadow-xl">
+                    <h3 className="font-bold text-lg text-white mb-6">Visits Over Time</h3>
+                    <ResponsiveContainer width="100%" height={280}>
+                      <LineChart data={visitsOverTime}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+                        <XAxis dataKey="date" stroke="#64748b" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                        <YAxis stroke="#64748b" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                        <Tooltip contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '12px' }} />
+                        <Line type="monotone" dataKey="count" stroke="#3b82f6" strokeWidth={4} dot={{ r: 3 }} />
+                      </LineChart>
+                    </ResponsiveContainer>
                   </motion.div>
                 </div>
               </>
