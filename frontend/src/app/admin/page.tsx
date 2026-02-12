@@ -376,7 +376,9 @@ export default function AdminPanel() {
                         </div>
                         <span className="text-xs font-medium text-slate-500 bg-slate-800/50 px-2 py-1 rounded-lg border border-white/5">+12%</span>
                       </div>
-                      <div className="text-4xl font-bold text-white mb-1 tracking-tight">{stat.value}</div>
+                      <div className="text-4xl font-bold text-white mb-1 tracking-tight">
+                        {typeof stat.value === "number" || typeof stat.value === "string" ? stat.value : String(stat.value ?? "")}
+                      </div>
                       <div className="text-sm text-slate-400 font-medium">{stat.label}</div>
                     </div>
                   ))}
