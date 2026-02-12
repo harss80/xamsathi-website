@@ -1,7 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const isAuthenticated = Boolean(request.cookies.get('xamsathi_auth')?.value)
+  const isAuthenticated = Boolean(request.cookies.get('xamsathi_token')?.value)
+    || Boolean(request.cookies.get('xamsathi_auth')?.value)
     || Boolean(request.cookies.get('eduman_auth')?.value)
     || Boolean(request.cookies.get('token')?.value);
   const { pathname, search } = request.nextUrl;
@@ -19,7 +20,7 @@ export function middleware(request: NextRequest) {
   }
 
   // Redirect authenticated users away from auth pages
-  if (pathname === '/login' || pathname === '/register') {
+  if (pathname === '/login' || pathname === '/signup' || pathname === '/register') {
     if (isAuthenticated) {
       const url = request.nextUrl.clone();
       url.pathname = '/dashboard';
