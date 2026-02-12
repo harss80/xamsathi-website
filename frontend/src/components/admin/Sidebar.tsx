@@ -8,6 +8,7 @@ import {
     History,
     Users,
     Briefcase,
+    Target,
     LogOut,
     Menu,
     X
@@ -30,6 +31,7 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, onClose }: Si
         { id: "questions", label: "Question Bank", icon: HelpCircle },
         { id: "attempts", label: "Results", icon: History },
         { id: "users", label: "User Base", icon: Users },
+        { id: "leads", label: "Leads", icon: Target },
         { id: "jobs", label: "Job Listings", icon: Briefcase },
     ];
 

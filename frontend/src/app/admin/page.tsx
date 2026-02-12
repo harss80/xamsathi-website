@@ -81,6 +81,18 @@ type AdminJob = {
   posted_at?: string;
 };
 
+type AdminLead = {
+  id: string;
+  action: string;
+  entity_type?: string;
+  entity_id?: string;
+  path?: string;
+  country?: string;
+  region?: string;
+  city?: string;
+  created_at?: string;
+};
+
 export default function AdminPanel() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const base = process.env.NEXT_PUBLIC_BACKEND_URL || "";
@@ -104,6 +116,7 @@ export default function AdminPanel() {
   const [attempts, setAttempts] = useState<AdminAttempt[]>([]);
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [jobs, setJobs] = useState<AdminJob[]>([]);
+  const [leads, setLeads] = useState<AdminLead[]>([]);
   const [analytics, setAnalytics] = useState<Record<string, unknown>>({});
 
   // Form States
@@ -326,6 +339,35 @@ export default function AdminPanel() {
     setJobs(normalized);
   }
 
+  async function fetchLeads() {
+    const url = base ? new URL("/api/admin/leads", base).toString() : "/api/admin/leads";
+    const res = await fetch(url + "?limit=200", { credentials: "include" });
+    if (!res.ok) return;
+    const data: unknown = await res.json();
+    const items =
+      data && typeof data === "object" && Array.isArray((data as Record<string, unknown>).items)
+        ? ((data as Record<string, unknown>).items as unknown[])
+        : [];
+
+    const normalized: AdminLead[] = items.flatMap((raw) => {
+      if (!raw || typeof raw !== "object") return [];
+      const r = raw as Record<string, unknown>;
+      const id = typeof r.id === "string" ? r.id : typeof r._id === "string" ? r._id : "";
+      const action = typeof r.action === "string" ? r.action : "";
+      const entity_type = typeof r.entity_type === "string" ? r.entity_type : undefined;
+      const entity_id = typeof r.entity_id === "string" ? r.entity_id : undefined;
+      const path = typeof r.path === "string" ? r.path : undefined;
+      const country = typeof r.country === "string" ? r.country : undefined;
+      const region = typeof r.region === "string" ? r.region : undefined;
+      const city = typeof r.city === "string" ? r.city : undefined;
+      const created_at = typeof r.created_at === "string" ? r.created_at : undefined;
+      if (!id || !action) return [];
+      return [{ id, action, entity_type, entity_id, path, country, region, city, created_at }];
+    });
+
+    setLeads(normalized);
+  }
+
   async function fetchAnalytics() {
     const url = base ? new URL("/api/admin/analytics", base).toString() : "/api/admin/analytics";
     const res = await fetch(url, { credentials: "include" });
@@ -444,6 +486,12 @@ export default function AdminPanel() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [admin]);
+
+  useEffect(() => {
+    if (!admin) return;
+    if (activeTab === 'leads') fetchLeads();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [admin, activeTab]);
 
   useEffect(() => {
     if (admin) fetchTests(selectedCourse || undefined);
@@ -998,6 +1046,38 @@ export default function AdminPanel() {
                     ))}
                   </tbody>
                 </table>
+              </motion.div>
+            )}
+
+            {activeTab === "leads" && (
+              <motion.div variants={fadeIn} className="bg-slate-900/60 backdrop-blur-xl border border-white/5 rounded-3xl overflow-hidden shadow-xl">
+                <div className="p-6 border-b border-white/5"><h3 className="font-bold text-lg text-white">Leads</h3></div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm text-slate-400">
+                    <thead className="bg-white/5 text-slate-200 font-semibold uppercase tracking-wider text-xs">
+                      <tr>
+                        <th className="px-6 py-5">Action</th>
+                        <th className="px-6 py-5">Entity</th>
+                        <th className="px-6 py-5">Path</th>
+                        <th className="px-6 py-5">Geo</th>
+                        <th className="px-6 py-5">Date</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {leads.map((l) => (
+                        <tr key={l.id} className="hover:bg-white/5 transition-colors">
+                          <td className="px-6 py-5 font-mono text-xs text-slate-200">{l.action}</td>
+                          <td className="px-6 py-5 text-slate-300">
+                            {(l.entity_type || '-')}{l.entity_id ? `: ${l.entity_id}` : ''}
+                          </td>
+                          <td className="px-6 py-5 font-mono text-xs text-slate-500">{l.path || '-'}</td>
+                          <td className="px-6 py-5 text-slate-300">{[l.country, l.region, l.city].filter(Boolean).join(', ') || '-'}</td>
+                          <td className="px-6 py-5">{l.created_at ? new Date(l.created_at).toLocaleString() : '-'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </motion.div>
             )}
 

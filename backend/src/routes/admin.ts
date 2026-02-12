@@ -3,6 +3,7 @@ import Course from '../models/Course';
 import Test from '../models/Test';
 import Question from '../models/Question';
 import Attempt from '../models/Attempt';
+import Lead from '../models/Lead';
 import { verifyToken } from '../lib/auth';
 import User from '../models/User';
 
@@ -134,6 +135,32 @@ router.get('/users', requireAdmin, async (req: Request, res: Response) => {
       .limit(limit)
       .lean(),
     User.countDocuments(filter),
+  ]);
+
+  return res.json({ items, total, page, limit });
+});
+
+router.get('/leads', requireAdmin, async (req: Request, res: Response) => {
+  const limit = Number(req.query.limit || 50);
+  const page = Number(req.query.page || 1);
+  const skip = (page - 1) * limit;
+
+  const action = (req.query.action || '').toString().trim();
+  const entity_type = (req.query.entity_type || '').toString().trim();
+  const entity_id = (req.query.entity_id || '').toString().trim();
+
+  const filter: Record<string, unknown> = {};
+  if (action) filter.action = action;
+  if (entity_type) filter.entity_type = entity_type;
+  if (entity_id) filter.entity_id = entity_id;
+
+  const [items, total] = await Promise.all([
+    Lead.find(filter)
+      .sort({ created_at: -1 as const })
+      .skip(skip)
+      .limit(limit)
+      .lean(),
+    Lead.countDocuments(filter),
   ]);
 
   return res.json({ items, total, page, limit });
