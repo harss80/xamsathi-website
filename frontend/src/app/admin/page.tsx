@@ -36,18 +36,23 @@ const staggerContainer = {
 };
 
 export default function AdminPanel() {
-  const [secret, setSecret] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const base = process.env.NEXT_PUBLIC_BACKEND_URL || "";
 
+  const [admin, setAdmin] = useState<Record<string, unknown> | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [authError, setAuthError] = useState("");
+  const [adminEmail, setAdminEmail] = useState("");
+  const [adminPassword, setAdminPassword] = useState("");
+
   // Data States
-  const [courses, setCourses] = useState<Array<Record<string, any>>>([]);
-  const [tests, setTests] = useState<Array<Record<string, any>>>([]);
-  const [questions, setQuestions] = useState<Array<Record<string, any>>>([]);
-  const [attempts, setAttempts] = useState<Array<Record<string, any>>>([]);
-  const [users, setUsers] = useState<Array<Record<string, any>>>([]);
-  const [jobs, setJobs] = useState<Array<Record<string, any>>>([]);
-  const [analytics, setAnalytics] = useState<Record<string, any>>({});
+  const [courses, setCourses] = useState<Array<Record<string, unknown>>>([]);
+  const [tests, setTests] = useState<Array<Record<string, unknown>>>([]);
+  const [questions, setQuestions] = useState<Array<Record<string, unknown>>>([]);
+  const [attempts, setAttempts] = useState<Array<Record<string, unknown>>>([]);
+  const [users, setUsers] = useState<Array<Record<string, unknown>>>([]);
+  const [jobs, setJobs] = useState<Array<Record<string, unknown>>>([]);
+  const [analytics, setAnalytics] = useState<Record<string, unknown>>({});
 
   // Form States
   const [activeTab, setActiveTab] = useState("analytics");
@@ -77,7 +82,7 @@ export default function AdminPanel() {
   // API Functions
   async function fetchCourses() {
     const url = base ? new URL("/api/admin/courses", base).toString() : "/api/admin/courses";
-    const res = await fetch(url + "?limit=200", { headers: { "x-admin-secret": secret } });
+    const res = await fetch(url + "?limit=200", { credentials: "include" });
     if (res.ok) setCourses((await res.json()).items || []);
   }
 
@@ -85,7 +90,8 @@ export default function AdminPanel() {
     const url = base ? new URL("/api/admin/courses", base).toString() : "/api/admin/courses";
     const res = await fetch(url, {
       method: "POST",
-      headers: { "content-type": "application/json", "x-admin-secret": secret },
+      headers: { "content-type": "application/json" },
+      credentials: "include",
       body: JSON.stringify({ title: courseTitle, description: courseDesc, class_grade: courseClass }),
     });
     if (res.ok) {
@@ -99,7 +105,7 @@ export default function AdminPanel() {
     const _base = base || location.origin;
     const url = new URL("/api/admin/tests", _base);
     if (courseId) url.searchParams.set("course_id", courseId);
-    const res = await fetch(url.toString(), { headers: { "x-admin-secret": secret } });
+    const res = await fetch(url.toString(), { credentials: "include" });
     if (res.ok) setTests((await res.json()).items || []);
   }
 
@@ -107,7 +113,8 @@ export default function AdminPanel() {
     const url = base ? new URL("/api/admin/tests", base).toString() : "/api/admin/tests";
     const res = await fetch(url, {
       method: "POST",
-      headers: { "content-type": "application/json", "x-admin-secret": secret },
+      headers: { "content-type": "application/json" },
+      credentials: "include",
       body: JSON.stringify({ course_id: selectedCourse, title: testTitle, difficulty: testDifficulty, duration_min: testDuration }),
     });
     if (res.ok) {
@@ -118,14 +125,15 @@ export default function AdminPanel() {
   }
 
   async function uploadQuestions() {
-    let payload: any;
+    let payload: unknown;
     try { payload = JSON.parse(questionsJson); if (!Array.isArray(payload)) throw new Error(); }
     catch { alert("Invalid JSON. Provide an array of questions"); return; }
 
     const url = base ? new URL("/api/admin/questions", base).toString() : "/api/admin/questions";
     const res = await fetch(url, {
       method: "POST",
-      headers: { "content-type": "application/json", "x-admin-secret": secret },
+      headers: { "content-type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(payload),
     });
     if (res.ok) { alert("Questions uploaded"); await fetchQuestions(); }
@@ -134,36 +142,84 @@ export default function AdminPanel() {
 
   async function fetchAttempts() {
     const url = base ? new URL("/api/admin/attempts", base).toString() : "/api/admin/attempts";
-    const res = await fetch(url + "?limit=200", { headers: { "x-admin-secret": secret } });
+    const res = await fetch(url + "?limit=200", { credentials: "include" });
     if (res.ok) setAttempts((await res.json()).items || []);
   }
 
   async function fetchQuestions() {
     const url = base ? new URL("/api/admin/questions", base).toString() : "/api/admin/questions";
-    const res = await fetch(url + "?limit=200", { headers: { "x-admin-secret": secret } });
+    const res = await fetch(url + "?limit=200", { credentials: "include" });
     if (res.ok) setQuestions((await res.json()).items || []);
   }
 
   async function fetchUsers() {
     const url = base ? new URL("/api/admin/users", base).toString() : "/api/admin/users";
-    const res = await fetch(url + "?limit=200", { headers: { "x-admin-secret": secret } });
+    const res = await fetch(url + "?limit=200", { credentials: "include" });
     if (res.ok) setUsers((await res.json()).items || []);
   }
 
   async function fetchJobs() {
     const url = base ? new URL("/api/admin/jobs", base).toString() : "/api/admin/jobs";
-    const res = await fetch(url + "?limit=200", { headers: { "x-admin-secret": secret } });
+    const res = await fetch(url + "?limit=200", { credentials: "include" });
     if (res.ok) setJobs((await res.json()).items || []);
   }
 
   async function fetchAnalytics() {
     const url = base ? new URL("/api/admin/analytics", base).toString() : "/api/admin/analytics";
-    const res = await fetch(url, { headers: { "x-admin-secret": secret } });
+    const res = await fetch(url, { credentials: "include" });
     if (res.ok) setAnalytics(await res.json());
   }
 
+  async function fetchAdminMe() {
+    const url = base ? new URL("/api/admin-auth/me", base).toString() : "/api/admin-auth/me";
+    const res = await fetch(url, { credentials: "include" });
+    if (res.ok) {
+      const data = await res.json();
+      setAdmin(data.admin || null);
+      setAuthError("");
+    } else {
+      setAdmin(null);
+    }
+  }
+
+  async function adminLogin() {
+    setAuthError("");
+    const url = base ? new URL("/api/admin-auth/login", base).toString() : "/api/admin-auth/login";
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ email: adminEmail, password: adminPassword }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      setAuthError(data.error || "Login failed");
+      return;
+    }
+    setAdmin(data.admin || null);
+    setAdminPassword("");
+  }
+
+  async function adminLogout() {
+    const url = base ? new URL("/api/admin-auth/logout", base).toString() : "/api/admin-auth/logout";
+    try {
+      await fetch(url, { method: "POST", credentials: "include" });
+    } catch {}
+    setAdmin(null);
+  }
+
   useEffect(() => {
-    if (secret) {
+    const run = async () => {
+      setAuthLoading(true);
+      await fetchAdminMe();
+      setAuthLoading(false);
+    };
+    run();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (admin) {
       fetchCourses();
       fetchAttempts();
       fetchQuestions();
@@ -171,11 +227,56 @@ export default function AdminPanel() {
       fetchJobs();
       fetchAnalytics();
     }
-  }, [secret]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [admin]);
 
   useEffect(() => {
-    if (secret) fetchTests(selectedCourse || undefined);
-  }, [secret, selectedCourse]);
+    if (admin) fetchTests(selectedCourse || undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [admin, selectedCourse]);
+
+  if (authLoading) {
+    return <div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-400">Loading...</div>;
+  }
+
+  if (!admin) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-slate-200 flex items-center justify-center p-4">
+        <div className="w-full max-w-md bg-slate-900/40 border border-white/10 rounded-3xl p-6 backdrop-blur-xl">
+          <h1 className="text-2xl font-black text-white mb-2">Admin Login</h1>
+          <p className="text-sm text-slate-400 mb-6">Sign in with your admin account</p>
+
+          {authError && (
+            <div className="mb-4 text-sm text-red-300 bg-red-500/10 border border-red-500/20 rounded-xl p-3">
+              {authError}
+            </div>
+          )}
+
+          <div className="space-y-3">
+            <input
+              value={adminEmail}
+              onChange={(e) => setAdminEmail(e.target.value)}
+              placeholder="Email"
+              className="w-full bg-slate-950/50 border border-slate-700 text-slate-200 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+            />
+            <input
+              value={adminPassword}
+              onChange={(e) => setAdminPassword(e.target.value)}
+              placeholder="Password"
+              type="password"
+              className="w-full bg-slate-950/50 border border-slate-700 text-slate-200 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+            />
+            <button
+              onClick={adminLogin}
+              className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition"
+            >
+              Sign in
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen bg-slate-950 text-slate-200 overflow-hidden font-sans selection:bg-blue-500/30">
@@ -195,6 +296,7 @@ export default function AdminPanel() {
             <button
               onClick={() => setIsSidebarOpen(true)}
               className="p-2 bg-slate-800/50 rounded-xl text-slate-400 hover:text-white lg:hidden transition-colors"
+              aria-label="Open sidebar"
             >
               <Menu size={20} />
             </button>
@@ -211,25 +313,18 @@ export default function AdminPanel() {
           </div>
 
           <div className="flex items-center gap-6">
-            <div className="relative">
-              <input
-                type="password"
-                value={secret}
-                onChange={(e) => setSecret(e.target.value)}
-                placeholder="Enter Admin Secret..."
-                className="bg-slate-950/50 border border-slate-700 text-slate-300 px-4 py-2 pl-10 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 w-64 text-sm transition-all"
-              />
-              <span className="absolute left-3 top-2.5 text-slate-500 text-xs">🔒</span>
-            </div>
-
-            <button className="relative p-2 text-slate-400 hover:text-white transition-colors">
+            <button className="relative p-2 text-slate-400 hover:text-white transition-colors" aria-label="Notifications">
               <Bell size={20} />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-slate-900" />
             </button>
 
-            <div className="h-10 w-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-blue-500/20 ring-2 ring-white/10">
-              A
-            </div>
+            <button
+              onClick={adminLogout}
+              className="h-10 px-4 bg-slate-800/50 hover:bg-slate-800 border border-white/5 rounded-xl text-sm font-bold text-slate-200 transition"
+              aria-label="Logout"
+            >
+              Logout
+            </button>
           </div>
         </header>
 
@@ -291,7 +386,7 @@ export default function AdminPanel() {
                   <motion.div variants={fadeIn} className="bg-slate-900/60 backdrop-blur-xl border border-white/5 rounded-3xl p-8 shadow-xl">
                     <div className="flex items-center justify-between mb-8">
                       <h3 className="font-bold text-lg text-white">Attempts Overview</h3>
-                      <select className="bg-slate-800/50 text-xs text-slate-300 border-none rounded-lg px-3 py-1.5 focus:ring-0">
+                      <select aria-label="Attempts range" className="bg-slate-800/50 text-xs text-slate-300 border-none rounded-lg px-3 py-1.5 focus:ring-0">
                         <option>Last 7 days</option>
                         <option>Last 30 days</option>
                       </select>
@@ -339,7 +434,7 @@ export default function AdminPanel() {
                           paddingAngle={5}
                           stroke="none"
                         >
-                          {(analytics.scoreDistribution || []).map((entry: any, index: number) => (
+                          {(analytics.scoreDistribution || []).map((_entry: unknown, index: number) => (
                             <Cell key={`cell-${index}`} fill={['#3b82f6', '#10b981', '#f59e0b', '#ef4444'][index % 4]} stroke="none" />
                           ))}
                         </Pie>
