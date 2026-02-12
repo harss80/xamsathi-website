@@ -7,8 +7,10 @@ import testsRouter from './routes/tests';
 import meRouter from './routes/me';
 import authRouter from './routes/auth';
 import authGoogleRouter from './routes/auth-google';
+import adminAuthRouter from './routes/admin-auth';
 import type { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
+import { ensureBootstrapAdmin } from './lib/bootstrap-admin';
 
 dotenv.config();
 
@@ -62,13 +64,22 @@ app.use(async (_req: Request, _res: Response, next: NextFunction) => {
 });
 
 app.use('/api/admin', adminRouter);
+app.use('/api/admin-auth', adminAuthRouter);
 app.use('/api/tests', testsRouter);
 app.use('/api/me', meRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/auth', authGoogleRouter);
 
 const port = process.env.PORT || 3001;
-connectMongo().catch((e) => console.error('Mongo: startup connect error', (e as Error).message));
+connectMongo()
+  .then(async () => {
+    try {
+      await ensureBootstrapAdmin();
+    } catch (e) {
+      console.error('Bootstrap admin error:', (e as Error).message);
+    }
+  })
+  .catch((e) => console.error('Mongo: startup connect error', (e as Error).message));
 app.listen(port, () => {
   console.log(`Backend listening on ${port}`);
 });

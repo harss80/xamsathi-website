@@ -3,15 +3,39 @@ import Course from '../models/Course';
 import Test from '../models/Test';
 import Question from '../models/Question';
 import Attempt from '../models/Attempt';
-import { PipelineStage } from 'mongoose';
+import { verifyToken } from '../lib/auth';
+import User from '../models/User';
 
 const router = Router();
 
-function requireAdmin(req: Request, res: Response, next: NextFunction) {
-  const secret = req.headers['x-admin-secret'];
-  if (!secret || secret !== process.env.ADMIN_PANEL_SECRET) {
-    return res.status(401).json({ error: 'unauthorized' });
+function readCookie(req: Request, name: string): string | null {
+  const raw = req.headers.cookie;
+  if (!raw) return null;
+  const parts = raw.split(';').map((p) => p.trim());
+  for (const p of parts) {
+    if (!p) continue;
+    const eq = p.indexOf('=');
+    if (eq < 0) continue;
+    const k = p.slice(0, eq);
+    if (k !== name) continue;
+    return decodeURIComponent(p.slice(eq + 1));
   }
+  return null;
+}
+
+async function requireAdmin(req: Request, res: Response, next: NextFunction) {
+  const cookieToken = readCookie(req, 'admin_token');
+  const headerToken = (req.headers.authorization || '').toString().replace('Bearer ', '');
+  const token = cookieToken || headerToken;
+  if (!token) return res.status(401).json({ error: 'unauthorized' });
+
+  const decoded = verifyToken(token);
+  if (!decoded?.userId) return res.status(401).json({ error: 'unauthorized' });
+
+  const raw = await User.findById(decoded.userId).select('role active').lean().exec();
+  const user = (Array.isArray(raw) ? raw[0] : raw) as { role?: string; active?: boolean } | null;
+  if (!user || !user.active || user.role !== 'admin') return res.status(401).json({ error: 'unauthorized' });
+
   return next();
 }
 
@@ -84,27 +108,62 @@ router.get('/attempts', requireAdmin, async (req: Request, res: Response) => {
   return res.json({ items: attempts });
 });
 
-// Mock users aggregation (since we don't have a users collection)
 router.get('/users', requireAdmin, async (req: Request, res: Response) => {
   const limit = Number(req.query.limit || 50);
   const page = Number(req.query.page || 1);
   const skip = (page - 1) * limit;
-  const pipeline: PipelineStage[] = [
-    {
-      $group: {
-        _id: '$user_id',
-        class_grade: { $first: '$class_grade' },
-        attempt_count: { $sum: 1 },
-        avg_score: { $avg: { $cond: [{ $ne: ['$score', null] }, { $divide: ['$score', '$total'] }, null] } },
-      },
-    },
-    { $sort: { attempt_count: -1 as const } },
-    { $skip: skip },
-    { $limit: limit },
-    { $project: { user_id: '$_id', class_grade: 1, attempt_count: 1, avg_score: 1, _id: 0 } },
-  ];
-  const users = await Attempt.aggregate(pipeline);
-  return res.json({ items: users });
+
+  const q = (req.query.q || '').toString().trim();
+  const role = (req.query.role || '').toString().trim();
+
+  const filter: Record<string, unknown> = {};
+  if (role) filter.role = role;
+  if (q) {
+    filter.$or = [
+      { email: { $regex: q, $options: 'i' } },
+      { name: { $regex: q, $options: 'i' } },
+      { phone: { $regex: q, $options: 'i' } },
+    ];
+  }
+
+  const [items, total] = await Promise.all([
+    User.find(filter)
+      .select('email name role class_grade phone avatar created_at last_login active')
+      .sort({ created_at: -1 as const })
+      .skip(skip)
+      .limit(limit)
+      .lean(),
+    User.countDocuments(filter),
+  ]);
+
+  return res.json({ items, total, page, limit });
+});
+
+router.get('/users/:id', requireAdmin, async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const user = await User.findById(id)
+    .select('email name role class_grade phone avatar created_at last_login active')
+    .lean();
+  if (!user) return res.status(404).json({ error: 'not found' });
+  return res.json({ user });
+});
+
+router.get('/users/:id/attempts', requireAdmin, async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const limit = Number(req.query.limit || 50);
+  const page = Number(req.query.page || 1);
+  const skip = (page - 1) * limit;
+
+  const [items, total] = await Promise.all([
+    Attempt.find({ user_id: id })
+      .sort({ started_at: -1 as const })
+      .skip(skip)
+      .limit(limit)
+      .lean(),
+    Attempt.countDocuments({ user_id: id }),
+  ]);
+
+  return res.json({ items, total, page, limit });
 });
 
 // Mock jobs endpoint (placeholder)
