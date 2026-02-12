@@ -1,4 +1,5 @@
 type TrackLeadPayload = {
+  user_id?: string;
   action: string;
   entity_type?: string;
   entity_id?: string;
@@ -9,8 +10,26 @@ type TrackLeadPayload = {
 
 export function trackLead(payload: TrackLeadPayload) {
   try {
+    const inferredUserId = (() => {
+      try {
+        if (typeof window === 'undefined') return undefined;
+        const raw = localStorage.getItem('xamsathi_user');
+        if (!raw) return undefined;
+        const parsed = JSON.parse(raw) as Record<string, unknown>;
+        const id =
+          (typeof parsed.id === 'string' && parsed.id) ||
+          (typeof parsed._id === 'string' && parsed._id) ||
+          (typeof parsed.userId === 'string' && parsed.userId) ||
+          undefined;
+        return id;
+      } catch {
+        return undefined;
+      }
+    })();
+
     const body = JSON.stringify({
       ...payload,
+      user_id: payload.user_id || inferredUserId,
       path: payload.path || (typeof window !== "undefined" ? window.location.pathname : undefined),
       referrer: payload.referrer || (typeof document !== "undefined" ? document.referrer : undefined),
     });

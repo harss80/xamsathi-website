@@ -37,7 +37,8 @@ router.post('/visit', async (req: Request, res: Response) => {
 
 router.post('/lead', async (req: Request, res: Response) => {
   try {
-    const { action, entity_type, entity_id, path, referrer, ip, user_agent, country, region, city, meta } = req.body as {
+    const { user_id, action, entity_type, entity_id, path, referrer, ip, user_agent, country, region, city, meta } = req.body as {
+      user_id?: string;
       action?: string;
       entity_type?: string;
       entity_id?: string;
@@ -54,6 +55,7 @@ router.post('/lead', async (req: Request, res: Response) => {
     if (!action) return res.status(400).json({ error: 'action required' });
 
     await Lead.create({
+      user_id: user_id || undefined,
       action,
       entity_type: entity_type || undefined,
       entity_id: entity_id || undefined,

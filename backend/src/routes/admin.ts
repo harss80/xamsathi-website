@@ -140,6 +140,24 @@ router.get('/users', requireAdmin, async (req: Request, res: Response) => {
   return res.json({ items, total, page, limit });
 });
 
+router.get('/users/:id/leads', requireAdmin, async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const limit = Number(req.query.limit || 50);
+  const page = Number(req.query.page || 1);
+  const skip = (page - 1) * limit;
+
+  const [items, total] = await Promise.all([
+    Lead.find({ user_id: id })
+      .sort({ created_at: -1 as const })
+      .skip(skip)
+      .limit(limit)
+      .lean(),
+    Lead.countDocuments({ user_id: id }),
+  ]);
+
+  return res.json({ items, total, page, limit });
+});
+
 router.get('/leads', requireAdmin, async (req: Request, res: Response) => {
   const limit = Number(req.query.limit || 50);
   const page = Number(req.query.page || 1);

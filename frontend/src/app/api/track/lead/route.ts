@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(req: NextRequest) {
   try {
     const body = (await req.json().catch(() => ({}))) as {
+      user_id?: string;
       action?: string;
       entity_type?: string;
       entity_id?: string;
@@ -32,6 +33,7 @@ export async function POST(req: NextRequest) {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
+        user_id: body.user_id || undefined,
         action,
         entity_type: body.entity_type || undefined,
         entity_id: body.entity_id || undefined,

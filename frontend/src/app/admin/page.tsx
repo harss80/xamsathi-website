@@ -86,6 +86,7 @@ type AdminLead = {
   action: string;
   entity_type?: string;
   entity_id?: string;
+  user_id?: string;
   path?: string;
   country?: string;
   region?: string;
@@ -118,6 +119,10 @@ export default function AdminPanel() {
   const [jobs, setJobs] = useState<AdminJob[]>([]);
   const [leads, setLeads] = useState<AdminLead[]>([]);
   const [analytics, setAnalytics] = useState<Record<string, unknown>>({});
+
+  const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null);
+  const [selectedUserAttempts, setSelectedUserAttempts] = useState<AdminAttempt[]>([]);
+  const [selectedUserLeads, setSelectedUserLeads] = useState<AdminLead[]>([]);
 
   // Form States
   const [activeTab, setActiveTab] = useState("analytics");
@@ -356,16 +361,77 @@ export default function AdminPanel() {
       const action = typeof r.action === "string" ? r.action : "";
       const entity_type = typeof r.entity_type === "string" ? r.entity_type : undefined;
       const entity_id = typeof r.entity_id === "string" ? r.entity_id : undefined;
+      const user_id = typeof r.user_id === "string" ? r.user_id : undefined;
       const path = typeof r.path === "string" ? r.path : undefined;
       const country = typeof r.country === "string" ? r.country : undefined;
       const region = typeof r.region === "string" ? r.region : undefined;
       const city = typeof r.city === "string" ? r.city : undefined;
       const created_at = typeof r.created_at === "string" ? r.created_at : undefined;
       if (!id || !action) return [];
-      return [{ id, action, entity_type, entity_id, path, country, region, city, created_at }];
+      return [{ id, action, entity_type, entity_id, user_id, path, country, region, city, created_at }];
     });
 
     setLeads(normalized);
+  }
+
+  async function fetchUserAttempts(userId: string) {
+    const _base = base || location.origin;
+    const url = new URL(`/api/admin/users/${userId}/attempts`, _base);
+    url.searchParams.set('limit', '50');
+    const res = await fetch(url.toString(), { credentials: 'include' });
+    if (!res.ok) return;
+    const data: unknown = await res.json();
+    const items =
+      data && typeof data === 'object' && Array.isArray((data as Record<string, unknown>).items)
+        ? ((data as Record<string, unknown>).items as unknown[])
+        : [];
+
+    const normalized: AdminAttempt[] = items.flatMap((raw) => {
+      if (!raw || typeof raw !== 'object') return [];
+      const r = raw as Record<string, unknown>;
+      const id = typeof r.id === 'string' ? r.id : typeof r._id === 'string' ? r._id : '';
+      const user_id = typeof r.user_id === 'string' ? r.user_id : '';
+      const test_id = typeof r.test_id === 'string' ? r.test_id : '';
+      const score = typeof r.score === 'number' ? r.score : 0;
+      const total = typeof r.total === 'number' ? r.total : 0;
+      const started_at = typeof r.started_at === 'string' ? r.started_at : undefined;
+      if (!id || !user_id || !test_id) return [];
+      return [{ id, user_id, test_id, score, total, started_at }];
+    });
+
+    setSelectedUserAttempts(normalized);
+  }
+
+  async function fetchUserLeads(userId: string) {
+    const _base = base || location.origin;
+    const url = new URL(`/api/admin/users/${userId}/leads`, _base);
+    url.searchParams.set('limit', '100');
+    const res = await fetch(url.toString(), { credentials: 'include' });
+    if (!res.ok) return;
+    const data: unknown = await res.json();
+    const items =
+      data && typeof data === 'object' && Array.isArray((data as Record<string, unknown>).items)
+        ? ((data as Record<string, unknown>).items as unknown[])
+        : [];
+
+    const normalized: AdminLead[] = items.flatMap((raw) => {
+      if (!raw || typeof raw !== 'object') return [];
+      const r = raw as Record<string, unknown>;
+      const id = typeof r.id === 'string' ? r.id : typeof r._id === 'string' ? r._id : '';
+      const action = typeof r.action === 'string' ? r.action : '';
+      const entity_type = typeof r.entity_type === 'string' ? r.entity_type : undefined;
+      const entity_id = typeof r.entity_id === 'string' ? r.entity_id : undefined;
+      const user_id = typeof r.user_id === 'string' ? r.user_id : undefined;
+      const path = typeof r.path === 'string' ? r.path : undefined;
+      const country = typeof r.country === 'string' ? r.country : undefined;
+      const region = typeof r.region === 'string' ? r.region : undefined;
+      const city = typeof r.city === 'string' ? r.city : undefined;
+      const created_at = typeof r.created_at === 'string' ? r.created_at : undefined;
+      if (!id || !action) return [];
+      return [{ id, action, entity_type, entity_id, user_id, path, country, region, city, created_at }];
+    });
+
+    setSelectedUserLeads(normalized);
   }
 
   async function fetchAnalytics() {
@@ -873,6 +939,72 @@ export default function AdminPanel() {
               </motion.div>
             )}
 
+            {selectedUser && (
+              <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setSelectedUser(null)}>
+                <div className="w-full max-w-5xl bg-slate-950 border border-white/10 rounded-3xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
+                  <div className="p-6 border-b border-white/10 flex items-center justify-between">
+                    <div>
+                      <div className="text-white font-black text-xl">{selectedUser.name || 'User'}</div>
+                      <div className="text-slate-400 text-sm">{selectedUser.email}</div>
+                    </div>
+                    <button className="text-slate-400 hover:text-white" onClick={() => setSelectedUser(null)} aria-label="Close">
+                      ✕
+                    </button>
+                  </div>
+
+                  <div className="p-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="bg-slate-900/40 border border-white/5 rounded-2xl overflow-hidden">
+                      <div className="p-4 border-b border-white/5 text-white font-bold">Attempts</div>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left text-sm text-slate-400">
+                          <thead className="bg-white/5 text-slate-200 font-semibold uppercase tracking-wider text-xs">
+                            <tr>
+                              <th className="px-4 py-3">Test</th>
+                              <th className="px-4 py-3">Score</th>
+                              <th className="px-4 py-3">Date</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-white/5">
+                            {selectedUserAttempts.map((a) => (
+                              <tr key={a.id}>
+                                <td className="px-4 py-3 font-mono text-xs">{a.test_id}</td>
+                                <td className="px-4 py-3 text-slate-200 font-bold">{a.score}/{a.total}</td>
+                                <td className="px-4 py-3">{a.started_at ? new Date(a.started_at).toLocaleString() : '-'}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    <div className="bg-slate-900/40 border border-white/5 rounded-2xl overflow-hidden">
+                      <div className="p-4 border-b border-white/5 text-white font-bold">Leads</div>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left text-sm text-slate-400">
+                          <thead className="bg-white/5 text-slate-200 font-semibold uppercase tracking-wider text-xs">
+                            <tr>
+                              <th className="px-4 py-3">Action</th>
+                              <th className="px-4 py-3">Entity</th>
+                              <th className="px-4 py-3">Date</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-white/5">
+                            {selectedUserLeads.map((l) => (
+                              <tr key={l.id}>
+                                <td className="px-4 py-3 font-mono text-xs text-slate-200">{l.action}</td>
+                                <td className="px-4 py-3">{(l.entity_type || '-')}{l.entity_id ? `: ${l.entity_id}` : ''}</td>
+                                <td className="px-4 py-3">{l.created_at ? new Date(l.created_at).toLocaleString() : '-'}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Tests Tab */}
             {activeTab === "tests" && (
               <motion.div variants={fadeIn} className="space-y-6">
@@ -1004,7 +1136,17 @@ export default function AdminPanel() {
                   </thead>
                   <tbody className="divide-y divide-white/5">
                     {users.map((u) => (
-                      <tr key={u.id} className="hover:bg-white/5 transition-colors">
+                      <tr
+                        key={u.id}
+                        className="hover:bg-white/5 transition-colors cursor-pointer"
+                        onClick={() => {
+                          setSelectedUser(u);
+                          setSelectedUserAttempts([]);
+                          setSelectedUserLeads([]);
+                          fetchUserAttempts(u.id);
+                          fetchUserLeads(u.id);
+                        }}
+                      >
                         <td className="px-6 py-5 font-medium text-white">
                           {u.name || '-'}
                         </td>
