@@ -35,6 +35,14 @@ const staggerContainer = {
   }
 };
 
+type AdminCourse = {
+  id: string;
+  title: string;
+  description?: string;
+  class_grade?: number;
+  created_at?: string;
+};
+
 export default function AdminPanel() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const base = process.env.NEXT_PUBLIC_BACKEND_URL || "";
@@ -46,7 +54,7 @@ export default function AdminPanel() {
   const [adminPassword, setAdminPassword] = useState("");
 
   // Data States
-  const [courses, setCourses] = useState<Array<Record<string, unknown>>>([]);
+  const [courses, setCourses] = useState<AdminCourse[]>([]);
   const [tests, setTests] = useState<Array<Record<string, unknown>>>([]);
   const [questions, setQuestions] = useState<Array<Record<string, unknown>>>([]);
   const [attempts, setAttempts] = useState<Array<Record<string, unknown>>>([]);
@@ -86,7 +94,30 @@ export default function AdminPanel() {
   async function fetchCourses() {
     const url = base ? new URL("/api/admin/courses", base).toString() : "/api/admin/courses";
     const res = await fetch(url + "?limit=200", { credentials: "include" });
-    if (res.ok) setCourses((await res.json()).items || []);
+    if (!res.ok) return;
+    const data: unknown = await res.json();
+    const items =
+      data && typeof data === "object" && Array.isArray((data as Record<string, unknown>).items)
+        ? ((data as Record<string, unknown>).items as unknown[])
+        : [];
+
+    const normalized: AdminCourse[] = items
+      .map((raw) => {
+        if (!raw || typeof raw !== "object") return null;
+        const r = raw as Record<string, unknown>;
+
+        const id = typeof r.id === "string" ? r.id : typeof r._id === "string" ? r._id : "";
+        const title = typeof r.title === "string" ? r.title : "";
+        const description = typeof r.description === "string" ? r.description : "";
+        const created_at = typeof r.created_at === "string" ? r.created_at : undefined;
+        const class_grade = typeof r.class_grade === "number" ? r.class_grade : undefined;
+
+        if (!id || !title) return null;
+        return { id, title, description, created_at, class_grade };
+      })
+      .filter((x): x is AdminCourse => Boolean(x));
+
+    setCourses(normalized);
   }
 
   async function createCourse() {
