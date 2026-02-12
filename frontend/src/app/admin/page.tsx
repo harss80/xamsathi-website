@@ -124,6 +124,10 @@ export default function AdminPanel() {
   const [selectedUserAttempts, setSelectedUserAttempts] = useState<AdminAttempt[]>([]);
   const [selectedUserLeads, setSelectedUserLeads] = useState<AdminLead[]>([]);
 
+  const [leadFilterAction, setLeadFilterAction] = useState('');
+  const [leadFilterEntityType, setLeadFilterEntityType] = useState('');
+  const [leadFilterEntityId, setLeadFilterEntityId] = useState('');
+
   // Form States
   const [activeTab, setActiveTab] = useState("analytics");
   const [courseTitle, setCourseTitle] = useState("");
@@ -140,6 +144,7 @@ export default function AdminPanel() {
   const visitsOverTime = Array.isArray(analytics.visitsOverTime) ? analytics.visitsOverTime : [];
   const scoreDistribution = Array.isArray(analytics.scoreDistribution) ? analytics.scoreDistribution : [];
   const topCountries = Array.isArray(analytics.topCountries) ? analytics.topCountries : [];
+  const topRegions = Array.isArray(analytics.topRegions) ? analytics.topRegions : [];
   const topEntitiesByLeads = Array.isArray(analytics.topEntitiesByLeads) ? analytics.topEntitiesByLeads : [];
 
   const [questionsJson, setQuestionsJson] = useState<string>(
@@ -349,8 +354,14 @@ export default function AdminPanel() {
   }
 
   async function fetchLeads() {
-    const url = base ? new URL("/api/admin/leads", base).toString() : "/api/admin/leads";
-    const res = await fetch(url + "?limit=200", { credentials: "include" });
+    const _base = base || location.origin;
+    const url = new URL('/api/admin/leads', _base);
+    url.searchParams.set('limit', '200');
+    if (leadFilterAction.trim()) url.searchParams.set('action', leadFilterAction.trim());
+    if (leadFilterEntityType.trim()) url.searchParams.set('entity_type', leadFilterEntityType.trim());
+    if (leadFilterEntityId.trim()) url.searchParams.set('entity_id', leadFilterEntityId.trim());
+
+    const res = await fetch(url.toString(), { credentials: "include" });
     if (!res.ok) return;
     const data: unknown = await res.json();
     const items =
@@ -561,7 +572,7 @@ export default function AdminPanel() {
     if (!admin) return;
     if (activeTab === 'leads') fetchLeads();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [admin, activeTab]);
+  }, [admin, activeTab, leadFilterAction, leadFilterEntityType, leadFilterEntityId]);
 
   useEffect(() => {
     if (admin) fetchTests(selectedCourse || undefined);
@@ -1284,7 +1295,58 @@ export default function AdminPanel() {
 
             {activeTab === "leads" && (
               <motion.div variants={fadeIn} className="bg-slate-900/60 backdrop-blur-xl border border-white/5 rounded-3xl overflow-hidden shadow-xl">
-                <div className="p-6 border-b border-white/5"><h3 className="font-bold text-lg text-white">Leads</h3></div>
+                <div className="p-6 border-b border-white/5">
+                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    <h3 className="font-bold text-lg text-white">Leads</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full lg:max-w-3xl">
+                      <input
+                        value={leadFilterAction}
+                        onChange={(e) => setLeadFilterAction(e.target.value)}
+                        placeholder="Filter action"
+                        className="bg-slate-950/50 border border-slate-700 text-slate-200 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40 text-sm"
+                      />
+                      <input
+                        value={leadFilterEntityType}
+                        onChange={(e) => setLeadFilterEntityType(e.target.value)}
+                        placeholder="Filter entity_type"
+                        className="bg-slate-950/50 border border-slate-700 text-slate-200 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40 text-sm"
+                      />
+                      <input
+                        value={leadFilterEntityId}
+                        onChange={(e) => setLeadFilterEntityId(e.target.value)}
+                        placeholder="Filter entity_id"
+                        className="bg-slate-950/50 border border-slate-700 text-slate-200 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40 text-sm"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="p-6 border-b border-white/5">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="lg:col-span-2 text-xs text-slate-500">
+                      Showing {leads.length} leads (latest)
+                    </div>
+                    <div className="bg-slate-950/40 border border-white/5 rounded-2xl p-4">
+                      <div className="text-white font-bold mb-3">Top Regions</div>
+                      <div className="space-y-2">
+                        {topRegions.slice(0, 6).map((r: unknown, idx: number) => (
+                          <div key={idx} className="flex items-center justify-between text-sm">
+                            <div className="text-slate-300">{(() => {
+                              if (!r || typeof r !== 'object') return '-';
+                              const region = (r as Record<string, unknown>).region;
+                              return typeof region === 'string' && region ? region : '-';
+                            })()}</div>
+                            <div className="text-slate-500 font-mono">{(() => {
+                              if (!r || typeof r !== 'object') return 0;
+                              const count = (r as Record<string, unknown>).count;
+                              return typeof count === 'number' ? count : 0;
+                            })()}</div>
+                          </div>
+                        ))}
+                        {topRegions.length === 0 && <div className="text-sm text-slate-500">No data yet</div>}
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-sm text-slate-400">
                     <thead className="bg-white/5 text-slate-200 font-semibold uppercase tracking-wider text-xs">
