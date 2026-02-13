@@ -32,7 +32,7 @@ const MENU_ITEMS = [
     { id: "reports", label: "Performance", icon: BarChart3, href: "/dashboard?tab=reports" },
     { id: "leaderboard", label: "Leaderboard", icon: Trophy, href: "/dashboard?tab=leaderboard" },
     { id: "profile", label: "My Profile", icon: User, href: "/dashboard?tab=profile" },
-    { id: "goals", label: "My Goals", icon: Target, href: "/dashboard?tab=goals" },
+    { id: "earn", label: "Earn Rewards", icon: Target, href: "/dashboard?tab=earn" }, // Using Target for now or Gift if available
 ];
 
 export default function Sidebar({ isOpen, onClose, onLogout }: SidebarProps) {

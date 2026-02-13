@@ -13,6 +13,8 @@ import leaderboardRouter from './routes/leaderboard';
 import type { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
 import { ensureBootstrapAdmin } from './lib/bootstrap-admin';
+import paymentsRouter from './routes/payments';
+import gamificationRouter from './routes/gamification';
 
 dotenv.config();
 
@@ -73,6 +75,8 @@ app.use('/api/me', meRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/leaderboard', leaderboardRouter);
 app.use('/api/auth', authGoogleRouter);
+app.use('/api/payments', paymentsRouter);
+app.use('/api/gamification', gamificationRouter);
 
 const port = process.env.PORT || 3001;
 connectMongo()

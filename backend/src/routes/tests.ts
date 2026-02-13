@@ -4,7 +4,38 @@ import Course, { ICourse } from '../models/Course';
 import Question from '../models/Question';
 import Attempt, { IAttempt } from '../models/Attempt';
 
+
 const router = Router();
+
+// --- New Routes for Listing Content ---
+router.get('/courses', async (req: Request, res: Response) => {
+  // Optional: Filter by class_grade if passed in query or header, but for now return all active courses
+  const classHeader = req.header('x-class-grade');
+  const filter: any = { active: true };
+
+  if (classHeader) {
+    const grade = Number(classHeader);
+    if (!isNaN(grade)) {
+      filter.class_grade = grade;
+    }
+  }
+
+  const courses = await Course.find(filter).sort({ class_grade: 1, createdAt: -1 }).lean();
+  return res.json({ items: courses });
+});
+
+router.get('/courses/:courseId/tests', async (req: Request, res: Response) => {
+  const { courseId } = req.params;
+  if (!courseId) return res.status(400).json({ error: 'courseId required' });
+
+  const tests = await Test.find({ course_id: courseId, active: true })
+    .sort({ createdAt: 1 }) // Show in created order (Week 1 -> Week 4)
+    .select('_id title difficulty duration_min')
+    .lean();
+
+  return res.json({ items: tests });
+});
+// --------------------------------------
 
 router.post('/start', async (req: Request, res: Response) => {
   const userId = req.header('x-user-id');

@@ -42,4 +42,17 @@ router.get('/allowed-courses', async (req: Request, res: Response) => {
   return res.json({ items: courses.map((c) => ({ id: c._id, title: c.title, description: c.description, class_grade: c.class_grade })) });
 });
 
+router.get('/', async (req: Request, res: Response) => {
+  const userId = req.header('x-user-id');
+  if (!userId) return res.status(401).json({ error: 'x-user-id required' });
+
+  try {
+    const user = await User.findById(userId).select('-password');
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json({ user });
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 export default router;

@@ -1,7 +1,9 @@
+
 "use client";
 
 import { Bell, Search, Menu, User } from "lucide-react";
 import Image from "next/image";
+import GamificationHeader from './GamificationHeader';
 
 interface HeaderProps {
     onMenuClick: () => void;
@@ -35,6 +37,10 @@ export default function Header({ onMenuClick, user }: HeaderProps) {
             </div>
 
             <div className="flex items-center gap-4">
+                <div className="hidden md:block">
+                    <GamificationHeader />
+                </div>
+
                 <button className="relative p-2 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition-colors">
                     <Bell className="w-5 h-5" />
                     <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-slate-900"></span>

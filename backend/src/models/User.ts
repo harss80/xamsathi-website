@@ -14,6 +14,15 @@ export interface IUser extends Document {
   active: boolean;
   reset_password_token_hash?: string;
   reset_password_expires_at?: Date;
+  purchased_courses?: mongoose.Types.ObjectId[];
+  coins: number;
+  streak: {
+    count: number;
+    last_active_date: Date;
+  };
+  referral_code?: string;
+  referred_by?: string;
+  unlocked_tests?: mongoose.Types.ObjectId[];
 }
 
 const UserSchema = new Schema<IUser>({
@@ -30,6 +39,15 @@ const UserSchema = new Schema<IUser>({
   active: { type: Boolean, default: true },
   reset_password_token_hash: { type: String },
   reset_password_expires_at: { type: Date },
+  purchased_courses: [{ type: Schema.Types.ObjectId, ref: 'Course' }],
+  unlocked_tests: [{ type: Schema.Types.ObjectId, ref: 'Test' }],
+  coins: { type: Number, default: 0 },
+  streak: {
+    count: { type: Number, default: 0 },
+    last_active_date: { type: Date, default: Date.now }
+  },
+  referral_code: { type: String, unique: true, sparse: true },
+  referred_by: { type: String }
 });
 
 UserSchema.pre('save', function (next) {

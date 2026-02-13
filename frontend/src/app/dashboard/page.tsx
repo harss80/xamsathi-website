@@ -7,17 +7,11 @@ import Sidebar from "@/components/dashboard/Sidebar";
 import Header from "@/components/dashboard/Header";
 import Overview from "@/components/dashboard/Overview";
 import Leaderboard from "@/components/dashboard/Leaderboard";
-import ProfilePage from "@/app/dashboard/profile/page";
-// Ah, the user created a page.tsx at `src/app/dashboard/profile/page.tsx`. This is a route.
-// However, the dashboard logic is based on tabs in `src/app/dashboard/page.tsx`.
-// So, I should import the default export from that file. Since it's a page component, it can act as a standard component too. 
-// Let's import it from the correct path.
-// Actually, since it's a page file in next.js app router, it is usually a server component by default unless "use client" is at the top.
-// The file I created has "use client" at the top.
-// I will import it. Ideally, standard components should be in `components/`, but importing from `app/` is possible though not conventional for reusability. 
-// However, since the structure is already monolithic in `dashboard/page.tsx` using tabs, I will stick to that pattern.
+import EarnSection from "@/components/dashboard/EarnSection";
 
-import { BookOpen, FileText, Calendar, BarChart3, Zap, Sprout, LineChart, Target, Timer, ArrowRight } from "lucide-react";
+import ProfilePage from "@/app/dashboard/profile/page";
+
+import { BookOpen, FileText, Calendar, BarChart3, Zap, Sprout, LineChart, Target, Timer, ArrowRight, GraduationCap } from "lucide-react";
 import { trackLead } from "@/lib/trackLead";
 
 // --- Mock Data (Centralized or passed down) ---
@@ -27,7 +21,7 @@ const STUDENT_DATA = {
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Harsh",
 };
 
-const ALLOWED_TABS = ["overview", "courses", "tests", "schedule", "reports", "leaderboard", "profile"] as const;
+const ALLOWED_TABS = ["overview", "courses", "tests", "schedule", "reports", "leaderboard", "profile", "earn"] as const;
 
 function DashboardContent() {
     const [isLoading, setIsLoading] = useState(true);
@@ -400,6 +394,205 @@ function DashboardContent() {
                                     </div>
                                 </Link>
 
+                                <Link
+                                    href="/dashboard/test-series/698f874c217f7f278986466d"
+                                    onClick={() => {
+                                        trackLead({ action: "dashboard_start_class9_series", entity_type: "test_series" });
+                                    }}
+                                    className="group relative p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-purple-500/50 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 p-20 opacity-10 group-hover:opacity-20 transition-opacity bg-purple-600 blur-[60px] rounded-full" />
+
+                                    <div className="flex items-start justify-between mb-6">
+                                        <div className="p-4 rounded-2xl bg-purple-500/10 text-purple-400 group-hover:bg-purple-500 group-hover:text-white transition-colors">
+                                            <GraduationCap className="w-8 h-8" />
+                                        </div>
+                                        <div className="px-3 py-1 rounded-full bg-purple-500/10 text-purple-400 text-xs font-bold border border-purple-500/20 flex items-center gap-1">
+                                            CLASS 9 PREMIUM
+                                        </div>
+                                    </div>
+
+                                    <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-purple-300 transition-colors">
+                                        Class 9 Monthly Series
+                                    </h3>
+                                    <p className="text-slate-400 text-sm mb-6 line-clamp-2">
+                                        Maths, Science, English, SST. 20 New Tests/Month.
+                                    </p>
+
+                                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-800">
+                                        <div className="flex items-center gap-2 text-xs text-slate-500">
+                                            <Calendar className="w-4 h-4" /> Weekly Tests
+                                        </div>
+                                        <div className="flex items-center gap-2 text-sm font-bold text-purple-400 group-hover:translate-x-1 transition-transform">
+                                            View Series <ArrowRight className="w-4 h-4" />
+                                        </div>
+                                    </div>
+                                </Link>
+
+                                {/* Class 12 Board Booster */}
+                                <Link
+                                    href="/dashboard/test-series/698f8a866fadfeda52b1916a"
+                                    className="group relative p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-indigo-500/50 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden col-span-1 md:col-span-2 lg:col-span-3"
+                                >
+                                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    <div className="absolute top-0 right-0 p-20 opacity-10 group-hover:opacity-20 transition-opacity bg-indigo-600 blur-[80px] rounded-full" />
+
+                                    <div className="relative flex flex-col md:flex-row items-center gap-6">
+                                        <div className="flex-1">
+                                            <div className="flex items-center gap-3 mb-4">
+                                                <span className="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 text-xs font-bold border border-indigo-500/20 flex items-center gap-1">
+                                                    <Zap className="w-3 h-3" /> BOARD EXAM SPECIAL
+                                                </span>
+                                                <span className="px-3 py-1 rounded-full bg-red-500/10 text-red-400 text-xs font-bold border border-red-500/20 animate-pulse">
+                                                    1 MONTH CRASH COURSE
+                                                </span>
+                                            </div>
+                                            <h3 className="text-3xl font-bold text-white mb-2">Class 12 - Board Mastery</h3>
+                                            <p className="text-slate-400 text-base mb-4 max-w-xl">
+                                                Target 95%+ in Boards. Physics, Chemistry, Maths, English.
+                                                Includes Case Studies & Full Pattern Mocks.
+                                            </p>
+                                        </div>
+                                        <div className="flex-shrink-0">
+                                            <div className="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-all shadow-lg shadow-indigo-600/20 group-hover:scale-105 flex items-center gap-2">
+                                                Start Prep <ArrowRight className="w-4 h-4" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Link>
+
+                                {/* Class 11 Final Prep */}
+                                <Link
+                                    href="/dashboard/test-series/698f8a866fadfeda52b19140"
+                                    className="group relative p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-pink-500/50 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden md:col-span-2 lg:col-span-2"
+                                >
+                                    <div className="absolute top-0 right-0 p-20 opacity-10 group-hover:opacity-20 transition-opacity bg-pink-600 blur-[60px] rounded-full" />
+                                    <div className="flex items-start justify-between mb-6">
+                                        <div className="p-4 rounded-2xl bg-pink-500/10 text-pink-400 group-hover:bg-pink-500 group-hover:text-white transition-colors">
+                                            <BookOpen className="w-8 h-8" />
+                                        </div>
+                                        <div className="px-3 py-1 rounded-full bg-pink-500/10 text-pink-400 text-xs font-bold border border-pink-500/20 flex items-center gap-1">
+                                            CLASS 11 FINALS
+                                        </div>
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-pink-300 transition-colors">Class 11 Science Prep</h3>
+                                    <p className="text-slate-400 text-sm mb-6 line-clamp-2">PCMB Final Exams Revision. Full Syllabus Coverage.</p>
+                                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-800">
+                                        <div className="flex items-center gap-2 text-xs text-slate-500"><Calendar className="w-4 h-4" /> 4 Weeks</div>
+                                        <div className="flex items-center gap-2 text-sm font-bold text-pink-400 group-hover:translate-x-1 transition-transform">View Series <ArrowRight className="w-4 h-4" /></div>
+                                    </div>
+                                </Link>
+
+                                {/* Class 10 Board Booster */}
+                                <Link
+                                    href="/dashboard/test-series/698f8a866fadfeda52b19110"
+                                    className="group relative p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-yellow-500/50 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 p-20 opacity-10 group-hover:opacity-20 transition-opacity bg-yellow-600 blur-[60px] rounded-full" />
+                                    <div className="flex items-start justify-between mb-6">
+                                        <div className="p-4 rounded-2xl bg-yellow-500/10 text-yellow-400 group-hover:bg-yellow-500 group-hover:text-white transition-colors">
+                                            <Target className="w-8 h-8" />
+                                        </div>
+                                        <div className="px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-400 text-xs font-bold border border-yellow-500/20 flex items-center gap-1">
+                                            CLASS 10 BOARDS
+                                        </div>
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-yellow-300 transition-colors">Class 10 Ultimate</h3>
+                                    <p className="text-slate-400 text-sm mb-6 line-clamp-2">Maths, Sci, SST, Eng. 95%+ Target.</p>
+                                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-800">
+                                        <div className="flex items-center gap-2 text-xs text-slate-500"><Calendar className="w-4 h-4" /> 4 Weeks</div>
+                                        <div className="flex items-center gap-2 text-sm font-bold text-yellow-400 group-hover:translate-x-1 transition-transform">View Series <ArrowRight className="w-4 h-4" /></div>
+                                    </div>
+                                </Link>
+
+                                {/* Class 8 */}
+                                <Link
+                                    href="/dashboard/test-series/698f89db6aaedcf04fa55612"
+                                    className="group relative p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-blue-500/50 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 p-20 opacity-10 group-hover:opacity-20 transition-opacity bg-blue-600 blur-[60px] rounded-full" />
+                                    <div className="flex items-start justify-between mb-6">
+                                        <div className="p-4 rounded-2xl bg-blue-500/10 text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors">
+                                            <GraduationCap className="w-8 h-8" />
+                                        </div>
+                                        <div className="px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-bold border border-blue-500/20 flex items-center gap-1">
+                                            CLASS 8 PREMIUM
+                                        </div>
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-blue-300 transition-colors">Class 8 Series</h3>
+                                    <p className="text-slate-400 text-sm mb-6 line-clamp-2">Maths, Science, English, SST.</p>
+                                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-800">
+                                        <div className="flex items-center gap-2 text-xs text-slate-500"><Calendar className="w-4 h-4" /> Weekly Tests</div>
+                                        <div className="flex items-center gap-2 text-sm font-bold text-blue-400 group-hover:translate-x-1 transition-transform">View Series <ArrowRight className="w-4 h-4" /></div>
+                                    </div>
+                                </Link>
+
+                                {/* Class 7 */}
+                                <Link
+                                    href="/dashboard/test-series/698f89db6aaedcf04fa555f1"
+                                    className="group relative p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-cyan-500/50 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 p-20 opacity-10 group-hover:opacity-20 transition-opacity bg-cyan-600 blur-[60px] rounded-full" />
+                                    <div className="flex items-start justify-between mb-6">
+                                        <div className="p-4 rounded-2xl bg-cyan-500/10 text-cyan-400 group-hover:bg-cyan-500 group-hover:text-white transition-colors">
+                                            <GraduationCap className="w-8 h-8" />
+                                        </div>
+                                        <div className="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 text-xs font-bold border border-cyan-500/20 flex items-center gap-1">
+                                            CLASS 7 PREMIUM
+                                        </div>
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">Class 7 Series</h3>
+                                    <p className="text-slate-400 text-sm mb-6 line-clamp-2">Maths, Science, English, SST.</p>
+                                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-800">
+                                        <div className="flex items-center gap-2 text-xs text-slate-500"><Calendar className="w-4 h-4" /> Weekly Tests</div>
+                                        <div className="flex items-center gap-2 text-sm font-bold text-cyan-400 group-hover:translate-x-1 transition-transform">View Series <ArrowRight className="w-4 h-4" /></div>
+                                    </div>
+                                </Link>
+
+                                {/* Class 6 */}
+                                <Link
+                                    href="/dashboard/test-series/698f89db6aaedcf04fa555d0"
+                                    className="group relative p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-teal-500/50 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 p-20 opacity-10 group-hover:opacity-20 transition-opacity bg-teal-600 blur-[60px] rounded-full" />
+                                    <div className="flex items-start justify-between mb-6">
+                                        <div className="p-4 rounded-2xl bg-teal-500/10 text-teal-400 group-hover:bg-teal-500 group-hover:text-white transition-colors">
+                                            <GraduationCap className="w-8 h-8" />
+                                        </div>
+                                        <div className="px-3 py-1 rounded-full bg-teal-500/10 text-teal-400 text-xs font-bold border border-teal-500/20 flex items-center gap-1">
+                                            CLASS 6 PREMIUM
+                                        </div>
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-teal-300 transition-colors">Class 6 Series</h3>
+                                    <p className="text-slate-400 text-sm mb-6 line-clamp-2">Maths, Science, English, SST.</p>
+                                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-800">
+                                        <div className="flex items-center gap-2 text-xs text-slate-500"><Calendar className="w-4 h-4" /> Weekly Tests</div>
+                                        <div className="flex items-center gap-2 text-sm font-bold text-teal-400 group-hover:translate-x-1 transition-transform">View Series <ArrowRight className="w-4 h-4" /></div>
+                                    </div>
+                                </Link>
+
+                                {/* Class 5 */}
+                                <Link
+                                    href="/dashboard/test-series/698f89db6aaedcf04fa5559d"
+                                    className="group relative p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-orange-500/50 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 p-20 opacity-10 group-hover:opacity-20 transition-opacity bg-orange-600 blur-[60px] rounded-full" />
+                                    <div className="flex items-start justify-between mb-6">
+                                        <div className="p-4 rounded-2xl bg-orange-500/10 text-orange-400 group-hover:bg-orange-500 group-hover:text-white transition-colors">
+                                            <GraduationCap className="w-8 h-8" />
+                                        </div>
+                                        <div className="px-3 py-1 rounded-full bg-orange-500/10 text-orange-400 text-xs font-bold border border-orange-500/20 flex items-center gap-1">
+                                            CLASS 5 PREMIUM
+                                        </div>
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-orange-300 transition-colors">Class 5 Series</h3>
+                                    <p className="text-slate-400 text-sm mb-6 line-clamp-2">Maths, Science, English.</p>
+                                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-800">
+                                        <div className="flex items-center gap-2 text-xs text-slate-500"><Calendar className="w-4 h-4" /> Weekly Tests</div>
+                                        <div className="flex items-center gap-2 text-sm font-bold text-orange-400 group-hover:translate-x-1 transition-transform">View Series <ArrowRight className="w-4 h-4" /></div>
+                                    </div>
+                                </Link>
+
                                 {/* Placeholder for other tests */}
                                 <div className="p-6 rounded-3xl bg-slate-900/50 border border-slate-800 border-dashed flex flex-col items-center justify-center text-center opacity-50 hover:opacity-100 transition-opacity">
                                     <div className="p-4 rounded-full bg-slate-800 mb-4">
@@ -413,6 +606,7 @@ function DashboardContent() {
 
                         {activeTab === "leaderboard" && <Leaderboard />}
                         {activeTab === "profile" && <ProfilePage />}
+                        {activeTab === "earn" && <EarnSection />}
 
                         {['schedule', 'reports'].includes(activeTab) && (
                             <div className="flex flex-col items-center justify-center py-20 text-center bg-slate-900/50 rounded-3xl border border-slate-800">
