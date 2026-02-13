@@ -37,7 +37,7 @@ export default function Overview({ user }: { user: any }) {
     return (
         <div className="space-y-8">
             {/* Welcome & Quick Stats */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 {/* Main Welcome Card */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -85,6 +85,55 @@ export default function Overview({ user }: { user: any }) {
                         </div>
                         <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
                             <div className="h-full bg-emerald-500 rounded-full" style={{ width: '80%' }} />
+                        </div>
+                    </div>
+                </motion.div>
+
+                {/* Leaderboard Preview */}
+                <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.15 }}
+                    className="bg-slate-900 border border-slate-800 rounded-3xl p-6 flex flex-col"
+                >
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2">
+                            <Trophy className="w-5 h-5 text-yellow-500" />
+                            <h3 className="text-white font-bold">Class Standings</h3>
+                        </div>
+                        <a href="/dashboard?tab=leaderboard" className="text-xs text-indigo-400 hover:text-indigo-300">View All</a>
+                    </div>
+
+                    <div className="space-y-3 flex-1">
+                        <div className="flex items-center justify-between p-2 rounded-lg bg-slate-800/50 border border-slate-700">
+                            <div className="flex items-center gap-3">
+                                <span className="font-bold text-yellow-500 text-sm">#1</span>
+                                <div className="w-6 h-6 rounded-full bg-slate-700">
+                                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Aarav" alt="Aarav" className="w-full h-full rounded-full" />
+                                </div>
+                                <span className="text-sm text-slate-200">Aarav</span>
+                            </div>
+                            <span className="text-xs font-bold text-slate-400">715 pts</span>
+                        </div>
+                        <div className="flex items-center justify-between p-2 rounded-lg bg-green-900/10 border border-green-500/20">
+                            <div className="flex items-center gap-3">
+                                <span className="font-bold text-green-500 text-sm">#12</span>
+                                <div className="w-6 h-6 rounded-full bg-slate-700">
+                                    <img src={user.avatar} alt="You" className="w-full h-full rounded-full" />
+                                </div>
+                                <span className="text-sm text-white font-bold">You</span>
+                            </div>
+                            <span className="text-xs font-bold text-green-400">645 pts</span>
+                        </div>
+                        <div className="flex items-center justify-between p-2 rounded-lg bg-slate-800/50 border border-slate-700">
+                            <div className="flex items-center gap-3">
+                                <span className="font-bold text-slate-500 text-sm">#3</span>
+                                <div className="w-6 h-6 rounded-full bg-slate-700">
+                                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Rohan" alt="Rohan" className="w-full h-full rounded-full" />
+                                </div>
+                                <span className="text-sm text-slate-200">Rohan</span>
+                            </div>
+                            <span className="text-xs font-bold text-slate-400">705 pts</span>
                         </div>
                     </div>
                 </motion.div>

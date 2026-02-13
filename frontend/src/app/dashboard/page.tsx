@@ -6,7 +6,18 @@ import Link from "next/link";
 import Sidebar from "@/components/dashboard/Sidebar";
 import Header from "@/components/dashboard/Header";
 import Overview from "@/components/dashboard/Overview";
-import { BookOpen, FileText, Calendar, BarChart3, Zap, Sprout, LineChart, Target } from "lucide-react";
+import Leaderboard from "@/components/dashboard/Leaderboard";
+import ProfilePage from "@/app/dashboard/profile/page";
+// Ah, the user created a page.tsx at `src/app/dashboard/profile/page.tsx`. This is a route.
+// However, the dashboard logic is based on tabs in `src/app/dashboard/page.tsx`.
+// So, I should import the default export from that file. Since it's a page component, it can act as a standard component too. 
+// Let's import it from the correct path.
+// Actually, since it's a page file in next.js app router, it is usually a server component by default unless "use client" is at the top.
+// The file I created has "use client" at the top.
+// I will import it. Ideally, standard components should be in `components/`, but importing from `app/` is possible though not conventional for reusability. 
+// However, since the structure is already monolithic in `dashboard/page.tsx` using tabs, I will stick to that pattern.
+
+import { BookOpen, FileText, Calendar, BarChart3, Zap, Sprout, LineChart, Target, Trophy } from "lucide-react";
 import { trackLead } from "@/lib/trackLead";
 
 // --- Mock Data (Centralized or passed down) ---
@@ -16,7 +27,7 @@ const STUDENT_DATA = {
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Harsh",
 };
 
-const ALLOWED_TABS = ["overview", "courses", "tests", "schedule", "reports"] as const;
+const ALLOWED_TABS = ["overview", "courses", "tests", "schedule", "reports", "leaderboard", "profile"] as const;
 
 function DashboardContent() {
     const [isLoading, setIsLoading] = useState(true);
@@ -329,6 +340,9 @@ function DashboardContent() {
                                 </div>
                             </div>
                         )}
+
+                        {activeTab === "leaderboard" && <Leaderboard />}
+                        {activeTab === "profile" && <ProfilePage />}
 
                         {['schedule', 'reports'].includes(activeTab) && (
                             <div className="flex flex-col items-center justify-center py-20 text-center bg-slate-900/50 rounded-3xl border border-slate-800">

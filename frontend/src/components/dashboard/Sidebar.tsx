@@ -14,6 +14,8 @@ import {
     LogOut,
     X,
     Target,
+    Trophy,
+    User,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -28,6 +30,8 @@ const MENU_ITEMS = [
     { id: "tests", label: "Test Series", icon: FileText, href: "/dashboard?tab=tests" },
     { id: "schedule", label: "Schedule", icon: Calendar, href: "/dashboard?tab=schedule" },
     { id: "reports", label: "Performance", icon: BarChart3, href: "/dashboard?tab=reports" },
+    { id: "leaderboard", label: "Leaderboard", icon: Trophy, href: "/dashboard?tab=leaderboard" },
+    { id: "profile", label: "My Profile", icon: User, href: "/dashboard?tab=profile" },
     { id: "goals", label: "My Goals", icon: Target, href: "/dashboard?tab=goals" },
 ];
 
