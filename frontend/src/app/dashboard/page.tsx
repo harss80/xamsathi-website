@@ -17,7 +17,7 @@ import ProfilePage from "@/app/dashboard/profile/page";
 // I will import it. Ideally, standard components should be in `components/`, but importing from `app/` is possible though not conventional for reusability. 
 // However, since the structure is already monolithic in `dashboard/page.tsx` using tabs, I will stick to that pattern.
 
-import { BookOpen, FileText, Calendar, BarChart3, Zap, Sprout, LineChart, Target, Trophy } from "lucide-react";
+import { BookOpen, FileText, Calendar, BarChart3, Zap, Sprout, LineChart, Target, Timer, ArrowRight } from "lucide-react";
 import { trackLead } from "@/lib/trackLead";
 
 // --- Mock Data (Centralized or passed down) ---
@@ -191,6 +191,41 @@ function DashboardContent() {
                                 </Link>
 
                                 <Link
+                                    href="/dashboard/test-series/neet/mock-1"
+                                    onClick={() => {
+                                        trackLead({ action: "dashboard_start_neet_mock1", entity_type: "test", entity_id: "neet-mock-1" });
+                                    }}
+                                    className="group relative p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-emerald-500/50 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 p-20 opacity-10 group-hover:opacity-20 transition-opacity bg-emerald-600 blur-[60px] rounded-full" />
+
+                                    <div className="flex items-start justify-between mb-6">
+                                        <div className="p-4 rounded-2xl bg-emerald-500/10 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
+                                            <Timer className="w-8 h-8" />
+                                        </div>
+                                        <div className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/20 flex items-center gap-1">
+                                            MOCK 1
+                                        </div>
+                                    </div>
+
+                                    <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-emerald-300 transition-colors">
+                                        NEET Full Mock Test 1
+                                    </h3>
+                                    <p className="text-slate-400 text-sm mb-6 line-clamp-2">
+                                        Physics (Very Hard) Q1–15 now • Full 180 coming next.
+                                    </p>
+
+                                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-800">
+                                        <div className="flex items-center gap-2 text-xs text-slate-500">
+                                            <Timer className="w-4 h-4" /> 45 mins
+                                        </div>
+                                        <div className="flex items-center gap-2 text-sm font-bold text-emerald-400 group-hover:translate-x-1 transition-transform">
+                                            Start Mock <ArrowRight className="w-4 h-4" />
+                                        </div>
+                                    </div>
+                                </Link>
+
+                                <Link
                                     href="/dashboard/test-series/ultra-hard"
                                     onClick={() => {
                                         trackLead({ action: "dashboard_start_ultra_hard_test", entity_type: "test_series" });
@@ -326,6 +361,41 @@ function DashboardContent() {
                                         </div>
                                         <div className="flex items-center gap-2 text-sm font-bold text-orange-400 group-hover:translate-x-1 transition-transform">
                                             Start Intensive <Target className="w-4 h-4" />
+                                        </div>
+                                    </div>
+                                </Link>
+
+                                <Link
+                                    href="/dashboard/test-series/prakriti-series"
+                                    onClick={() => {
+                                        trackLead({ action: "dashboard_start_prakriti_series", entity_type: "test_series" });
+                                    }}
+                                    className="group relative p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-emerald-500/50 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 p-20 opacity-10 group-hover:opacity-20 transition-opacity bg-emerald-600 blur-[60px] rounded-full" />
+
+                                    <div className="flex items-start justify-between mb-6">
+                                        <div className="p-4 rounded-2xl bg-emerald-500/10 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
+                                            <Sprout className="w-8 h-8" />
+                                        </div>
+                                        <div className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/20 flex items-center gap-1">
+                                            NEW SERIES
+                                        </div>
+                                    </div>
+
+                                    <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-emerald-300 transition-colors">
+                                        PRAKRITI SERIES
+                                    </h3>
+                                    <p className="text-slate-400 text-sm mb-6 line-clamp-2">
+                                        Comprehensive PCMB (40 MCQs). Physics, Chemistry, Botany, Zoology.
+                                    </p>
+
+                                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-800">
+                                        <div className="flex items-center gap-2 text-xs text-slate-500">
+                                            <Calendar className="w-4 h-4" /> 45 Mins
+                                        </div>
+                                        <div className="flex items-center gap-2 text-sm font-bold text-emerald-400 group-hover:translate-x-1 transition-transform">
+                                            Start Series <Sprout className="w-4 h-4" />
                                         </div>
                                     </div>
                                 </Link>
