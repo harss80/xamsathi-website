@@ -16,7 +16,8 @@ import {
   Cell
 } from "recharts";
 import Sidebar from "@/components/admin/Sidebar";
-import { Search, Plus, Upload, Trash2, Edit, MoreVertical, CheckCircle, XCircle, Bell, Filter, Calendar, BookOpen, FileText, History, Users, Menu } from "lucide-react";
+import { Search, Plus, Upload, Trash2, Edit, MoreVertical, CheckCircle, XCircle, Bell, Filter, Calendar, BookOpen, FileText, History, Users, Menu, Trophy } from "lucide-react";
+import Leaderboard from "@/components/dashboard/Leaderboard";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Animation Variants
@@ -967,9 +968,27 @@ export default function AdminPanel() {
                         <Line type="monotone" dataKey="count" stroke="#3b82f6" strokeWidth={4} dot={{ r: 3 }} />
                       </LineChart>
                     </ResponsiveContainer>
+                    {/* Leaderboard Widget */}
+                    <div className="md:col-span-2 lg:col-span-2 bg-slate-900/60 backdrop-blur-xl border border-white/5 rounded-3xl p-6 min-h-[300px]">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                          <Trophy className="w-5 h-5 text-yellow-500" /> Top Performers (NEET Mock)
+                        </h3>
+                      </div>
+                      <div className="overflow-y-auto max-h-[300px] custom-scrollbar">
+                        <Leaderboard />
+                      </div>
+                    </div>
                   </motion.div>
                 </div>
               </>
+            )}
+
+            {/* Leaderboard Tab */}
+            {activeTab === "leaderboard" && (
+              <motion.div variants={fadeIn} className="space-y-6">
+                <Leaderboard />
+              </motion.div>
             )}
 
             {/* Courses Tab */}
@@ -1195,30 +1214,30 @@ export default function AdminPanel() {
                 <div className="p-4 sm:p-6 border-b border-white/5"><h3 className="font-bold text-lg text-white">Student Attempts</h3></div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-sm text-slate-400 min-w-[860px]">
-                  <thead className="bg-white/5 text-slate-200 font-semibold uppercase tracking-wider text-xs">
-                    <tr>
-                      <th className="px-6 py-5">Student</th>
-                      <th className="px-6 py-5">Test ID</th>
-                      <th className="px-6 py-5">Score</th>
-                      <th className="px-6 py-5">Percent</th>
-                      <th className="px-6 py-5">Date</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-white/5">
-                    {attempts.map((a) => (
-                      <tr key={a.id} className="hover:bg-white/5 transition-colors">
-                        <td className="px-6 py-5 font-mono text-xs">{a.user_id}</td>
-                        <td className="px-6 py-5 font-mono text-xs">{a.test_id}</td>
-                        <td className="px-6 py-5 font-bold text-white">{a.score} <span className="text-slate-500 font-normal">/ {a.total}</span></td>
-                        <td className="px-6 py-5">
-                          <div className="w-full bg-slate-800 rounded-full h-1.5 w-24 overflow-hidden">
-                            <div className="bg-blue-500 h-full rounded-full" style={{ width: `${(a.score / a.total) * 100}%` }} />
-                          </div>
-                        </td>
-                        <td className="px-6 py-5">{a.started_at ? new Date(a.started_at).toLocaleDateString() : "-"}</td>
+                    <thead className="bg-white/5 text-slate-200 font-semibold uppercase tracking-wider text-xs">
+                      <tr>
+                        <th className="px-6 py-5">Student</th>
+                        <th className="px-6 py-5">Test ID</th>
+                        <th className="px-6 py-5">Score</th>
+                        <th className="px-6 py-5">Percent</th>
+                        <th className="px-6 py-5">Date</th>
                       </tr>
-                    ))}
-                  </tbody>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {attempts.map((a) => (
+                        <tr key={a.id} className="hover:bg-white/5 transition-colors">
+                          <td className="px-6 py-5 font-mono text-xs">{a.user_id}</td>
+                          <td className="px-6 py-5 font-mono text-xs">{a.test_id}</td>
+                          <td className="px-6 py-5 font-bold text-white">{a.score} <span className="text-slate-500 font-normal">/ {a.total}</span></td>
+                          <td className="px-6 py-5">
+                            <div className="w-full bg-slate-800 rounded-full h-1.5 w-24 overflow-hidden">
+                              <div className="bg-blue-500 h-full rounded-full" style={{ width: `${(a.score / a.total) * 100}%` }} />
+                            </div>
+                          </td>
+                          <td className="px-6 py-5">{a.started_at ? new Date(a.started_at).toLocaleDateString() : "-"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
                   </table>
                 </div>
               </motion.div>

@@ -35,9 +35,18 @@ export default function ProfilePage() {
     const onDrop = (acceptedFiles: File[]) => {
         const file = acceptedFiles[0];
         if (file) {
-            const objectUrl = URL.createObjectURL(file);
-            setPreview(objectUrl);
-            // In a real app, you would upload this file to a server here
+            // Convert to Base64
+            const reader = new FileReader();
+            reader.onload = () => {
+                const base64String = reader.result as string;
+                // Basic client-side size check (approximate)
+                if (base64String.length > 500 * 1024) { // 500KB limit for now
+                    alert("Image is too large. Please upload an image smaller than 500KB.");
+                    return;
+                }
+                setPreview(base64String);
+            };
+            reader.readAsDataURL(file);
         }
     };
 
@@ -51,20 +60,75 @@ export default function ProfilePage() {
 
     const handleSave = async () => {
         setIsLoading(true);
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1500));
 
-        if (preview) {
-            // Update avatar with preview URL (mock)
-            setUser(prev => ({ ...prev, avatar: preview }));
-            setPreview(null);
+        try {
+            // Get user token/id from localStorage if using token authentication
+            const token = localStorage.getItem("xamsathi_token") || localStorage.getItem("token") || "";
+            // Also need User ID if passed in headers, though usually token is enough. 
+            // In existing frontend code, we saw x-user-id header usage.
+            // Let's grab user id from localStorage "xamsathi_user" -> "id" or "_id"
+            const savedUserStr = localStorage.getItem("xamsathi_user");
+            let userId = "";
+            if (savedUserStr) {
+                const parsed = JSON.parse(savedUserStr);
+                userId = parsed.id || parsed._id || parsed.user_id;
+            }
+
+            const getBackendBase = () => {
+                const envBase = (process.env.NEXT_PUBLIC_BACKEND_URL || "").trim();
+                if (envBase) return envBase;
+                if (typeof window !== "undefined") {
+                    const host = window.location.hostname;
+                    if (host === "localhost" || host === "127.0.0.1") return "http://localhost:3001";
+                }
+                return "http://localhost:3001";
+            };
+
+            const base = getBackendBase();
+            const payload: any = { ...user };
+            if (preview) {
+                payload.avatar = preview; // Preview is the Data URL (Base64)
+            }
+
+            const res = await fetch(`${base}/api/me/profile`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-user-id": userId || "", // Headers based on existing backend logic
+                    "Authorization": token ? `Bearer ${token}` : ""
+                },
+                body: JSON.stringify({
+                    name: user.name,
+                    phone: user.phone,
+                    class_grade: user.class_grade,
+                    bio: user.bio,
+                    avatar: preview || user.avatar
+                })
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                if (data.user) {
+                    // Update local storage
+                    const newUser = { ...JSON.parse(localStorage.getItem("xamsathi_user") || "{}"), ...data.user };
+                    // Ensure avatar is updated
+                    if (data.user.avatar) newUser.avatar = data.user.avatar;
+                    localStorage.setItem("xamsathi_user", JSON.stringify(newUser));
+
+                    setUser(prev => ({ ...prev, avatar: data.user.avatar, name: data.user.name }));
+                    if (preview) setPreview(null);
+                    window.dispatchEvent(new Event("storage"));
+                    setIsEditing(false);
+                }
+            } else {
+                console.error("Failed to save profile");
+                alert("Failed to save profile. Please try again.");
+            }
+        } catch (error) {
+            console.error("Error saving profile:", error);
+        } finally {
+            setIsLoading(false);
         }
-
-        localStorage.setItem("xamsathi_user", JSON.stringify(user));
-        setIsEditing(false);
-        setIsLoading(false);
-        // Optional: Trigger a global event or context update to refresh header
-        window.dispatchEvent(new Event("storage"));
     };
 
     return (
@@ -127,8 +191,8 @@ export default function ProfilePage() {
                                 onClick={() => isEditing ? handleSave() : setIsEditing(true)}
                                 disabled={isLoading}
                                 className={`px-6 py-2 rounded-xl font-bold text-sm transition-all ${isEditing
-                                        ? "bg-green-600 hover:bg-green-500 text-white shadow-lg shadow-green-900/20"
-                                        : "bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 hover:border-slate-600"
+                                    ? "bg-green-600 hover:bg-green-500 text-white shadow-lg shadow-green-900/20"
+                                    : "bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 hover:border-slate-600"
                                     }`}
                             >
                                 {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : isEditing ? "Save Changes" : "Edit Profile"}

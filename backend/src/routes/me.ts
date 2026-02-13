@@ -1,7 +1,31 @@
 import { Router, Request, Response } from 'express';
 import Course from '../models/Course';
+import User from '../models/User';
 
 const router = Router();
+
+router.put('/profile', async (req: Request, res: Response) => {
+  const userId = req.header('x-user-id');
+  if (!userId) return res.status(401).json({ error: 'x-user-id required' });
+
+  const { avatar, name, bio, phone } = req.body;
+
+  try {
+    const updateData: any = {};
+    if (avatar) updateData.avatar = avatar;
+    if (name) updateData.name = name;
+    if (bio) updateData.bio = bio; // If bio is added to schema later
+    if (phone) updateData.phone = phone;
+
+    const updatedUser = await User.findByIdAndUpdate(userId, { $set: updateData }, { new: true }).select('-password');
+    if (!updatedUser) return res.status(404).json({ error: 'User not found' });
+
+    res.json({ user: updatedUser });
+  } catch (error) {
+    console.error('Profile update error:', error);
+    res.status(500).json({ error: 'Failed to update profile' });
+  }
+});
 
 router.get('/allowed-courses', async (req: Request, res: Response) => {
   const classHeader = req.header('x-class-grade');

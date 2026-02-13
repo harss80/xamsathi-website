@@ -33,7 +33,45 @@ const ACTIVITY_DATA = [
     { day: "Sun", score: 88, hours: 4.5 },
 ];
 
+const TEST_SERIES_ID = "neet-ug-mock-180";
+
+import { useEffect, useState } from "react";
+
 export default function Overview({ user }: { user: any }) {
+    const [leaderboard, setLeaderboard] = useState<any[]>([]);
+
+    useEffect(() => {
+        const fetchLeaderboard = async () => {
+            try {
+                const getBackendBase = () => {
+                    const envBase = (process.env.NEXT_PUBLIC_BACKEND_URL || "").trim();
+                    if (envBase) return envBase;
+                    if (typeof window !== "undefined") {
+                        const host = window.location.hostname;
+                        if (host === "localhost" || host === "127.0.0.1") return "http://localhost:3001";
+                    }
+                    return "http://localhost:3001";
+                };
+
+                const base = getBackendBase();
+                const res = await fetch(`${base}/api/leaderboard/${TEST_SERIES_ID}`, {
+                    headers: { "x-user-id": "public" }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    setLeaderboard(data.slice(0, 5)); // Get top 5
+                }
+            } catch (err) {
+                console.error("Failed to fetch leaderboard for overview", err);
+            }
+        };
+        fetchLeaderboard();
+    }, []);
+
+    // Find current user's rank if available in full list (mocked here as we only fetched top 5)
+    // In a real scenario, we'd fetch user's specific rank or check if they are in top 5
+    const userInApp = user ? leaderboard.find(u => u.name === user.name) : null;
+
     return (
         <div className="space-y-8">
             {/* Welcome & Quick Stats */}
@@ -105,36 +143,32 @@ export default function Overview({ user }: { user: any }) {
                     </div>
 
                     <div className="space-y-3 flex-1">
-                        <div className="flex items-center justify-between p-2 rounded-lg bg-slate-800/50 border border-slate-700">
-                            <div className="flex items-center gap-3">
-                                <span className="font-bold text-yellow-500 text-sm">#1</span>
-                                <div className="w-6 h-6 rounded-full bg-slate-700">
-                                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Aarav" alt="Aarav" className="w-full h-full rounded-full" />
+                        {leaderboard.length > 0 ? (
+                            leaderboard.map((student, idx) => (
+                                <div key={idx} className="flex items-center justify-between p-2 rounded-lg bg-slate-800/50 border border-slate-700">
+                                    <div className="flex items-center gap-3">
+                                        <span className={`font-bold text-sm ${idx === 0 ? 'text-yellow-500' : idx === 1 ? 'text-slate-300' : idx === 2 ? 'text-orange-500' : 'text-slate-500'}`}>#{student.rank}</span>
+                                        <div className="w-6 h-6 rounded-full bg-slate-700 overflow-hidden relative">
+                                            <Image
+                                                src={student.avatar || "/default-avatar.png"}
+                                                alt={student.name}
+                                                fill
+                                                className="object-cover"
+                                            />
+                                        </div>
+                                        <span className="text-sm text-slate-200">{student.name}</span>
+                                    </div>
+                                    <span className="text-xs font-bold text-slate-400">{student.score} pts</span>
                                 </div>
-                                <span className="text-sm text-slate-200">Aarav</span>
+                            ))
+                        ) : (
+                            <div className="flex items-center justify-center h-full text-slate-500 text-sm">
+                                No rankings available yet.
                             </div>
-                            <span className="text-xs font-bold text-slate-400">715 pts</span>
-                        </div>
-                        <div className="flex items-center justify-between p-2 rounded-lg bg-green-900/10 border border-green-500/20">
-                            <div className="flex items-center gap-3">
-                                <span className="font-bold text-green-500 text-sm">#12</span>
-                                <div className="w-6 h-6 rounded-full bg-slate-700">
-                                    <img src={user.avatar} alt="You" className="w-full h-full rounded-full" />
-                                </div>
-                                <span className="text-sm text-white font-bold">You</span>
-                            </div>
-                            <span className="text-xs font-bold text-green-400">645 pts</span>
-                        </div>
-                        <div className="flex items-center justify-between p-2 rounded-lg bg-slate-800/50 border border-slate-700">
-                            <div className="flex items-center gap-3">
-                                <span className="font-bold text-slate-500 text-sm">#3</span>
-                                <div className="w-6 h-6 rounded-full bg-slate-700">
-                                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Rohan" alt="Rohan" className="w-full h-full rounded-full" />
-                                </div>
-                                <span className="text-sm text-slate-200">Rohan</span>
-                            </div>
-                            <span className="text-xs font-bold text-slate-400">705 pts</span>
-                        </div>
+                        )}
+
+                        {/* Show current user if not in top list (mock/placeholder logic if desired) */}
+                        {/* For now, just showing the top 5 fetched */}
                     </div>
                 </motion.div>
             </div>

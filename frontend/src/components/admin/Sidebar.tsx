@@ -11,7 +11,8 @@ import {
     Target,
     LogOut,
     Menu,
-    X
+    X,
+    Trophy
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -34,6 +35,7 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, onClose, onLo
         { id: "users", label: "User Base", icon: Users },
         { id: "leads", label: "Leads", icon: Target },
         { id: "jobs", label: "Job Listings", icon: Briefcase },
+        { id: "leaderboard", label: "Leaderboard", icon: Trophy },
     ];
 
     return (

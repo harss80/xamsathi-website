@@ -9,6 +9,7 @@ import authRouter from './routes/auth';
 import authGoogleRouter from './routes/auth-google';
 import adminAuthRouter from './routes/admin-auth';
 import trackRouter from './routes/track';
+import leaderboardRouter from './routes/leaderboard';
 import type { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
 import { ensureBootstrapAdmin } from './lib/bootstrap-admin';
@@ -28,10 +29,10 @@ const corsOptions = {
     allowedOrigin === '*'
       ? true
       : (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-          if (!origin) return callback(null, true);
-          if (allowedOrigins.includes(origin)) return callback(null, true);
-          return callback(new Error('Not allowed by CORS'));
-        },
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) return callback(null, true);
+        return callback(new Error('Not allowed by CORS'));
+      },
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization', 'x-admin-secret', 'x-user-id', 'x-class-grade'],
   methods: ['GET', 'POST', 'OPTIONS'],
@@ -70,6 +71,7 @@ app.use('/api/track', trackRouter);
 app.use('/api/tests', testsRouter);
 app.use('/api/me', meRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/leaderboard', leaderboardRouter);
 app.use('/api/auth', authGoogleRouter);
 
 const port = process.env.PORT || 3001;

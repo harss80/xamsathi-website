@@ -1251,7 +1251,7 @@ export default function NEETTestSeriesPage() {
         });
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         // Calculate Score
         let calculatedScore = 0;
         let correctCount = 0;
@@ -1269,6 +1269,9 @@ export default function NEETTestSeriesPage() {
         QUESTIONS.forEach((q) => {
             const selected = answers[q.id];
             const subj = q.type;
+            // Ensure subject key exists (fallback if type is different)
+            if (!subjectStats[subj]) return;
+
             subjectStats[subj].total++;
 
             if (selected !== undefined) {
@@ -1289,12 +1292,52 @@ export default function NEETTestSeriesPage() {
             }
         });
 
-        setScore(calculatedScore);
         const attempted = correctCount + wrongCount;
-        setAccuracy(attempted > 0 ? Math.round((correctCount / attempted) * 100) : 0);
+        const calcAccuracy = attempted > 0 ? Math.round((correctCount / attempted) * 100) : 0;
+
+        setScore(calculatedScore);
+        setAccuracy(calcAccuracy);
         setSubjectAnalysis(subjectStats);
         setStatus("result");
         setIsSubmitModalOpen(false);
+
+        // --- Send to Leaderboard Backend ---
+        try {
+            const getBackendBase = () => {
+                const envBase = (process.env.NEXT_PUBLIC_BACKEND_URL || "").trim();
+                if (envBase) return envBase;
+                if (typeof window !== "undefined") {
+                    const host = window.location.hostname;
+                    if (host === "localhost" || host === "127.0.0.1") return "http://localhost:3001";
+                }
+                return "http://localhost:3001";
+            };
+
+            const token = localStorage.getItem("xamsathi_token");
+            const userStr = localStorage.getItem("xamsathi_user");
+            let userId = "";
+            if (userStr) {
+                try { userId = JSON.parse(userStr)._id || JSON.parse(userStr).id; } catch { }
+            }
+
+            if (userId) {
+                await fetch(`${getBackendBase()}/api/leaderboard/submit`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-user-id": userId,
+                        "Authorization": token ? `Bearer ${token}` : ""
+                    },
+                    body: JSON.stringify({
+                        testSeriesId: "neet-ug-mock-180",
+                        score: calculatedScore,
+                        accuracy: calcAccuracy
+                    })
+                });
+            }
+        } catch (err) {
+            console.error("Failed to submit leaderboard score", err);
+        }
     };
 
     const formatTime = (seconds: number) => {
@@ -1684,8 +1727,8 @@ export default function NEETTestSeriesPage() {
                                         <div className="flex-1">
                                             <div className="flex items-center gap-3 mb-2">
                                                 <span className={`px-2 py-1 rounded text-xs font-bold uppercase tracking-wider border ${q.type === 'physics' ? 'bg-blue-400/10 text-blue-400 border-blue-500/20' :
-                                                        q.type === 'chemistry' ? 'bg-yellow-400/10 text-yellow-400 border-yellow-500/20' :
-                                                            'bg-green-400/10 text-green-400 border-green-500/20'
+                                                    q.type === 'chemistry' ? 'bg-yellow-400/10 text-yellow-400 border-yellow-500/20' :
+                                                        'bg-green-400/10 text-green-400 border-green-500/20'
                                                     }`}>
                                                     {q.type}
                                                 </span>
