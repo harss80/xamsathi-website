@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import {
     ArrowLeft, Clock, AlertCircle, CheckCircle2, XCircle,
     HelpCircle, ChevronRight, ChevronLeft, Flag, Award,
-    BarChart2, Timer, RotateCcw, BookOpen, Brain, Zap
+    BarChart2, Timer, RotateCcw, BookOpen, Brain, Zap, GraduationCap
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -1663,6 +1663,98 @@ export default function NEETTestSeriesPage() {
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-2">
+                        <BookOpen className="w-6 h-6 text-indigo-500" />
+                        Deep Analysis & Solutions
+                    </h2>
+
+                    <div className="space-y-8">
+                        {QUESTIONS.map((q, qIdx) => {
+                            const userAnsIdx = answers[q.id];
+                            const isCorrect = userAnsIdx === q.correctAnswer;
+                            const isSkipped = userAnsIdx === undefined;
+                            const statusColor = isCorrect ? 'text-green-400' : isSkipped ? 'text-yellow-400' : 'text-red-400';
+                            const StatusIcon = isCorrect ? CheckCircle2 : isSkipped ? HelpCircle : XCircle;
+
+                            return (
+                                <div key={q.id} className="bg-slate-900/50 border border-slate-800 rounded-3xl p-6 md:p-8 hover:bg-slate-800/30 transition-colors">
+                                    <div className="flex items-start justify-between gap-4 mb-6">
+                                        <div className="flex-1">
+                                            <div className="flex items-center gap-3 mb-2">
+                                                <span className={`px-2 py-1 rounded text-xs font-bold uppercase tracking-wider border ${q.type === 'physics' ? 'bg-blue-400/10 text-blue-400 border-blue-500/20' :
+                                                        q.type === 'chemistry' ? 'bg-yellow-400/10 text-yellow-400 border-yellow-500/20' :
+                                                            'bg-green-400/10 text-green-400 border-green-500/20'
+                                                    }`}>
+                                                    {q.type}
+                                                </span>
+                                                <span className={`text-sm font-bold flex items-center gap-1 ${statusColor}`}>
+                                                    <StatusIcon className="w-4 h-4" />
+                                                    {isCorrect ? 'Correct' : isSkipped ? 'Not Attempted' : 'Incorrect'}
+                                                </span>
+                                            </div>
+                                            <h4 className="text-lg md:text-xl font-medium text-white">
+                                                <span className="text-slate-500 font-mono mr-3">Q{q.id}.</span>
+                                                {q.text}
+                                            </h4>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid md:grid-cols-2 gap-3 mb-6">
+                                        {q.options.map((option, optIdx) => {
+                                            const isSelected = userAnsIdx === optIdx;
+                                            const isAnswer = q.correctAnswer === optIdx;
+
+                                            let borderClass = 'border-slate-800 bg-slate-900/50';
+                                            let textClass = 'text-slate-400';
+
+                                            if (isAnswer) {
+                                                borderClass = 'border-green-500/50 bg-green-500/10';
+                                                textClass = 'text-white font-medium';
+                                            } else if (isSelected) {
+                                                borderClass = 'border-red-500/50 bg-red-500/10';
+                                                textClass = 'text-white font-medium';
+                                            }
+
+                                            return (
+                                                <div
+                                                    key={optIdx}
+                                                    className={`p-4 rounded-xl border ${borderClass} flex items-center gap-3 transition-colors`}
+                                                >
+                                                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs shrink-0 ${isAnswer ? 'bg-green-500 text-white' :
+                                                        isSelected ? 'bg-red-500 text-white' :
+                                                            'bg-slate-800 text-slate-500'
+                                                        }`}>
+                                                        {String.fromCharCode(65 + optIdx)}
+                                                    </div>
+                                                    <span className={textClass}>{option}</span>
+                                                    {isAnswer && <CheckCircle2 className="w-5 h-5 text-green-500 ml-auto" />}
+                                                    {isSelected && !isAnswer && <XCircle className="w-5 h-5 text-red-500 ml-auto" />}
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+
+                                    <div className="bg-indigo-950/20 border border-indigo-900/30 p-6 rounded-2xl relative overflow-hidden">
+                                        <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500" />
+                                        <div className="flex gap-4">
+                                            <div className="shrink-0 pt-1">
+                                                <div className="w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 border border-indigo-500/20">
+                                                    <GraduationCap className="w-6 h-6" />
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <h5 className="text-indigo-400 font-bold text-sm uppercase tracking-wider mb-2">Teacher's Explanation</h5>
+                                                <p className="text-slate-300 leading-relaxed text-sm md:text-base">
+                                                    {q.explanation}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             )}

@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from "react";
 import {
     ArrowLeft, Clock, AlertCircle, ChevronRight, ChevronLeft, Flag,
-    RotateCcw, BarChart2, TrendingUp, Activity, PieChart, LineChart
+    RotateCcw, BarChart2, TrendingUp, Activity, PieChart, LineChart,
+    CheckCircle2, XCircle, HelpCircle, BookOpen, GraduationCap, Target
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -564,43 +565,179 @@ export default function GraphInterpretationTestPage() {
 
             {/* --- Result View --- */}
             {status === "result" && (
-                <div className="max-w-4xl mx-auto px-6 py-12">
+                <div className="max-w-5xl mx-auto px-6 py-12 animate-in fade-in duration-500">
                     <div className="flex items-center justify-between mb-8">
-                        <Link href="/dashboard" className="inline-flex items-center gap-2 text-slate-400 hover:text-white">
-                            <ArrowLeft className="w-4 h-4" /> Dashboard
+                        <Link href="/dashboard" className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
+                            <ArrowLeft className="w-4 h-4" /> Back to Dashboard
                         </Link>
-                        <button onClick={startTest} className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium flex items-center gap-2">
-                            <RotateCcw className="w-4 h-4" /> Retake
+                        <button
+                            onClick={startTest}
+                            className="px-6 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-medium flex items-center gap-2 border border-slate-700 transition-all"
+                        >
+                            <RotateCcw className="w-4 h-4" /> Retake Test
                         </button>
                     </div>
 
-                    <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center mb-8">
-                        <div className="text-sm text-blue-400 uppercase tracking-widest font-bold mb-2">Final Score</div>
-                        <div className="text-6xl font-bold text-white mb-2">{score} <span className="text-2xl text-slate-500">/ 100</span></div>
-                        <div className="inline-block px-4 py-1 rounded-full bg-slate-800 text-slate-300 mb-8 border border-slate-700">
-                            Accuracy: <span className={accuracy > 80 ? "text-green-400" : "text-yellow-400"}>{accuracy}%</span>
-                        </div>
-
-                        <div className="text-left bg-slate-800/50 p-6 rounded-2xl border border-slate-700">
-                            <h3 className="text-white font-bold mb-4 flex items-center gap-2"><BarChart2 className="w-5 h-5 text-blue-500" /> Graph Interpretation Performance</h3>
-                            <div className="space-y-4">
-                                {GRAPH_CASES.map(cs => {
-                                    let csScore = 0;
-                                    cs.questions.forEach(q => {
-                                        if (answers[q.id] === q.correctAnswer) csScore += 4;
-                                        else if (answers[q.id] !== undefined) csScore -= 1;
-                                    });
-                                    return (
-                                        <div key={cs.id} className="flex items-center justify-between p-3 bg-slate-900 rounded-lg">
-                                            <span className="text-slate-300 text-sm">Case {cs.id}: {cs.title}</span>
-                                            <span className={`font-mono font-bold ${csScore > 15 ? "text-green-400" : (csScore > 10 ? "text-yellow-400" : "text-red-400")}`}>
-                                                {csScore}/20
-                                            </span>
-                                        </div>
-                                    )
-                                })}
+                    {/* Score Summary Card */}
+                    <div className="grid md:grid-cols-2 gap-6 mb-12">
+                        <div className="bg-gradient-to-br from-slate-900 to-slate-900 border border-slate-800 rounded-3xl p-8 relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 p-8 opacity-10 bg-blue-500 blur-3xl rounded-full w-48 h-48 group-hover:opacity-20 transition-opacity" />
+                            <h2 className="text-slate-400 font-medium mb-1">Your Performance</h2>
+                            <div className="flex items-baseline gap-2 mb-4">
+                                <span className="text-5xl font-bold text-white">{score}</span>
+                                <span className="text-xl text-slate-500">/ 100</span>
+                            </div>
+                            <div className="flex gap-2 mb-6">
+                                <span className={`px-3 py-1 rounded-full text-sm font-bold border ${score >= 80 ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : score >= 50 ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20' : 'bg-red-500/10 text-red-400 border-red-500/20'}`}>
+                                    {score >= 80 ? 'Excellent' : score >= 50 ? 'Good Effort' : 'Needs Improvement'}
+                                </span>
+                            </div>
+                            <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                                <div
+                                    className={`h-full rounded-full ${score >= 50 ? 'bg-blue-500' : 'bg-red-500'} transition-all duration-1000`}
+                                    style={{ width: `${Math.max(5, score)}%` }}
+                                />
                             </div>
                         </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 flex flex-col justify-center items-center">
+                                <div className="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400 mb-2">
+                                    <Target className="w-6 h-6" />
+                                </div>
+                                <div className="text-3xl font-bold text-white">{accuracy}%</div>
+                                <div className="text-sm text-slate-400">Accuracy</div>
+                            </div>
+                            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 flex flex-col justify-center items-center">
+                                <div className="w-12 h-12 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-400 mb-2">
+                                    <CheckCircle2 className="w-6 h-6" />
+                                </div>
+                                <div className="text-3xl font-bold text-white">
+                                    {Object.keys(answers).filter(qId => {
+                                        let isCorrect = false;
+                                        GRAPH_CASES.forEach(cs => cs.questions.forEach(q => { if (q.id === Number(qId) && answers[Number(qId)] === q.correctAnswer) isCorrect = true; }));
+                                        return isCorrect;
+                                    }).length}
+                                    <span className="text-lg text-slate-500">/25</span>
+                                </div>
+                                <div className="text-sm text-slate-400">Correct Answers</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-2">
+                        <BookOpen className="w-6 h-6 text-blue-500" />
+                        Deep Analysis & Solutions
+                    </h2>
+
+                    <div className="space-y-12">
+                        {GRAPH_CASES.map((caseStudy) => (
+                            <div key={caseStudy.id} className="bg-slate-900/50 border border-slate-800 rounded-3xl overflow-hidden">
+                                <div className="p-6 md:p-8 bg-slate-900 border-b border-slate-800">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="p-2 bg-slate-800 rounded-lg text-blue-400">
+                                            <caseStudy.icon className="w-6 h-6" />
+                                        </div>
+                                        <h3 className="text-xl font-bold text-white">Graph Case {caseStudy.id}: {caseStudy.title}</h3>
+                                    </div>
+
+                                    {/* Graph Image Display for Review */}
+                                    <div className="mb-6 bg-white rounded-xl p-4 w-full max-w-2xl mx-auto border border-slate-700">
+                                        <div className="relative aspect-video w-full overflow-hidden">
+                                            <Image
+                                                src={caseStudy.imagePath}
+                                                alt={caseStudy.title}
+                                                fill
+                                                className="object-contain"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="prose prose-invert prose-sm max-w-none text-slate-400 bg-slate-950/50 p-6 rounded-xl border border-slate-800/50">
+                                        <p>{caseStudy.description}</p>
+                                    </div>
+                                </div>
+
+                                <div className="divide-y divide-slate-800">
+                                    {caseStudy.questions.map((q, qIdx) => {
+                                        const userAnsIdx = answers[q.id];
+                                        const isCorrect = userAnsIdx === q.correctAnswer;
+                                        const isSkipped = userAnsIdx === undefined;
+                                        const statusColor = isCorrect ? 'text-green-400' : isSkipped ? 'text-yellow-400' : 'text-red-400';
+                                        const StatusIcon = isCorrect ? CheckCircle2 : isSkipped ? HelpCircle : XCircle;
+
+                                        return (
+                                            <div key={q.id} className="p-6 md:p-8 hover:bg-slate-800/30 transition-colors">
+                                                <div className="flex items-start justify-between gap-4 mb-6">
+                                                    <div className="flex-1">
+                                                        <div className="flex items-center gap-3 mb-2">
+                                                            <span className="px-2 py-1 rounded bg-slate-800 text-xs font-mono text-slate-400 border border-slate-700">Q{qIdx + 1}</span>
+                                                            <span className={`text-sm font-bold flex items-center gap-1 ${statusColor}`}>
+                                                                <StatusIcon className="w-4 h-4" />
+                                                                {isCorrect ? 'Correct' : isSkipped ? 'Not Attempted' : 'Incorrect'}
+                                                            </span>
+                                                        </div>
+                                                        <h4 className="text-lg font-medium text-white">{q.text}</h4>
+                                                    </div>
+                                                </div>
+
+                                                <div className="grid md:grid-cols-2 gap-3 mb-6">
+                                                    {q.options.map((option, optIdx) => {
+                                                        const isSelected = userAnsIdx === optIdx;
+                                                        const isAnswer = q.correctAnswer === optIdx;
+
+                                                        let borderClass = 'border-slate-800 bg-slate-900/50';
+                                                        let textClass = 'text-slate-400';
+
+                                                        if (isAnswer) {
+                                                            borderClass = 'border-green-500/50 bg-green-500/10';
+                                                            textClass = 'text-white font-medium';
+                                                        } else if (isSelected) {
+                                                            borderClass = 'border-red-500/50 bg-red-500/10';
+                                                            textClass = 'text-white font-medium';
+                                                        }
+
+                                                        return (
+                                                            <div
+                                                                key={optIdx}
+                                                                className={`p-4 rounded-xl border ${borderClass} flex items-center gap-3 transition-colors`}
+                                                            >
+                                                                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs shrink-0 ${isAnswer ? 'bg-green-500 text-white' :
+                                                                        isSelected ? 'bg-red-500 text-white' :
+                                                                            'bg-slate-800 text-slate-500'
+                                                                    }`}>
+                                                                    {String.fromCharCode(65 + optIdx)}
+                                                                </div>
+                                                                <span className={textClass}>{option}</span>
+                                                                {isAnswer && <CheckCircle2 className="w-5 h-5 text-green-500 ml-auto" />}
+                                                                {isSelected && !isAnswer && <XCircle className="w-5 h-5 text-red-500 ml-auto" />}
+                                                            </div>
+                                                        )
+                                                    })}
+                                                </div>
+
+                                                <div className="bg-blue-950/20 border border-blue-900/30 p-6 rounded-2xl relative overflow-hidden">
+                                                    <div className="absolute top-0 left-0 w-1 h-full bg-blue-500" />
+                                                    <div className="flex gap-4">
+                                                        <div className="shrink-0 pt-1">
+                                                            <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 border border-blue-500/20">
+                                                                <GraduationCap className="w-6 h-6" />
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <h5 className="text-blue-400 font-bold text-sm uppercase tracking-wider mb-2">Teacher's Explanation</h5>
+                                                            <p className="text-slate-300 leading-relaxed text-sm md:text-base">
+                                                                {q.explanation}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             )}
