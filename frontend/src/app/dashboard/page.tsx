@@ -150,6 +150,41 @@ function DashboardContent() {
                         {activeTab === "tests" && (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 <Link
+                                    href="/dashboard/test-series/cbse"
+                                    onClick={() => {
+                                        trackLead({ action: "dashboard_open_cbse_9_12", entity_type: "test_series" });
+                                    }}
+                                    className="group relative p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-cyan-500/50 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 p-20 opacity-10 group-hover:opacity-20 transition-opacity bg-cyan-600 blur-[60px] rounded-full" />
+
+                                    <div className="flex items-start justify-between mb-6">
+                                        <div className="p-4 rounded-2xl bg-cyan-500/10 text-cyan-400 group-hover:bg-cyan-500 group-hover:text-white transition-colors">
+                                            <GraduationCap className="w-8 h-8" />
+                                        </div>
+                                        <div className="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 text-xs font-bold border border-cyan-500/20">
+                                            PREVIEW
+                                        </div>
+                                    </div>
+
+                                    <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
+                                        CBSE Class 9–12
+                                    </h3>
+                                    <p className="text-slate-400 text-sm mb-6 line-clamp-2">
+                                        Open your Class 9–12 test-series courses and see the tests list (no Razorpay needed).
+                                    </p>
+
+                                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-800">
+                                        <div className="flex items-center gap-2 text-xs text-slate-500">
+                                            <Calendar className="w-4 h-4" /> Courses & Tests
+                                        </div>
+                                        <div className="flex items-center gap-2 text-sm font-bold text-cyan-400 group-hover:translate-x-1 transition-transform">
+                                            See Tests <ArrowRight className="w-4 h-4" />
+                                        </div>
+                                    </div>
+                                </Link>
+
+                                <Link
                                     href="/dashboard/test-series/neet"
                                     onClick={() => {
                                         trackLead({ action: "dashboard_start_neet_test", entity_type: "test_series" });
