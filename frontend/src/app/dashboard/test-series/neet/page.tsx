@@ -20,6 +20,14 @@ type Question = {
     explanation: string;
 };
 
+type SubjectStat = {
+    total: number;
+    attempted: number;
+    correct: number;
+    wrong: number;
+    score: number;
+};
+
 // --- Custom Questions (Hard Physics Q1-Q45) ---
 const HARD_PHYSICS_QUESTIONS: Partial<Question>[] = [
     // ... (Previous Physics Questions remain unchanged) ...
@@ -1126,7 +1134,7 @@ const generateQuestions = (): Question[] => {
         { type: "zoology", count: 45, startIdx: 136 },
     ];
 
-    let questions: Question[] = [];
+    const questions: Question[] = [];
 
     subjects.forEach((subj) => {
         for (let i = 0; i < subj.count; i++) {
@@ -1134,18 +1142,20 @@ const generateQuestions = (): Question[] => {
 
             // Physics (1-45)
             if (subj.type === "physics" && i < HARD_PHYSICS_QUESTIONS.length) {
+                const base = HARD_PHYSICS_QUESTIONS[i] as Pick<Question, "text" | "options" | "correctAnswer" | "explanation">;
                 questions.push({
                     id: qId,
                     type: "physics",
-                    ...HARD_PHYSICS_QUESTIONS[i] as any
+                    ...base,
                 });
             }
             // Chemistry (46-90)
             else if (subj.type === "chemistry" && i < HARD_CHEMISTRY_QUESTIONS.length) {
+                const base = HARD_CHEMISTRY_QUESTIONS[i] as Pick<Question, "text" | "options" | "correctAnswer" | "explanation">;
                 questions.push({
                     id: qId,
                     type: "chemistry",
-                    ...HARD_CHEMISTRY_QUESTIONS[i] as any
+                    ...base,
                 });
             }
             // Biology (Botany/Zoology) - Using HARD_BIOLOGY_QUESTIONS for the first 30 slots of Bio
@@ -1154,10 +1164,11 @@ const generateQuestions = (): Question[] => {
                 const bioIndex = qId - 91;
 
                 if (bioIndex < HARD_BIOLOGY_QUESTIONS.length) {
+                    const base = HARD_BIOLOGY_QUESTIONS[bioIndex] as Pick<Question, "text" | "options" | "correctAnswer" | "explanation">;
                     questions.push({
                         id: qId,
                         type: subj.type, // Keep pure type (botany/zoology)
-                        ...HARD_BIOLOGY_QUESTIONS[bioIndex] as any
+                        ...base,
                     });
                 } else {
                     // Fallback for remaining Bio
@@ -1189,6 +1200,7 @@ export default function NEETTestSeriesPage() {
     // --- State ---
     const [status, setStatus] = useState<"intro" | "active" | "result">("intro");
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [subjectView, setSubjectView] = useState<"physics" | "chemistry" | "biology">("physics");
     const [answers, setAnswers] = useState<Record<number, number>>({}); // qId -> optionIndex
     const [markedForReview, setMarkedForReview] = useState<Set<number>>(new Set());
     const [timeLeft, setTimeLeft] = useState(DURATION_SECONDS);
@@ -1197,7 +1209,7 @@ export default function NEETTestSeriesPage() {
     // Stats
     const [score, setScore] = useState(0);
     const [accuracy, setAccuracy] = useState(0);
-    const [subjectAnalysis, setSubjectAnalysis] = useState<any>({});
+    const [subjectAnalysis, setSubjectAnalysis] = useState<Record<string, SubjectStat>>({});
 
     // --- Timer ---
     useEffect(() => {
@@ -1222,11 +1234,59 @@ export default function NEETTestSeriesPage() {
         setTimeLeft(DURATION_SECONDS);
         setAnswers({});
         setMarkedForReview(new Set());
-        setCurrentQuestionIndex(0);
+        const firstIdx = QUESTIONS.findIndex((q) => {
+            if (subjectView === "biology") return q.type === "botany" || q.type === "zoology";
+            return q.type === subjectView;
+        });
+        setCurrentQuestionIndex(firstIdx >= 0 ? firstIdx : 0);
+    };
+
+    const visibleQuestionIndices = useMemo(() => {
+        const indices: number[] = [];
+        for (let i = 0; i < QUESTIONS.length; i++) {
+            const t = QUESTIONS[i].type;
+            const ok = subjectView === "biology" ? t === "botany" || t === "zoology" : t === subjectView;
+            if (ok) indices.push(i);
+        }
+        return indices;
+    }, [subjectView]);
+
+    const currentVisibleIndex = useMemo(() => {
+        const idx = visibleQuestionIndices.indexOf(currentQuestionIndex);
+        return idx >= 0 ? idx : 0;
+    }, [visibleQuestionIndices, currentQuestionIndex]);
+
+    const canGoPrev = currentVisibleIndex > 0;
+    const canGoNext = currentVisibleIndex < visibleQuestionIndices.length - 1;
+
+    const goPrev = () => {
+        if (!canGoPrev) return;
+        setCurrentQuestionIndex(visibleQuestionIndices[currentVisibleIndex - 1]);
+    };
+
+    const goNext = () => {
+        if (!canGoNext) return;
+        setCurrentQuestionIndex(visibleQuestionIndices[currentVisibleIndex + 1]);
+    };
+
+    const currentQ = QUESTIONS[currentQuestionIndex];
+
+    const switchSubject = (next: "physics" | "chemistry" | "biology") => {
+        setSubjectView(next);
+        const predicate = (q: (typeof QUESTIONS)[number]) => {
+            if (next === "biology") return q.type === "botany" || q.type === "zoology";
+            return q.type === next;
+        };
+
+        const alreadyInSubject = predicate(currentQ);
+        if (alreadyInSubject) return;
+
+        const firstIdx = QUESTIONS.findIndex(predicate);
+        setCurrentQuestionIndex(firstIdx >= 0 ? firstIdx : 0);
     };
 
     const handleAnswer = (optionIdx: number) => {
-        const qId = QUESTIONS[currentQuestionIndex].id;
+        const qId = currentQ.id;
         setAnswers((prev) => {
             const current = prev[qId];
             if (current === optionIdx) {
@@ -1242,7 +1302,7 @@ export default function NEETTestSeriesPage() {
     };
 
     const toggleMarkForReview = () => {
-        const qId = QUESTIONS[currentQuestionIndex].id;
+        const qId = currentQ.id;
         setMarkedForReview((prev) => {
             const newSet = new Set(prev);
             if (newSet.has(qId)) newSet.delete(qId);
@@ -1252,7 +1312,7 @@ export default function NEETTestSeriesPage() {
     };
 
     const clearResponse = () => {
-        const qId = QUESTIONS[currentQuestionIndex].id;
+        const qId = currentQ.id;
         setAnswers((prev) => {
             const newAnswers = { ...prev };
             delete newAnswers[qId];
@@ -1268,7 +1328,7 @@ export default function NEETTestSeriesPage() {
         let unattemptedCount = 0;
 
         // Subject-wise breakdown
-        const subjectStats: Record<string, { total: number; attempted: number; correct: number; wrong: number; score: number }> = {
+        const subjectStats: Record<string, SubjectStat> = {
             physics: { total: 0, attempted: 0, correct: 0, wrong: 0, score: 0 },
             chemistry: { total: 0, attempted: 0, correct: 0, wrong: 0, score: 0 },
             botany: { total: 0, attempted: 0, correct: 0, wrong: 0, score: 0 },
@@ -1409,6 +1469,34 @@ export default function NEETTestSeriesPage() {
                                 </ul>
                             </div>
 
+                            <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50 mb-10">
+                                <div className="text-sm font-bold text-slate-200 mb-3">Start with</div>
+                                <div className="grid grid-cols-3 gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => setSubjectView("physics")}
+                                        className={`px-3 py-3 rounded-xl border text-sm font-bold transition-colors ${subjectView === "physics" ? "bg-indigo-600/20 border-indigo-500/40 text-white" : "bg-slate-950/30 border-white/10 text-slate-300 hover:bg-white/5"}`}
+                                    >
+                                        Physics
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setSubjectView("chemistry")}
+                                        className={`px-3 py-3 rounded-xl border text-sm font-bold transition-colors ${subjectView === "chemistry" ? "bg-indigo-600/20 border-indigo-500/40 text-white" : "bg-slate-950/30 border-white/10 text-slate-300 hover:bg-white/5"}`}
+                                    >
+                                        Chemistry
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setSubjectView("biology")}
+                                        className={`px-3 py-3 rounded-xl border text-sm font-bold transition-colors ${subjectView === "biology" ? "bg-indigo-600/20 border-indigo-500/40 text-white" : "bg-slate-950/30 border-white/10 text-slate-300 hover:bg-white/5"}`}
+                                    >
+                                        Biology
+                                    </button>
+                                </div>
+                                <div className="text-xs text-slate-500 mt-3">You can change subject anytime during the test.</div>
+                            </div>
+
                             <div className="flex flex-col sm:flex-row gap-4">
                                 <button
                                     onClick={startTest}
@@ -1456,13 +1544,45 @@ export default function NEETTestSeriesPage() {
                         </div>
                     </header>
 
+                    <div className="px-4 py-3 bg-slate-950/40 border-b border-slate-800">
+                        <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
+                            <div className="flex gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => switchSubject("physics")}
+                                    className={`px-3 py-2 rounded-xl border text-xs font-bold transition-colors ${subjectView === "physics" ? "bg-indigo-600/20 border-indigo-500/40 text-white" : "bg-slate-900/40 border-slate-800 text-slate-300 hover:bg-slate-800"}`}
+                                >
+                                    Physics
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => switchSubject("chemistry")}
+                                    className={`px-3 py-2 rounded-xl border text-xs font-bold transition-colors ${subjectView === "chemistry" ? "bg-indigo-600/20 border-indigo-500/40 text-white" : "bg-slate-900/40 border-slate-800 text-slate-300 hover:bg-slate-800"}`}
+                                >
+                                    Chemistry
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => switchSubject("biology")}
+                                    className={`px-3 py-2 rounded-xl border text-xs font-bold transition-colors ${subjectView === "biology" ? "bg-indigo-600/20 border-indigo-500/40 text-white" : "bg-slate-900/40 border-slate-800 text-slate-300 hover:bg-slate-800"}`}
+                                >
+                                    Biology
+                                </button>
+                            </div>
+                            <div className="text-xs text-slate-400">
+                                Showing <span className="text-white font-bold">{visibleQuestionIndices.length}</span> questions
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="flex-1 flex overflow-hidden">
                         {/* Left/Main Panel: Question Area */}
                         <main className="flex-1 flex flex-col p-4 md:p-6 overflow-y-auto">
                             <div className="max-w-4xl w-full mx-auto">
                                 <div className="flex items-center justify-between mb-6">
                                     <span className={`text-sm font-bold uppercase tracking-wider px-3 py-1 rounded-full ${QUESTIONS[currentQuestionIndex].type === 'chemistry' ? 'bg-green-400/10 text-green-400' :
-                                        QUESTIONS[currentQuestionIndex].type === 'physics' ? 'bg-indigo-400/10 text-indigo-400' : 'bg-pink-400/10 text-pink-400'
+                                        QUESTIONS[currentQuestionIndex].type === 'physics' ? 'bg-blue-400/10 text-blue-400' :
+                                            'bg-purple-400/10 text-purple-400'
                                         }`}>
                                         {QUESTIONS[currentQuestionIndex].type}
                                     </span>
@@ -1504,8 +1624,8 @@ export default function NEETTestSeriesPage() {
                                 <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-t border-slate-800 mt-auto sticky bottom-0 bg-slate-950 md:static">
                                     <div className="flex gap-2 md:gap-3 w-full md:w-auto">
                                         <button
-                                            onClick={() => setCurrentQuestionIndex(prev => Math.max(0, prev - 1))}
-                                            disabled={currentQuestionIndex === 0}
+                                            onClick={goPrev}
+                                            disabled={!canGoPrev}
                                             className="flex-1 md:flex-none px-4 md:px-6 py-2.5 rounded-lg border border-slate-700 text-slate-300 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                         >
                                             <ChevronLeft className="w-4 h-4" /> Prev
@@ -1523,8 +1643,8 @@ export default function NEETTestSeriesPage() {
                                     </div>
 
                                     <button
-                                        onClick={() => setCurrentQuestionIndex(prev => Math.min(QUESTIONS.length - 1, prev + 1))}
-                                        disabled={currentQuestionIndex === QUESTIONS.length - 1}
+                                        onClick={goNext}
+                                        disabled={!canGoNext}
                                         className="w-full md:w-auto px-8 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg shadow-lg shadow-indigo-900/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                     >
                                         Save & Next <ChevronRight className="w-4 h-4" />
@@ -1542,7 +1662,7 @@ export default function NEETTestSeriesPage() {
                                 </span>
                             </div>
 
-                            <div className="p-4 grid grid-cols-2 gap-2 text-xs text-slate-400 mb-2 border-b border-slate-800 pb-4">
+                            <div className="p-4 grid grid-cols-2 gap-3 text-xs text-slate-400 mb-2 border-b border-slate-800 pb-4">
                                 <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-green-500"></div> Answered</div>
                                 <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-purple-500"></div> Marked</div>
                                 <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-slate-700"></div> Not Visited</div>
@@ -1550,8 +1670,9 @@ export default function NEETTestSeriesPage() {
                             </div>
 
                             <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
-                                <div className="grid grid-cols-5 gap-2">
-                                    {QUESTIONS.map((q, idx) => {
+                                <div className="grid grid-cols-10 gap-2">
+                                    {visibleQuestionIndices.map((idx) => {
+                                        const q = QUESTIONS[idx];
                                         const isAnswered = answers[q.id] !== undefined;
                                         const isMarked = markedForReview.has(q.id);
                                         const isCurrent = idx === currentQuestionIndex;
@@ -1565,7 +1686,8 @@ export default function NEETTestSeriesPage() {
                                             <button
                                                 key={q.id}
                                                 onClick={() => setCurrentQuestionIndex(idx)}
-                                                className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-medium border transition-all ${bgClass}`}
+                                                className={`w-9 h-9 rounded-lg border text-sm font-bold transition-all ${bgClass}`}
+                                                aria-label={`Go to question ${q.id}`}
                                             >
                                                 {q.id}
                                             </button>
@@ -1645,7 +1767,7 @@ export default function NEETTestSeriesPage() {
                                 </div>
                             </div>
                             <h2 className="text-2xl font-bold text-white mb-2">Overall Score</h2>
-                            <p className="text-slate-400 text-sm mb-6">You've completed the full mock test.</p>
+                            <p className="text-slate-400 text-sm mb-6">You have completed the full mock test.</p>
 
                             <div className="w-full grid grid-cols-2 gap-4">
                                 <div className="bg-slate-900/50 p-3 rounded-xl">
@@ -1669,7 +1791,7 @@ export default function NEETTestSeriesPage() {
                                 </h3>
 
                                 <div className="space-y-6">
-                                    {Object.entries(subjectAnalysis).map(([subject, stats]: [string, any]) => (
+                                    {Object.entries(subjectAnalysis).map(([subject, stats]) => (
                                         <div key={subject}>
                                             <div className="flex justify-between items-center mb-2">
                                                 <span className="capitalize text-slate-300 font-medium">{subject}</span>
@@ -1723,7 +1845,7 @@ export default function NEETTestSeriesPage() {
                     </h2>
 
                     <div className="space-y-8">
-                        {QUESTIONS.map((q, qIdx) => {
+                        {QUESTIONS.map((q) => {
                             const userAnsIdx = answers[q.id];
                             const isCorrect = userAnsIdx === q.correctAnswer;
                             const isSkipped = userAnsIdx === undefined;
@@ -1797,7 +1919,7 @@ export default function NEETTestSeriesPage() {
                                                 </div>
                                             </div>
                                             <div>
-                                                <h5 className="text-indigo-400 font-bold text-sm uppercase tracking-wider mb-2">Teacher's Explanation</h5>
+                                                <h5 className="text-indigo-400 font-bold text-sm uppercase tracking-wider mb-2">Teacher Explanation</h5>
                                                 <p className="text-slate-300 leading-relaxed text-sm md:text-base">
                                                     {q.explanation}
                                                 </p>
