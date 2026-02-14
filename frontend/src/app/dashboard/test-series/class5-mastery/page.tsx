@@ -141,6 +141,65 @@ export default function Class5MasteryPage() {
             </div>
 
             <div className="max-w-6xl mx-auto relative z-10">
+                {/* Upper Metrics / Progress */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+                    <div className="lg:col-span-2 flex flex-col md:flex-row items-center gap-8 p-8 rounded-[2.5rem] bg-indigo-600/10 border border-indigo-500/20 backdrop-blur-md">
+                        <div className="relative w-32 h-32 flex items-center justify-center">
+                            <svg className="w-full h-full -rotate-90">
+                                <circle cx="64" cy="64" r="50" stroke="currentColor" strokeWidth="12" fill="transparent" className="text-slate-800" />
+                                <circle cx="64" cy="64" r="50" stroke="currentColor" strokeWidth="12" fill="transparent" strokeDasharray="314" strokeDashoffset="220" className="text-indigo-500" />
+                            </svg>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                <span className="text-2xl font-black text-white">30%</span>
+                                <span className="text-[10px] font-bold text-slate-400 uppercase">Week 1</span>
+                            </div>
+                        </div>
+                        <div className="text-center md:text-left">
+                            <h2 className="text-2xl font-black text-white mb-2">Keep it up, Champ! 🏆</h2>
+                            <p className="text-slate-400 text-sm leading-relaxed mb-4">
+                                You have completed 2 out of 7 chapters. Finish today's task to unlock the "Focus Wizard" badge!
+                            </p>
+                            <div className="flex flex-wrap justify-center md:justify-start gap-4">
+                                <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/50 border border-slate-700">
+                                    <Clock className="w-4 h-4 text-emerald-400" />
+                                    <span className="text-xs font-bold text-slate-200">120m Studied</span>
+                                </div>
+                                <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/50 border border-slate-700">
+                                    <Trophy className="w-4 h-4 text-amber-400" />
+                                    <span className="text-xs font-bold text-slate-200">2500 XP Earned</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="p-8 rounded-[2.5rem] bg-slate-900/40 border border-slate-800 flex flex-col justify-center">
+                        <h3 className="text-sm font-black text-slate-500 uppercase tracking-widest mb-6">Badges Earned</h3>
+                        <div className="flex justify-between items-center px-2">
+                            <div className="group relative">
+                                <div className="w-14 h-14 rounded-full bg-emerald-500/20 flex items-center justify-center border-2 border-emerald-500/40 group-hover:scale-110 transition-transform cursor-help">
+                                    <Star className="w-7 h-7 text-emerald-400 fill-emerald-400" />
+                                </div>
+                                <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1 bg-slate-800 text-white text-[10px] font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20 pointer-events-none">
+                                    Day 1 Complete
+                                </div>
+                            </div>
+                            <div className="group relative">
+                                <div className="w-14 h-14 rounded-full bg-slate-800/50 flex items-center justify-center border-2 border-slate-700 opacity-40 grayscale">
+                                    <GraduationCap className="w-7 h-7 text-slate-500" />
+                                </div>
+                            </div>
+                            <div className="group relative">
+                                <div className="w-14 h-14 rounded-full bg-slate-800/50 flex items-center justify-center border-2 border-slate-700 opacity-40 grayscale">
+                                    <Trophy className="w-7 h-7 text-slate-500" />
+                                </div>
+                            </div>
+                            <button className="w-12 h-12 rounded-full bg-indigo-600/10 text-indigo-400 flex items-center justify-center border border-indigo-500/20 hover:bg-indigo-600 hover:text-white transition-all">
+                                <ChevronRight className="w-5 h-5" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Header */}
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-12">
                     <div>
