@@ -11,7 +11,7 @@ import EarnSection from "@/components/dashboard/EarnSection";
 
 import ProfilePage from "@/app/dashboard/profile/page";
 
-import { BookOpen, FileText, Calendar, BarChart3, Zap, Sprout, LineChart, Target, Timer, ArrowRight, GraduationCap } from "lucide-react";
+import { BookOpen, FileText, Calendar, BarChart3, Zap, Sprout, LineChart, Target, Timer, ArrowRight, GraduationCap, Sparkles, Folder } from "lucide-react";
 import { trackLead } from "@/lib/trackLead";
 
 // --- Mock Data (Centralized or passed down) ---
@@ -625,6 +625,36 @@ function DashboardContent() {
                                     <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-800">
                                         <div className="flex items-center gap-2 text-xs text-slate-500"><Calendar className="w-4 h-4" /> Weekly Tests</div>
                                         <div className="flex items-center gap-2 text-sm font-bold text-orange-400 group-hover:translate-x-1 transition-transform">View Series <ArrowRight className="w-4 h-4" /></div>
+                                    </div>
+                                </Link>
+
+                                {/* 1-Week Mastery Class 5 */}
+                                <Link
+                                    href="/dashboard/test-series/class5-mastery"
+                                    className="group relative p-6 rounded-3xl bg-indigo-900/20 border border-indigo-500/30 hover:border-indigo-500 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 p-20 opacity-20 group-hover:opacity-30 transition-opacity bg-indigo-600 blur-[60px] rounded-full" />
+                                    <div className="flex items-start justify-between mb-6">
+                                        <div className="p-4 rounded-2xl bg-indigo-500 text-white shadow-lg shadow-indigo-500/20">
+                                            <Sparkles className="w-8 h-8" />
+                                        </div>
+                                        <div className="px-3 py-1 rounded-full bg-white/10 text-white text-[10px] font-black tracking-widest border border-white/20 animate-pulse">
+                                            7 DAY SPRINT
+                                        </div>
+                                    </div>
+                                    <h3 className="text-2xl font-black text-white mb-2 group-hover:text-indigo-300 transition-colors">
+                                        Class 5: 1-Week Mastery
+                                    </h3>
+                                    <p className="text-slate-300 text-sm font-medium mb-6">
+                                        Full Preparation Folder with Chapter Tests & Notes.
+                                    </p>
+                                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
+                                        <div className="flex items-center gap-2 text-xs text-indigo-300">
+                                            <Folder className="w-4 h-4" /> Folder View
+                                        </div>
+                                        <div className="flex items-center gap-2 text-sm font-black text-white group-hover:translate-x-1 transition-transform">
+                                            Open Folder <ArrowRight className="w-4 h-4" />
+                                        </div>
                                     </div>
                                 </Link>
 
