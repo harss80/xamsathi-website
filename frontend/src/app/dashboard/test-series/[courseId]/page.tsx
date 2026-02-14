@@ -29,6 +29,7 @@ export default function CourseSeriesPage() {
 
     // State
     const [tests, setTests] = useState<TestItem[]>([]);
+    const [courseTitle, setCourseTitle] = useState<string>("Loading Course...");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [hasPurchased, setHasPurchased] = useState(false);
@@ -53,6 +54,15 @@ export default function CourseSeriesPage() {
                 if (!resTests.ok) throw new Error("Failed to load tests");
                 const dataTests = await resTests.json();
                 setTests(dataTests.items || []);
+
+                // 1b. Try to find course title
+                const resCourses = await fetch(`${apiBase}/api/tests/courses`);
+                if (resCourses.ok) {
+                    const dataCourses = await resCourses.json();
+                    const course = dataCourses.items?.find((c: any) => c._id === courseId);
+                    if (course) setCourseTitle(course.title);
+                    else setCourseTitle("Premium Test Series");
+                }
 
                 // 2. Fetch User Status
                 const token = localStorage.getItem("xamsathi_token");
@@ -216,11 +226,10 @@ export default function CourseSeriesPage() {
                                 {hasPurchased && <span className="px-3 py-1 bg-green-500/10 text-green-400 border border-green-500/20 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> Purchased</span>}
                             </div>
                             <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent mb-4">
-                                Class 9 - Monthly Premium Series
+                                {courseTitle}
                             </h1>
                             <p className="text-slate-400 text-lg max-w-2xl">
-                                Comprehensive coverage of Maths, Science, English, and SST.
-                                Tests are unlocked weekly.
+                                Access your premium tests and track your progress.
                             </p>
                         </div>
 
