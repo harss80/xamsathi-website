@@ -286,10 +286,18 @@ export default function CaseStudyTestPage() {
     };
 
     const handleAnswer = (qId: number, optionIdx: number) => {
-        setAnswers((prev) => ({
-            ...prev,
-            [qId]: optionIdx,
-        }));
+        setAnswers((prev) => {
+            const current = prev[qId];
+            if (current === optionIdx) {
+                const next = { ...prev };
+                delete next[qId];
+                return next;
+            }
+            return {
+                ...prev,
+                [qId]: optionIdx,
+            };
+        });
     };
 
     const toggleMarkForReview = (qId: number) => {

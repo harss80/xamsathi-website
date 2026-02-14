@@ -333,7 +333,17 @@ export default function NeetMockTest1Page() {
                       return (
                         <button
                           key={idx}
-                          onClick={() => setAnswers((prev) => ({ ...prev, [currentQ.id]: idx as 0 | 1 | 2 | 3 }))}
+                          onClick={() =>
+                            setAnswers((prev) => {
+                              const current = prev[currentQ.id];
+                              if (current === idx) {
+                                const next = { ...prev };
+                                delete next[currentQ.id];
+                                return next;
+                              }
+                              return { ...prev, [currentQ.id]: idx as 0 | 1 | 2 | 3 };
+                            })
+                          }
                           className={`text-left p-4 rounded-2xl border transition-colors flex items-start gap-3 ${selected
                             ? "bg-indigo-600/10 border-indigo-500/40"
                             : "bg-slate-950/30 border-white/10 hover:bg-white/5"

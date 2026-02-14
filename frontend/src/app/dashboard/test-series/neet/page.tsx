@@ -1226,10 +1226,19 @@ export default function NEETTestSeriesPage() {
     };
 
     const handleAnswer = (optionIdx: number) => {
-        setAnswers((prev) => ({
-            ...prev,
-            [QUESTIONS[currentQuestionIndex].id]: optionIdx,
-        }));
+        const qId = QUESTIONS[currentQuestionIndex].id;
+        setAnswers((prev) => {
+            const current = prev[qId];
+            if (current === optionIdx) {
+                const next = { ...prev };
+                delete next[qId];
+                return next;
+            }
+            return {
+                ...prev,
+                [qId]: optionIdx,
+            };
+        });
     };
 
     const toggleMarkForReview = () => {

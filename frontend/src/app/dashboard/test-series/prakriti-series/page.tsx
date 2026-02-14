@@ -402,10 +402,19 @@ export default function PrakritiSeriesPage() {
     };
 
     const handleAnswer = (optionIndex: number) => {
-        setAnswers(prev => ({
-            ...prev,
-            [QUESTIONS[currentQuestion].id]: optionIndex
-        }));
+        const qId = QUESTIONS[currentQuestion].id;
+        setAnswers((prev) => {
+            const current = prev[qId];
+            if (current === optionIndex) {
+                const next = { ...prev };
+                delete next[qId];
+                return next;
+            }
+            return {
+                ...prev,
+                [qId]: optionIndex,
+            };
+        });
     };
 
     const calculateScore = () => {
