@@ -11,7 +11,7 @@ type CourseItem = {
     class_grade: number;
 };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 export default function CbseTestSeriesPage() {
     const [items, setItems] = useState<CourseItem[]>([]);
@@ -21,6 +21,9 @@ export default function CbseTestSeriesPage() {
     useEffect(() => {
         const fetchAll = async () => {
             try {
+                if (!API_BASE) {
+                    throw new Error("NEXT_PUBLIC_API_URL is not set");
+                }
                 setError(null);
 
                 const grades = [9, 10, 11, 12];
@@ -40,7 +43,11 @@ export default function CbseTestSeriesPage() {
                 setItems(results.flat());
             } catch (e) {
                 console.error(e);
-                setError("Could not load CBSE courses. Please try again.");
+                if (!API_BASE) {
+                    setError("Backend URL missing. Set NEXT_PUBLIC_API_URL (Vercel env) to your backend base URL (example: https://YOUR-RENDER-SERVICE.onrender.com).");
+                } else {
+                    setError("Could not load CBSE courses. Please try again.");
+                }
             } finally {
                 setLoading(false);
             }

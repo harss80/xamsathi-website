@@ -25,6 +25,8 @@ export default function CourseSeriesPage() {
     const router = useRouter();
     const courseId = params.courseId as string;
 
+    const apiBase = process.env.NEXT_PUBLIC_API_URL;
+
     // State
     const [tests, setTests] = useState<TestItem[]>([]);
     const [loading, setLoading] = useState(true);
@@ -43,8 +45,11 @@ export default function CourseSeriesPage() {
 
         const fetchData = async () => {
             try {
+                if (!apiBase) {
+                    throw new Error("NEXT_PUBLIC_API_URL is not set");
+                }
                 // 1. Fetch Tests
-                const resTests = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/tests/courses/${courseId}/tests`);
+                const resTests = await fetch(`${apiBase}/api/tests/courses/${courseId}/tests`);
                 if (!resTests.ok) throw new Error("Failed to load tests");
                 const dataTests = await resTests.json();
                 setTests(dataTests.items || []);
@@ -59,7 +64,7 @@ export default function CourseSeriesPage() {
                         setUserId(uId);
 
                         // Fetch fresh user data
-                        const resMe = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/me`, {
+                        const resMe = await fetch(`${apiBase}/api/me`, {
                             headers: { 'x-user-id': uId }
                         });
                         if (resMe.ok) {
@@ -84,14 +89,18 @@ export default function CourseSeriesPage() {
 
             } catch (err) {
                 console.error(err);
-                setError("Could not load the test series. Please try again later.");
+                if (!apiBase) {
+                    setError("Backend URL missing. Set NEXT_PUBLIC_API_URL (Vercel env) to your backend base URL (example: https://YOUR-RENDER-SERVICE.onrender.com). Then redeploy the frontend.");
+                } else {
+                    setError("Could not load the test series. Please try again later.");
+                }
             } finally {
                 setLoading(false);
             }
         };
 
         fetchData();
-    }, [courseId]);
+    }, [courseId, apiBase]);
 
     const handleStartTest = (testId: string) => {
         // Double check just in case, but UI should prevent this
