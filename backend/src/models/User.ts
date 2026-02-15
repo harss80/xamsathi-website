@@ -8,6 +8,7 @@ export interface IUser extends Document {
   class_grade: number;
   phone?: string;
   avatar?: string;
+  bio?: string;
   created_at: Date;
   updated_at: Date;
   last_login?: Date;
@@ -33,6 +34,7 @@ const UserSchema = new Schema<IUser>({
   class_grade: { type: Number, required: true, min: 1, max: 12 },
   phone: { type: String, trim: true },
   avatar: { type: String },
+  bio: { type: String, trim: true },
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now },
   last_login: { type: Date },

@@ -8,14 +8,26 @@ router.put('/profile', async (req: Request, res: Response) => {
   const userId = req.header('x-user-id');
   if (!userId) return res.status(401).json({ error: 'x-user-id required' });
 
-  const { avatar, name, bio, phone } = req.body;
+  const { avatar, name, bio, phone, class_grade } = req.body as {
+    avatar?: string;
+    name?: string;
+    bio?: string;
+    phone?: string;
+    class_grade?: number;
+  };
 
   try {
-    const updateData: any = {};
+    const updateData: Record<string, unknown> = {};
     if (avatar) updateData.avatar = avatar;
     if (name) updateData.name = name;
-    if (bio) updateData.bio = bio; // If bio is added to schema later
+    if (bio) updateData.bio = bio;
     if (phone) updateData.phone = phone;
+    if (typeof class_grade === 'number') {
+      if (class_grade < 1 || class_grade > 12) {
+        return res.status(400).json({ error: 'class_grade must be between 1 and 12' });
+      }
+      updateData.class_grade = class_grade;
+    }
 
     const updatedUser = await User.findByIdAndUpdate(userId, { $set: updateData }, { new: true }).select('-password');
     if (!updatedUser) return res.status(404).json({ error: 'User not found' });

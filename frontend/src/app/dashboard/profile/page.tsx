@@ -11,7 +11,7 @@ export default function ProfilePage() {
         email: "harsh@example.com",
         phone: "+91 98765 43210",
         course: "JEE Advanced 2026",
-        class_grade: "11th Grade",
+        class_grade: 11,
         school: "Delhi Public School",
         bio: "Aspiring Engineer. Physics Enthusiast. Aiming for IIT Bombay.",
         avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Harsh"
@@ -27,7 +27,16 @@ export default function ProfilePage() {
         if (savedUser) {
             try {
                 const parsed = JSON.parse(savedUser);
-                setUser(prev => ({ ...prev, ...parsed }));
+                setUser((prev) => {
+                    const next: any = { ...prev, ...parsed };
+                    const cg = parsed?.class_grade;
+                    if (typeof cg === "number") next.class_grade = cg;
+                    else if (typeof cg === "string") {
+                        const n = Number(String(cg).replace(/[^0-9]/g, ""));
+                        if (!Number.isNaN(n) && n >= 1 && n <= 12) next.class_grade = n;
+                    }
+                    return next;
+                });
             } catch { }
         }
     }, []);
@@ -100,7 +109,7 @@ export default function ProfilePage() {
                 body: JSON.stringify({
                     name: user.name,
                     phone: user.phone,
-                    class_grade: user.class_grade,
+                    class_grade: Number(user.class_grade),
                     bio: user.bio,
                     avatar: preview || user.avatar
                 })
@@ -201,10 +210,11 @@ export default function ProfilePage() {
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-slate-400">Full Name</label>
+                                <label htmlFor="profile_name" className="text-sm font-medium text-slate-400">Full Name</label>
                                 <div className="relative">
                                     <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                                     <input
+                                        id="profile_name"
                                         type="text"
                                         disabled={!isEditing}
                                         value={user.name}
@@ -214,10 +224,11 @@ export default function ProfilePage() {
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-slate-400">Email Address</label>
+                                <label htmlFor="profile_email" className="text-sm font-medium text-slate-400">Email Address</label>
                                 <div className="relative">
                                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                                     <input
+                                        id="profile_email"
                                         type="email"
                                         disabled={true} // Email usually not editable directly
                                         value={user.email}
@@ -226,10 +237,11 @@ export default function ProfilePage() {
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-slate-400">Phone Number</label>
+                                <label htmlFor="profile_phone" className="text-sm font-medium text-slate-400">Phone Number</label>
                                 <div className="relative">
                                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                                     <input
+                                        id="profile_phone"
                                         type="tel"
                                         disabled={!isEditing}
                                         value={user.phone}
@@ -239,21 +251,28 @@ export default function ProfilePage() {
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-slate-400">Class / Grade</label>
+                                <label htmlFor="profile_class_grade" className="text-sm font-medium text-slate-400">Class / Grade</label>
                                 <div className="relative">
                                     <BookOpen className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                                    <input
-                                        type="text"
+                                    <select
+                                        id="profile_class_grade"
                                         disabled={!isEditing}
-                                        value={user.class_grade}
-                                        onChange={(e) => setUser({ ...user, class_grade: e.target.value })}
+                                        value={String(user.class_grade)}
+                                        onChange={(e) => setUser({ ...user, class_grade: Number(e.target.value) })}
                                         className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-white focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                                    />
+                                    >
+                                        {[...Array(12)].map((_, i) => (
+                                            <option key={i + 1} value={String(i + 1)}>
+                                                Class {i + 1}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
                             </div>
                             <div className="col-span-1 sm:col-span-2 space-y-2">
-                                <label className="text-sm font-medium text-slate-400">Bio</label>
+                                <label htmlFor="profile_bio" className="text-sm font-medium text-slate-400">Bio</label>
                                 <textarea
+                                    id="profile_bio"
                                     disabled={!isEditing}
                                     value={user.bio}
                                     onChange={(e) => setUser({ ...user, bio: e.target.value })}

@@ -26,6 +26,7 @@ const ALLOWED_TABS = ["overview", "courses", "tests", "schedule", "reports", "le
 function DashboardContent() {
     const [isLoading, setIsLoading] = useState(true);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [classGrade, setClassGrade] = useState<number | null>(null);
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -78,6 +79,12 @@ function DashboardContent() {
                 try {
                     const parsed = JSON.parse(savedUser);
                     if (parsed.name) STUDENT_DATA.name = parsed.name;
+                    if (typeof parsed.class_grade === "number") {
+                        setClassGrade(parsed.class_grade);
+                    } else if (typeof parsed.class_grade === "string") {
+                        const n = Number(String(parsed.class_grade).replace(/[^0-9]/g, ""));
+                        if (!Number.isNaN(n) && n >= 1 && n <= 12) setClassGrade(n);
+                    }
                     // We can add more fields updates here
                 } catch { }
             }
@@ -152,7 +159,7 @@ function DashboardContent() {
                                 <Link
                                     href="/dashboard/test-series/cbse"
                                     onClick={() => {
-                                        trackLead({ action: "dashboard_open_cbse_9_12", entity_type: "test_series" });
+                                        trackLead({ action: "dashboard_open_cbse_preview", entity_type: "test_series" });
                                     }}
                                     className="group relative p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-cyan-500/50 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden"
                                 >
@@ -168,10 +175,10 @@ function DashboardContent() {
                                     </div>
 
                                     <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
-                                        CBSE Class 9–12
+                                        {classGrade ? `CBSE Class ${classGrade}` : "CBSE Courses"}
                                     </h3>
                                     <p className="text-slate-400 text-sm mb-6 line-clamp-2">
-                                        Open your Class 9–12 test-series courses and see the tests list (no Razorpay needed).
+                                        Open your test-series courses and see the tests list (no payment needed to view).
                                     </p>
 
                                     <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-800">
@@ -184,7 +191,8 @@ function DashboardContent() {
                                     </div>
                                 </Link>
 
-                                <Link
+                                {(!classGrade || classGrade >= 11) && (
+                                    <Link
                                     href="/dashboard/test-series/neet"
                                     onClick={() => {
                                         trackLead({ action: "dashboard_start_neet_test", entity_type: "test_series" });
@@ -217,9 +225,11 @@ function DashboardContent() {
                                             Start Test <FileText className="w-4 h-4" />
                                         </div>
                                     </div>
-                                </Link>
+                                    </Link>
+                                )}
 
-                                <Link
+                                {(!classGrade || classGrade >= 11) && (
+                                    <Link
                                     href="/dashboard/test-series/neet/mock-1"
                                     onClick={() => {
                                         trackLead({ action: "dashboard_start_neet_mock1", entity_type: "test", entity_id: "neet-mock-1" });
@@ -253,6 +263,7 @@ function DashboardContent() {
                                         </div>
                                     </div>
                                 </Link>
+                                )}
 
                                 <Link
                                     href="/dashboard/test-series/ultra-hard"
@@ -429,6 +440,7 @@ function DashboardContent() {
                                     </div>
                                 </Link>
 
+                                {(!classGrade || classGrade === 9) && (
                                 <Link
                                     href="/dashboard/test-series/698f874c217f7f278986466d"
                                     onClick={() => {
@@ -463,8 +475,10 @@ function DashboardContent() {
                                         </div>
                                     </div>
                                 </Link>
+                                )}
 
                                 {/* Class 12 Board Booster */}
+                                {(!classGrade || classGrade === 12) && (
                                 <Link
                                     href="/dashboard/test-series/698f8a866fadfeda52b1916a"
                                     className="group relative p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-indigo-500/50 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden col-span-1 md:col-span-2 lg:col-span-3"
@@ -495,6 +509,7 @@ function DashboardContent() {
                                         </div>
                                     </div>
                                 </Link>
+                                )}
 
                                 {/* Class 11 Final Prep */}
                                 <Link
