@@ -33,6 +33,7 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, onClose, onLo
         { id: "questions", label: "Question Bank", icon: HelpCircle },
         { id: "attempts", label: "Results", icon: History },
         { id: "users", label: "User Base", icon: Users },
+        { id: "free-access", label: "Free Access", icon: Users },
         { id: "leads", label: "Leads", icon: Target },
         { id: "jobs", label: "Job Listings", icon: Briefcase },
         { id: "leaderboard", label: "Leaderboard", icon: Trophy },

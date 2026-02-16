@@ -81,6 +81,11 @@ export default function CourseSeriesPage() {
                             const meData = await resMe.json();
                             const user = meData.user;
 
+                            // Free Access override
+                            if (user?.free_access === true) {
+                                setHasPurchased(true);
+                            }
+
                             // Check Purchase
                             if (user?.purchased_courses?.includes(courseId)) {
                                 setHasPurchased(true);

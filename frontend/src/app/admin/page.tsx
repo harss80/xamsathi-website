@@ -72,6 +72,14 @@ type AdminUser = {
   created_at?: string;
   last_login?: string;
   active?: boolean;
+  onboarding_completed?: boolean;
+  target_exam?: string;
+  stream?: string;
+  medium?: string;
+  school?: string;
+  city?: string;
+  guardian_phone?: string;
+  student_photo_present?: boolean;
 };
 
 type AdminJob = {
@@ -121,6 +129,9 @@ export default function AdminPanel() {
   const [leads, setLeads] = useState<AdminLead[]>([]);
   const [analytics, setAnalytics] = useState<Record<string, unknown>>({});
 
+  const [freeAccessEmails, setFreeAccessEmails] = useState<Array<{ email: string; createdAt?: string }>>([]);
+  const [freeAccessEmailInput, setFreeAccessEmailInput] = useState("");
+
   const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null);
   const [selectedUserAttempts, setSelectedUserAttempts] = useState<AdminAttempt[]>([]);
   const [selectedUserLeads, setSelectedUserLeads] = useState<AdminLead[]>([]);
@@ -139,6 +150,13 @@ export default function AdminPanel() {
   const [testTitle, setTestTitle] = useState("");
   const [testDifficulty, setTestDifficulty] = useState("");
   const [testDuration, setTestDuration] = useState<number>(60);
+
+  useEffect(() => {
+    if (activeTab === "free-access") {
+      fetchFreeAccess();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
 
   const attemptsOverTime = Array.isArray(analytics.attemptsOverTime) ? analytics.attemptsOverTime : [];
   const leadsOverTime = Array.isArray(analytics.leadsOverTime) ? analytics.leadsOverTime : [];
@@ -163,6 +181,69 @@ export default function AdminPanel() {
   );
 
   // API Functions
+  async function fetchFreeAccess() {
+    const url = base ? new URL("/api/admin/free-access", base).toString() : "/api/admin/free-access";
+    const res = await fetch(url, { credentials: "include" });
+    if (!res.ok) return;
+    const data: unknown = await res.json();
+    const items =
+      data && typeof data === "object" && Array.isArray((data as Record<string, unknown>).items)
+        ? ((data as Record<string, unknown>).items as unknown[])
+        : [];
+
+    const normalized = items.flatMap((raw) => {
+      if (!raw || typeof raw !== "object") return [];
+      const r = raw as Record<string, unknown>;
+      const email = typeof r.email === "string" ? r.email : "";
+      const createdAt = typeof r.createdAt === "string" ? r.createdAt : undefined;
+      if (!email) return [];
+      return [{ email, createdAt }];
+    });
+
+    setFreeAccessEmails(normalized);
+  }
+
+  async function addFreeAccessEmail() {
+    const email = freeAccessEmailInput.trim().toLowerCase();
+    if (!email) return;
+    const url = base ? new URL("/api/admin/free-access", base).toString() : "/api/admin/free-access";
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ email }),
+    });
+
+    if (res.ok) {
+      setFreeAccessEmailInput("");
+      await fetchFreeAccess();
+      alert("Free access added");
+      return;
+    }
+
+    const j = await res.json().catch(() => ({}));
+    alert("Error: " + ((j as any).error || "failed"));
+  }
+
+  async function removeFreeAccessEmail(email: string) {
+    if (!confirm(`Remove free access for ${email}?`)) return;
+    const url = base ? new URL("/api/admin/free-access", base).toString() : "/api/admin/free-access";
+    const res = await fetch(url, {
+      method: "DELETE",
+      headers: { "content-type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ email }),
+    });
+
+    if (res.ok) {
+      await fetchFreeAccess();
+      return;
+    }
+
+    const j = await res.json().catch(() => ({}));
+    alert("Error: " + ((j as any).error || "failed"));
+  }
+
   async function fetchCourses() {
     const url = base ? new URL("/api/admin/courses", base).toString() : "/api/admin/courses";
     const res = await fetch(url + "?limit=200", { credentials: "include" });
@@ -322,8 +403,17 @@ export default function AdminPanel() {
       const last_login = typeof r.last_login === "string" ? r.last_login : undefined;
       const active = typeof r.active === "boolean" ? r.active : undefined;
 
+      const onboarding_completed = typeof r.onboarding_completed === "boolean" ? r.onboarding_completed : undefined;
+      const target_exam = typeof r.target_exam === "string" ? r.target_exam : undefined;
+      const stream = typeof r.stream === "string" ? r.stream : undefined;
+      const medium = typeof r.medium === "string" ? r.medium : undefined;
+      const school = typeof r.school === "string" ? r.school : undefined;
+      const city = typeof r.city === "string" ? r.city : undefined;
+      const guardian_phone = typeof r.guardian_phone === "string" ? r.guardian_phone : undefined;
+      const student_photo_present = typeof r.student_photo_present === "boolean" ? r.student_photo_present : undefined;
+
       if (!id || !email) return [];
-      return [{ id, name, email, role, class_grade, phone, created_at, last_login, active }];
+      return [{ id, name, email, role, class_grade, phone, created_at, last_login, active, onboarding_completed, target_exam, stream, medium, school, city, guardian_phone, student_photo_present }];
     });
 
     setUsers(normalized);
@@ -991,6 +1081,64 @@ export default function AdminPanel() {
               </motion.div>
             )}
 
+            {activeTab === "free-access" && (
+              <motion.div variants={fadeIn} className="bg-slate-900/60 backdrop-blur-xl border border-white/5 rounded-3xl overflow-hidden shadow-xl">
+                <div className="p-6 border-b border-white/5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div>
+                    <h3 className="font-bold text-lg text-white">Free Access Allowlist</h3>
+                    <p className="text-slate-400 text-sm">Add email here and that user will have permanent free access.</p>
+                  </div>
+                  <div className="flex gap-2 w-full md:w-auto">
+                    <input
+                      value={freeAccessEmailInput}
+                      onChange={(e) => setFreeAccessEmailInput(e.target.value)}
+                      placeholder="student@email.com"
+                      className="flex-1 md:w-80 bg-slate-950/50 border border-slate-700 text-slate-200 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40 text-sm"
+                    />
+                    <button
+                      onClick={addFreeAccessEmail}
+                      className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm"
+                    >
+                      Add
+                    </button>
+                  </div>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm text-slate-400">
+                    <thead className="bg-white/5 text-slate-200 font-semibold uppercase tracking-wider text-xs">
+                      <tr>
+                        <th className="px-6 py-5">Email</th>
+                        <th className="px-6 py-5">Added</th>
+                        <th className="px-6 py-5 text-right">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {freeAccessEmails.map((it) => (
+                        <tr key={it.email} className="hover:bg-white/5 transition-colors">
+                          <td className="px-6 py-5 font-semibold text-white">{it.email}</td>
+                          <td className="px-6 py-5">{it.createdAt ? new Date(it.createdAt).toLocaleString() : ""}</td>
+                          <td className="px-6 py-5 text-right">
+                            <button
+                              onClick={() => removeFreeAccessEmail(it.email)}
+                              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-rose-600/20 text-rose-300 border border-rose-500/30 hover:bg-rose-600/30"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                              Remove
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                      {freeAccessEmails.length === 0 && (
+                        <tr>
+                          <td className="px-6 py-10 text-center text-slate-500" colSpan={3}>No free-access emails yet.</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </motion.div>
+            )}
+
             {/* Courses Tab */}
             {activeTab === "courses" && (
               <motion.div variants={fadeIn} className="space-y-6">
@@ -1253,6 +1401,14 @@ export default function AdminPanel() {
                         <th className="px-6 py-5">User</th>
                         <th className="px-6 py-5">Email</th>
                         <th className="px-6 py-5">Class</th>
+                        <th className="px-6 py-5">Target</th>
+                        <th className="px-6 py-5">Stream</th>
+                        <th className="px-6 py-5">Medium</th>
+                        <th className="px-6 py-5">School</th>
+                        <th className="px-6 py-5">City</th>
+                        <th className="px-6 py-5">Guardian</th>
+                        <th className="px-6 py-5">Photo</th>
+                        <th className="px-6 py-5">Onboarded</th>
                         <th className="px-6 py-5">Phone</th>
                         <th className="px-6 py-5">Created</th>
                         <th className="px-6 py-5">Last Login</th>
@@ -1276,6 +1432,14 @@ export default function AdminPanel() {
                           </td>
                           <td className="px-6 py-5 text-slate-300">{u.email}</td>
                           <td className="px-6 py-5">{typeof u.class_grade === 'number' ? `Class ${u.class_grade}` : '-'}</td>
+                          <td className="px-6 py-5">{u.target_exam || '-'}</td>
+                          <td className="px-6 py-5">{u.stream || '-'}</td>
+                          <td className="px-6 py-5">{u.medium || '-'}</td>
+                          <td className="px-6 py-5">{u.school || '-'}</td>
+                          <td className="px-6 py-5">{u.city || '-'}</td>
+                          <td className="px-6 py-5">{u.guardian_phone || '-'}</td>
+                          <td className="px-6 py-5">{u.student_photo_present ? 'Yes' : '-'}</td>
+                          <td className="px-6 py-5">{u.onboarding_completed ? 'Yes' : '-'}</td>
                           <td className="px-6 py-5">{u.phone || '-'}</td>
                           <td className="px-6 py-5">{u.created_at ? new Date(u.created_at).toLocaleDateString() : '-'}</td>
                           <td className="px-6 py-5">{u.last_login ? new Date(u.last_login).toLocaleDateString() : '-'}</td>

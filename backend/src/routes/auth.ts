@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
-import { createUser, authenticateUser, generateToken } from '../lib/auth';
+import { createUser, authenticateUser, generateToken, verifyToken } from '../lib/auth';
 import User from '../models/User';
+import FreeAccessEmail from '../models/FreeAccessEmail';
 
 const router = Router();
 
@@ -27,6 +28,16 @@ router.post('/signup', async (req: Request, res: Response) => {
       return res.status(409).json({ error: 'email already exists' });
     }
     const user = await createUser(email, password, name, class_grade);
+    try {
+      const normalizedEmail = email.trim().toLowerCase();
+      const allowed = await FreeAccessEmail.findOne({ email: normalizedEmail }).select('_id').lean();
+      if (allowed) {
+        await User.findByIdAndUpdate(user._id, { $set: { free_access: true } });
+        (user as any).free_access = true;
+      }
+    } catch (e) {
+      console.error('Free access check error (signup):', e);
+    }
     const token = generateToken(user._id.toString());
     return res.status(201).json({
       user: {
@@ -35,6 +46,8 @@ router.post('/signup', async (req: Request, res: Response) => {
         name: user.name,
         class_grade: user.class_grade,
         avatar: user.avatar,
+        free_access: (user as any).free_access,
+        onboarding_completed: user.onboarding_completed,
       },
       token,
     });
@@ -55,6 +68,16 @@ router.post('/login', async (req: Request, res: Response) => {
     if (!user) {
       return res.status(401).json({ error: 'invalid credentials' });
     }
+    try {
+      const normalizedEmail = (user.email || '').trim().toLowerCase();
+      const allowed = await FreeAccessEmail.findOne({ email: normalizedEmail }).select('_id').lean();
+      if (allowed && !(user as any).free_access) {
+        await User.findByIdAndUpdate(user._id, { $set: { free_access: true } });
+        (user as any).free_access = true;
+      }
+    } catch (e) {
+      console.error('Free access check error (login):', e);
+    }
     const token = generateToken(user._id.toString());
     return res.json({
       user: {
@@ -64,6 +87,8 @@ router.post('/login', async (req: Request, res: Response) => {
         class_grade: user.class_grade,
         avatar: user.avatar,
         last_login: user.last_login,
+        free_access: (user as any).free_access,
+        onboarding_completed: user.onboarding_completed,
       },
       token,
     });
@@ -98,6 +123,8 @@ router.get('/me', async (req: Request, res: Response) => {
         avatar: user.avatar,
         last_login: user.last_login,
         created_at: user.created_at,
+        free_access: (user as any).free_access,
+        onboarding_completed: user.onboarding_completed,
       },
     });
   } catch (err) {
@@ -105,7 +132,5 @@ router.get('/me', async (req: Request, res: Response) => {
     return res.status(401).json({ error: 'invalid token' });
   }
 });
-
-import { verifyToken } from '../lib/auth';
 
 export default router;

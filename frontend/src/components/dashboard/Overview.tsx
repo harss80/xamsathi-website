@@ -2,8 +2,6 @@
 
 import { motion } from "framer-motion";
 import {
-    LineChart,
-    Line,
     XAxis,
     YAxis,
     CartesianGrid,
@@ -13,13 +11,10 @@ import {
     Area
 } from "recharts";
 import {
-    Zap,
     Target,
     Trophy,
-    Clock,
     ChevronRight,
     PlayCircle,
-    BookOpen
 } from "lucide-react";
 import Image from "next/image"; // For teacher avatars or course images
 
@@ -37,8 +32,19 @@ const TEST_SERIES_ID = "neet-ug-mock-180";
 
 import { useEffect, useState } from "react";
 
-export default function Overview({ user }: { user: any }) {
-    const [leaderboard, setLeaderboard] = useState<any[]>([]);
+type LeaderboardItem = {
+    rank: number;
+    name: string;
+    avatar?: string;
+    score: number;
+};
+
+type OverviewUser = {
+    name: string;
+};
+
+export default function Overview({ user }: { user: OverviewUser }) {
+    const [leaderboard, setLeaderboard] = useState<LeaderboardItem[]>([]);
 
     useEffect(() => {
         const fetchLeaderboard = async () => {
@@ -54,8 +60,18 @@ export default function Overview({ user }: { user: any }) {
                 };
 
                 const base = getBackendBase();
+                const userStr = localStorage.getItem("xamsathi_user");
+                let userId = "";
+                if (userStr) {
+                    try {
+                        const parsed = JSON.parse(userStr) as Record<string, unknown>;
+                        const id = parsed.id || parsed._id || parsed.user_id;
+                        userId = typeof id === "string" ? id : "";
+                    } catch { }
+                }
+                if (!userId) return;
                 const res = await fetch(`${base}/api/leaderboard/${TEST_SERIES_ID}`, {
-                    headers: { "x-user-id": "public" }
+                    headers: { "x-user-id": userId }
                 });
                 if (res.ok) {
                     const data = await res.json();
@@ -67,10 +83,6 @@ export default function Overview({ user }: { user: any }) {
         };
         fetchLeaderboard();
     }, []);
-
-    // Find current user's rank if available in full list (mocked here as we only fetched top 5)
-    // In a real scenario, we'd fetch user's specific rank or check if they are in top 5
-    const userInApp = user ? leaderboard.find(u => u.name === user.name) : null;
 
     return (
         <div className="space-y-8">
@@ -121,9 +133,12 @@ export default function Overview({ user }: { user: any }) {
                             <h3 className="text-4xl font-bold text-white">24<span className="text-xl text-slate-500">/30</span></h3>
                             <span className="text-sm text-slate-400 mb-1.5">hrs</span>
                         </div>
-                        <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
-                            <div className="h-full bg-emerald-500 rounded-full" style={{ width: '80%' }} />
-                        </div>
+                        <progress
+                            value={80}
+                            max={100}
+                            className="w-full h-2 rounded-full overflow-hidden bg-slate-800 accent-emerald-500"
+                            aria-label="Weekly target progress"
+                        />
                     </div>
                 </motion.div>
 
@@ -187,7 +202,7 @@ export default function Overview({ user }: { user: any }) {
                             <h3 className="text-xl font-bold text-white">Learning Activity</h3>
                             <p className="text-sm text-slate-400">Your study hours over the last 7 days</p>
                         </div>
-                        <select className="bg-slate-800 border-none text-slate-300 text-sm rounded-lg px-3 py-1 focus:ring-1 focus:ring-indigo-500">
+                        <select aria-label="Learning activity range" className="bg-slate-800 border-none text-slate-300 text-sm rounded-lg px-3 py-1 focus:ring-1 focus:ring-indigo-500">
                             <option>Last 7 Days</option>
                             <option>This Month</option>
                         </select>
@@ -274,9 +289,12 @@ export default function Overview({ user }: { user: any }) {
                                     <span>Progress</span>
                                     <span>{45 + i * 10}%</span>
                                 </div>
-                                <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden mb-4">
-                                    <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${45 + i * 10}%` }} />
-                                </div>
+                                <progress
+                                    value={45 + i * 10}
+                                    max={100}
+                                    className="w-full h-1.5 rounded-full overflow-hidden bg-slate-800 accent-indigo-500 mb-4"
+                                    aria-label="Course progress"
+                                />
                                 <button className="w-full py-2 bg-slate-800 hover:bg-slate-700 text-white text-sm font-semibold rounded-lg transition-colors border border-slate-700 hover:border-slate-600 flex items-center justify-center gap-2">
                                     <PlayCircle className="w-4 h-4" /> Continue
                                 </button>

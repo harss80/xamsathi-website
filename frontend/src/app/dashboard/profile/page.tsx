@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { User, Camera, Mail, Phone, MapPin, School, BookOpen, Upload, X, Loader2 } from "lucide-react";
+import { User, Camera, Mail, Phone, BookOpen, Upload, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useDropzone } from "react-dropzone";
 
 export default function ProfilePage() {
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [user, setUser] = useState({
         name: "Harsh Budhauliya",
         email: "harsh@example.com",
@@ -26,10 +27,10 @@ export default function ProfilePage() {
         const savedUser = localStorage.getItem("xamsathi_user");
         if (savedUser) {
             try {
-                const parsed = JSON.parse(savedUser);
+                const parsed = JSON.parse(savedUser) as Record<string, unknown>;
                 setUser((prev) => {
-                    const next: any = { ...prev, ...parsed };
-                    const cg = parsed?.class_grade;
+                    const next = { ...prev, ...(parsed as Record<string, unknown>) } as typeof prev & Record<string, unknown>;
+                    const cg = (parsed as Record<string, unknown>)?.class_grade;
                     if (typeof cg === "number") next.class_grade = cg;
                     else if (typeof cg === "string") {
                         const n = Number(String(cg).replace(/[^0-9]/g, ""));
@@ -94,7 +95,7 @@ export default function ProfilePage() {
             };
 
             const base = getBackendBase();
-            const payload: any = { ...user };
+            const payload: Record<string, unknown> = { ...user };
             if (preview) {
                 payload.avatar = preview; // Preview is the Data URL (Base64)
             }
@@ -160,14 +161,23 @@ export default function ProfilePage() {
                                 />
                                 {isEditing && (
                                     <div {...getRootProps()} className="absolute inset-0 bg-black/50 flex items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <input {...getInputProps()} />
+                                        <input
+                                            {...getInputProps()}
+                                            ref={(el) => {
+                                                fileInputRef.current = el;
+                                            }}
+                                        />
                                         <Camera className="w-8 h-8 text-white" />
                                     </div>
                                 )}
                             </div>
                             {isEditing && (
-                                <button {...getRootProps()} className="absolute bottom-0 right-0 bg-indigo-600 p-2 rounded-full border-4 border-slate-900 shadow-lg hover:bg-indigo-500 transition-colors">
-                                    <input {...getInputProps()} />
+                                <button
+                                    type="button"
+                                    onClick={() => fileInputRef.current?.click()}
+                                    aria-label="Upload photo"
+                                    className="absolute bottom-0 right-0 bg-indigo-600 p-2 rounded-full border-4 border-slate-900 shadow-lg hover:bg-indigo-500 transition-colors"
+                                >
                                     <Camera className="w-4 h-4 text-white" />
                                 </button>
                             )}

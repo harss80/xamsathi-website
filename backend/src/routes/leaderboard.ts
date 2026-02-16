@@ -46,7 +46,19 @@ router.post('/submit', async (req: Request, res: Response) => {
 router.get('/:testSeriesId', async (req: Request, res: Response) => {
     const { testSeriesId } = req.params;
 
+    const requesterId = req.header('x-user-id');
+    if (!requesterId) return res.status(401).json({ error: 'x-user-id required' });
+
     try {
+        const requester = await User.findById(requesterId)
+            .select('_id class_grade target_exam active')
+            .lean();
+        if (!requester || !(requester as any).active) {
+            return res.status(401).json({ error: 'unauthorized' });
+        }
+        const requesterGrade = (requester as any).class_grade as number | undefined;
+        const requesterExam = (requester as any).target_exam as string | undefined;
+
         const entries = await LeaderboardEntry.find({ test_series_id: testSeriesId })
             .sort({ score: -1 })
             .limit(50) // Limit to top 50
@@ -57,17 +69,26 @@ router.get('/:testSeriesId', async (req: Request, res: Response) => {
         // Aggregation is better but let's do parallel fetch for simplicity if list is small.
 
         const userIds = entries.map(e => e.user_id);
-        const users = await User.find({ _id: { $in: userIds } }).select('_id name avatar').lean();
+        const userFilter: Record<string, unknown> = { _id: { $in: userIds }, active: true };
+        if (typeof requesterGrade === 'number') userFilter.class_grade = requesterGrade;
+        if (typeof requesterExam === 'string' && requesterExam) userFilter.target_exam = requesterExam;
+
+        const users = await User.find(userFilter)
+            .select('_id name avatar student_photo')
+            .lean();
 
         const userMap = new Map();
         users.forEach(u => userMap.set(String(u._id), u));
 
-        const leaderboard = entries.map((entry, index) => {
-            const user = userMap.get(entry.user_id);
+        const filteredEntries = entries.filter((entry) => userMap.has(entry.user_id));
+
+        const leaderboard = filteredEntries.map((entry, index) => {
+            const user = userMap.get(entry.user_id) as any;
+            const photo = (user?.student_photo || user?.avatar || '/default-avatar.png') as string;
             return {
                 rank: index + 1,
                 name: user ? user.name : 'Unknown Student',
-                avatar: user ? user.avatar : '/default-avatar.png',
+                avatar: photo,
                 score: entry.score,
                 accuracy: entry.accuracy,
                 change: 'same' // Calculate trend if we store history

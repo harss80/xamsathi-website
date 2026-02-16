@@ -3,6 +3,7 @@ import Test, { ITest } from '../models/Test';
 import Course, { ICourse } from '../models/Course';
 import Question from '../models/Question';
 import Attempt, { IAttempt } from '../models/Attempt';
+import LeaderboardEntry from '../models/LeaderboardEntry';
 
 
 const router = Router();
@@ -144,6 +145,22 @@ router.post('/submit', async (req: Request, res: Response) => {
   }
 
   await Attempt.findByIdAndUpdate(attempt_id, { $set: { submitted_at: new Date(), score, total } });
+
+  // Auto-upsert leaderboard entry (per-test leaderboard)
+  try {
+    const testSeriesId = String(attempt.test_id);
+    const accuracy = total > 0 ? Math.round((score / total) * 100) : 0;
+    const existing = await LeaderboardEntry.findOne({ user_id: userId, test_series_id: testSeriesId });
+    if (!existing) {
+      await LeaderboardEntry.create({ user_id: userId, test_series_id: testSeriesId, score, accuracy });
+    } else if (typeof existing.score === 'number' && score > existing.score) {
+      existing.score = score;
+      existing.accuracy = accuracy;
+      await existing.save();
+    }
+  } catch (e) {
+    console.error('Leaderboard auto-submit error:', e);
+  }
   return res.json({ attempt_id, score, total });
 });
 

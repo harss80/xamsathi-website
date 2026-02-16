@@ -176,6 +176,16 @@ router.post('/unlock-test', async (req: Request, res: Response) => {
         const user = await User.findById(userId);
         if (!user) return res.status(404).json({ error: 'User not found' });
 
+        // Free-access users don't need to spend coins or unlock
+        if ((user as any).free_access === true) {
+            return res.json({
+                success: true,
+                message: 'Free access enabled',
+                coins: user.coins,
+                unlockedTestId: testId
+            });
+        }
+
         // Check if already unlocked
         const isUnlocked = user.unlocked_tests?.some((id: any) => id.toString() === testId);
         if (isUnlocked) {

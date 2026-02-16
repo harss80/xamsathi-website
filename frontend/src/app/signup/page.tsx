@@ -86,7 +86,8 @@ export default function SignUpPage() {
       localStorage.setItem("xamsathi_token", data.token);
       localStorage.setItem("xamsathi_user", JSON.stringify(data.user));
       setAuthCookie(data.token);
-      router.push("/dashboard");
+      const onboardingDone = !!data?.user?.onboarding_completed;
+      router.push(onboardingDone ? "/dashboard" : "/admission?next=/dashboard");
     } catch (e) {
       const msg = e instanceof Error ? e.message : "";
       if (msg.includes("NEXT_PUBLIC_BACKEND_URL")) {

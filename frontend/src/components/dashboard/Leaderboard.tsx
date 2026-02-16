@@ -43,9 +43,22 @@ export default function Leaderboard() {
         const fetchLeaderboard = async () => {
             try {
                 const base = getBackendBase();
+                const userStr = localStorage.getItem("xamsathi_user");
+                let userId = "";
+                if (userStr) {
+                    try {
+                        const parsed = JSON.parse(userStr) as Record<string, unknown>;
+                        const id = parsed.id || parsed._id || parsed.user_id;
+                        userId = typeof id === "string" ? id : "";
+                    } catch { }
+                }
+                if (!userId) {
+                    setLeaderboardData([]);
+                    return;
+                }
                 const res = await fetch(`${base}/api/leaderboard/${TEST_SERIES_ID}`, {
                     headers: {
-                        "x-user-id": "public" // Or handle auth if required for fetching
+                        "x-user-id": userId
                     }
                 });
                 if (res.ok) {

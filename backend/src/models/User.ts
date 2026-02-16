@@ -9,6 +9,15 @@ export interface IUser extends Document {
   phone?: string;
   avatar?: string;
   bio?: string;
+  free_access: boolean;
+  onboarding_completed: boolean;
+  target_exam?: 'neet' | 'jee' | 'cbse' | 'other';
+  stream?: 'pcm' | 'pcb' | 'commerce' | 'arts' | 'na';
+  medium?: 'english' | 'hindi' | 'other';
+  school?: string;
+  city?: string;
+  guardian_phone?: string;
+  student_photo?: string;
   created_at: Date;
   updated_at: Date;
   last_login?: Date;
@@ -35,6 +44,15 @@ const UserSchema = new Schema<IUser>({
   phone: { type: String, trim: true },
   avatar: { type: String },
   bio: { type: String, trim: true },
+  free_access: { type: Boolean, default: false },
+  onboarding_completed: { type: Boolean, default: false },
+  target_exam: { type: String, enum: ['neet', 'jee', 'cbse', 'other'] },
+  stream: { type: String, enum: ['pcm', 'pcb', 'commerce', 'arts', 'na'], default: 'na' },
+  medium: { type: String, enum: ['english', 'hindi', 'other'] },
+  school: { type: String, trim: true },
+  city: { type: String, trim: true },
+  guardian_phone: { type: String, trim: true },
+  student_photo: { type: String },
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now },
   last_login: { type: Date },

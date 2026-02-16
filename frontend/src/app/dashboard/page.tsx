@@ -79,6 +79,10 @@ function DashboardContent() {
                 try {
                     const parsed = JSON.parse(savedUser);
                     if (parsed.name) STUDENT_DATA.name = parsed.name;
+                    if (parsed.onboarding_completed === false) {
+                        router.replace("/admission?next=/dashboard");
+                        return;
+                    }
                     if (typeof parsed.class_grade === "number") {
                         setClassGrade(parsed.class_grade);
                     } else if (typeof parsed.class_grade === "string") {

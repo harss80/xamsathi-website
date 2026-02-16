@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { OAuth2Client } from 'google-auth-library';
 import User from '../models/User';
 import { generateToken } from '../lib/auth';
+import FreeAccessEmail from '../models/FreeAccessEmail';
 
 const router = Router();
 const googleClient = new OAuth2Client(
@@ -52,6 +53,17 @@ router.post('/google', async (req: Request, res: Response) => {
       await user.save();
     }
 
+    try {
+      const normalizedEmail = (email || '').trim().toLowerCase();
+      const allowed = await FreeAccessEmail.findOne({ email: normalizedEmail }).select('_id').lean();
+      if (allowed && !(user as any).free_access) {
+        user.free_access = true as any;
+        await user.save();
+      }
+    } catch (e) {
+      console.error('Free access check error (google):', e);
+    }
+
     const token_jwt = generateToken(user._id.toString());
     return res.json({
       user: {
@@ -61,6 +73,8 @@ router.post('/google', async (req: Request, res: Response) => {
         class_grade: user.class_grade,
         avatar: user.avatar,
         last_login: user.last_login,
+        free_access: (user as any).free_access,
+        onboarding_completed: user.onboarding_completed,
       },
       token: token_jwt,
     });

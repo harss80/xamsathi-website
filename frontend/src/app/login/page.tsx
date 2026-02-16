@@ -80,7 +80,8 @@ const LoginForm = () => {
             setAuthCookie(data.token);
             const next = searchParams?.get("next");
             const safeNext = next && next.startsWith("/") ? next : "/dashboard";
-            router.push(safeNext);
+            const onboardingDone = !!data?.user?.onboarding_completed;
+            router.push(onboardingDone ? safeNext : `/admission?next=${encodeURIComponent(safeNext)}`);
         } catch (e) {
             const msg = e instanceof Error ? e.message : "";
             if (msg.includes("NEXT_PUBLIC_BACKEND_URL")) {

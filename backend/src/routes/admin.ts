@@ -7,6 +7,7 @@ import Lead from '../models/Lead';
 import Visit from '../models/Visit';
 import { verifyToken } from '../lib/auth';
 import User from '../models/User';
+import FreeAccessEmail from '../models/FreeAccessEmail';
 
 const router = Router();
 
@@ -24,6 +25,33 @@ function readCookie(req: Request, name: string): string | null {
   }
   return null;
 }
+
+function normalizeEmail(input: unknown): string {
+  return typeof input === 'string' ? input.trim().toLowerCase() : '';
+}
+
+router.get('/free-access', requireAdmin, async (_req: Request, res: Response) => {
+  const items = await FreeAccessEmail.find({}).sort({ createdAt: -1 as const }).lean();
+  return res.json({ items: items.map((i) => ({ email: i.email, createdAt: i.createdAt })) });
+});
+
+router.post('/free-access', requireAdmin, async (req: Request, res: Response) => {
+  const email = normalizeEmail((req.body as Record<string, unknown> | null)?.email);
+  if (!email) return res.status(400).json({ error: 'email required' });
+
+  await FreeAccessEmail.updateOne({ email }, { $set: { email } }, { upsert: true });
+  await User.updateMany({ email }, { $set: { free_access: true } });
+  return res.json({ ok: true });
+});
+
+router.delete('/free-access', requireAdmin, async (req: Request, res: Response) => {
+  const email = normalizeEmail((req.body as Record<string, unknown> | null)?.email);
+  if (!email) return res.status(400).json({ error: 'email required' });
+
+  await FreeAccessEmail.deleteOne({ email });
+  await User.updateMany({ email }, { $set: { free_access: false } });
+  return res.json({ ok: true });
+});
 
 async function requireAdmin(req: Request, res: Response, next: NextFunction) {
   const cookieToken = readCookie(req, 'admin_token');
@@ -130,7 +158,9 @@ router.get('/users', requireAdmin, async (req: Request, res: Response) => {
 
   const [items, total] = await Promise.all([
     User.find(filter)
-      .select('email name role class_grade phone avatar created_at last_login active')
+      .select(
+        'email name role class_grade phone avatar created_at last_login active onboarding_completed target_exam stream medium school city guardian_phone student_photo'
+      )
       .sort({ created_at: -1 as const })
       .skip(skip)
       .limit(limit)
@@ -138,7 +168,16 @@ router.get('/users', requireAdmin, async (req: Request, res: Response) => {
     User.countDocuments(filter),
   ]);
 
-  return res.json({ items, total, page, limit });
+  const normalized = items.map((u) => {
+    if (!u || typeof u !== 'object') return u;
+    const r = u as Record<string, unknown>;
+    const hasPhoto = typeof r.student_photo === 'string' && !!r.student_photo;
+    const { student_photo, ...rest } = r;
+    void student_photo;
+    return { ...rest, student_photo_present: hasPhoto };
+  });
+
+  return res.json({ items: normalized, total, page, limit });
 });
 
 router.get('/users/:id/leads', requireAdmin, async (req: Request, res: Response) => {
@@ -188,10 +227,17 @@ router.get('/leads', requireAdmin, async (req: Request, res: Response) => {
 router.get('/users/:id', requireAdmin, async (req: Request, res: Response) => {
   const id = req.params.id;
   const user = await User.findById(id)
-    .select('email name role class_grade phone avatar created_at last_login active')
+    .select(
+      'email name role class_grade phone avatar created_at last_login active onboarding_completed target_exam stream medium school city guardian_phone student_photo'
+    )
     .lean();
   if (!user) return res.status(404).json({ error: 'not found' });
-  return res.json({ user });
+
+  const r = user as Record<string, unknown>;
+  const hasPhoto = typeof r.student_photo === 'string' && !!r.student_photo;
+  const { student_photo, ...rest } = r;
+  void student_photo;
+  return res.json({ user: { ...rest, student_photo_present: hasPhoto } });
 });
 
 router.get('/users/:id/attempts', requireAdmin, async (req: Request, res: Response) => {

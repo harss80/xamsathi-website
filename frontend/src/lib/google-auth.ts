@@ -112,8 +112,15 @@ async function handleGoogleSignIn(response: GoogleCredentialResponse) {
       document.cookie = `xamsathi_token=${encodeURIComponent(data.token)}; Path=/; Domain=.xamsathi.in; Max-Age=${60 * 60 * 24 * 30}; SameSite=Lax${secure}`;
     } catch {}
 
-    // Redirect to dashboard
-    window.location.href = '/dashboard';
+    // Redirect to admission if onboarding is not completed
+    const onboardingDone = !!data?.user?.onboarding_completed;
+    let next = '/dashboard';
+    try {
+      const u = new URL(window.location.href);
+      const qp = u.searchParams.get('next');
+      if (qp && qp.startsWith('/')) next = qp;
+    } catch {}
+    window.location.href = onboardingDone ? next : `/admission?next=${encodeURIComponent(next)}`;
   } catch (error) {
     console.error('Google sign-in error:', error);
     alert('Google sign-in failed. Please try again.');
