@@ -91,25 +91,83 @@ router.put('/profile', async (req: Request, res: Response) => {
   const userId = req.header('x-user-id');
   if (!userId) return res.status(401).json({ error: 'x-user-id required' });
 
-  const { avatar, name, bio, phone, class_grade } = req.body as {
+  const {
+    avatar,
+    name,
+    bio,
+    phone,
+    class_grade,
+    target_exam,
+    stream,
+    medium,
+    school,
+    city,
+    guardian_phone,
+    student_photo,
+  } = req.body as {
     avatar?: string;
     name?: string;
     bio?: string;
     phone?: string;
     class_grade?: number;
+    target_exam?: 'neet' | 'jee' | 'cbse' | 'other';
+    stream?: 'pcm' | 'pcb' | 'commerce' | 'arts' | 'na';
+    medium?: 'english' | 'hindi' | 'other';
+    school?: string;
+    city?: string;
+    guardian_phone?: string;
+    student_photo?: string;
   };
 
   try {
     const updateData: Record<string, unknown> = {};
-    if (avatar) updateData.avatar = avatar;
-    if (name) updateData.name = name;
-    if (bio) updateData.bio = bio;
-    if (phone) updateData.phone = phone;
+
+    if (typeof avatar === 'string' && avatar) {
+      if (avatar.startsWith('data:image/') && avatar.length > 5.5 * 1024 * 1024) {
+        return res.status(400).json({ error: 'avatar too large' });
+      }
+      updateData.avatar = avatar;
+    }
+    if (typeof name === 'string' && name.trim()) updateData.name = name.trim();
+    if (typeof bio === 'string') updateData.bio = bio;
+    if (typeof phone === 'string') updateData.phone = phone;
     if (typeof class_grade === 'number') {
       if (class_grade < 1 || class_grade > 12) {
         return res.status(400).json({ error: 'class_grade must be between 1 and 12' });
       }
       updateData.class_grade = class_grade;
+    }
+
+    const allowedExam = new Set(['neet', 'jee', 'cbse', 'other']);
+    if (target_exam) {
+      if (!allowedExam.has(target_exam)) return res.status(400).json({ error: 'invalid target_exam' });
+      updateData.target_exam = target_exam;
+    }
+
+    const allowedStream = new Set(['pcm', 'pcb', 'commerce', 'arts', 'na']);
+    if (stream) {
+      if (!allowedStream.has(stream)) return res.status(400).json({ error: 'invalid stream' });
+      updateData.stream = stream;
+    }
+
+    const allowedMedium = new Set(['english', 'hindi', 'other']);
+    if (medium) {
+      if (!allowedMedium.has(medium)) return res.status(400).json({ error: 'invalid medium' });
+      updateData.medium = medium;
+    }
+
+    if (typeof school === 'string') updateData.school = school.trim();
+    if (typeof city === 'string') updateData.city = city.trim();
+    if (typeof guardian_phone === 'string') updateData.guardian_phone = guardian_phone.trim();
+
+    if (typeof student_photo === 'string' && student_photo) {
+      if (!student_photo.startsWith('data:image/')) {
+        return res.status(400).json({ error: 'student_photo must be an image data url' });
+      }
+      if (student_photo.length > 5.5 * 1024 * 1024) {
+        return res.status(400).json({ error: 'student_photo too large' });
+      }
+      updateData.student_photo = student_photo;
     }
 
     const updatedUser = await User.findByIdAndUpdate(userId, { $set: updateData }, { new: true }).select('-password');
@@ -145,7 +203,7 @@ router.get('/', async (req: Request, res: Response) => {
     const user = await User.findById(userId).select('-password');
     if (!user) return res.status(404).json({ error: 'User not found' });
     res.json({ user });
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Server error' });
   }
 });

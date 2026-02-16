@@ -37,7 +37,7 @@ const corsOptions = {
       },
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization', 'x-admin-secret', 'x-user-id', 'x-class-grade'],
-  methods: ['GET', 'POST', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 };
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));

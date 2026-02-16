@@ -1,46 +1,161 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { User, Camera, Mail, Phone, BookOpen, Upload, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useDropzone } from "react-dropzone";
 
+type TargetExam = "neet" | "jee" | "cbse" | "other";
+type Stream = "pcm" | "pcb" | "commerce" | "arts" | "na";
+type Medium = "english" | "hindi" | "other";
+
+function readCookie(name: string): string | null {
+    try {
+        const m = document.cookie.match(
+            new RegExp(`(?:^|; )${name.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&")}=([^;]*)`)
+        );
+        return m ? decodeURIComponent(m[1]) : null;
+    } catch {
+        return null;
+    }
+}
+
+function getBackendBase(): string {
+    const envBase = (process.env.NEXT_PUBLIC_BACKEND_URL || "").trim();
+    if (envBase) return envBase;
+    if (typeof window !== "undefined") {
+        const host = window.location.hostname;
+        if (host === "localhost" || host === "127.0.0.1") return "http://localhost:3001";
+    }
+    return "http://localhost:3001";
+}
+
 export default function ProfilePage() {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const studentPhotoInputRef = useRef<HTMLInputElement | null>(null);
     const [user, setUser] = useState({
-        name: "Harsh Budhauliya",
-        email: "harsh@example.com",
-        phone: "+91 98765 43210",
-        course: "JEE Advanced 2026",
-        class_grade: 11,
-        school: "Delhi Public School",
-        bio: "Aspiring Engineer. Physics Enthusiast. Aiming for IIT Bombay.",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Harsh"
+        name: "",
+        email: "",
+        phone: "",
+        course: "",
+        class_grade: 10,
+        school: "",
+        bio: "",
+        avatar: "",
+        target_exam: "cbse" as TargetExam,
+        stream: "na" as Stream,
+        medium: "english" as Medium,
+        city: "",
+        guardian_phone: "",
+        student_photo: "",
     });
 
     const [isEditing, setIsEditing] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [preview, setPreview] = useState<string | null>(null);
+    const [studentPhotoPreview, setStudentPhotoPreview] = useState<string | null>(null);
+    const [loadError, setLoadError] = useState<string>("");
 
-    // Mock loading user data (in real app, fetch from API)
-    useEffect(() => {
-        const savedUser = localStorage.getItem("xamsathi_user");
-        if (savedUser) {
-            try {
-                const parsed = JSON.parse(savedUser) as Record<string, unknown>;
-                setUser((prev) => {
-                    const next = { ...prev, ...(parsed as Record<string, unknown>) } as typeof prev & Record<string, unknown>;
-                    const cg = (parsed as Record<string, unknown>)?.class_grade;
-                    if (typeof cg === "number") next.class_grade = cg;
-                    else if (typeof cg === "string") {
-                        const n = Number(String(cg).replace(/[^0-9]/g, ""));
-                        if (!Number.isNaN(n) && n >= 1 && n <= 12) next.class_grade = n;
-                    }
-                    return next;
-                });
-            } catch { }
+    const userId = useMemo(() => {
+        try {
+            const savedUserStr = localStorage.getItem("xamsathi_user");
+            if (!savedUserStr) return "";
+            const parsed = JSON.parse(savedUserStr) as Record<string, unknown>;
+            const id = parsed.id || parsed._id || parsed.user_id;
+            return typeof id === "string" ? id : "";
+        } catch {
+            return "";
         }
     }, []);
+
+    const token = useMemo(() => {
+        try {
+            return localStorage.getItem("xamsathi_token") || localStorage.getItem("token") || readCookie("xamsathi_token") || "";
+        } catch {
+            return "";
+        }
+    }, []);
+
+    useEffect(() => {
+        const hydrateFromLocalStorage = () => {
+            try {
+                const savedUserStr = localStorage.getItem("xamsathi_user");
+                if (!savedUserStr) return;
+                const parsed = JSON.parse(savedUserStr) as Record<string, unknown>;
+                setUser((prev) => {
+                    const next = { ...prev };
+                    if (typeof parsed.name === "string") next.name = parsed.name;
+                    if (typeof parsed.email === "string") next.email = parsed.email;
+                    if (typeof parsed.phone === "string") next.phone = parsed.phone;
+                    if (typeof parsed.bio === "string") next.bio = parsed.bio;
+                    if (typeof parsed.avatar === "string") next.avatar = parsed.avatar;
+                    if (typeof parsed.school === "string") next.school = parsed.school;
+                    if (typeof parsed.city === "string") next.city = parsed.city;
+                    if (typeof parsed.guardian_phone === "string") next.guardian_phone = parsed.guardian_phone;
+                    if (typeof parsed.student_photo === "string") next.student_photo = parsed.student_photo;
+                    const cg = parsed.class_grade;
+                    if (typeof cg === "number" && cg >= 1 && cg <= 12) next.class_grade = cg;
+                    const te = parsed.target_exam;
+                    if (te === "neet" || te === "jee" || te === "cbse" || te === "other") next.target_exam = te;
+                    const st = parsed.stream;
+                    if (st === "pcm" || st === "pcb" || st === "commerce" || st === "arts" || st === "na") next.stream = st;
+                    const md = parsed.medium;
+                    if (md === "english" || md === "hindi" || md === "other") next.medium = md;
+                    return next;
+                });
+            } catch {
+                // ignore
+            }
+        };
+
+        const fetchFromBackend = async () => {
+            if (!userId) return;
+            setLoadError("");
+            try {
+                const base = getBackendBase();
+                const res = await fetch(`${base}/api/me`, {
+                    headers: {
+                        "x-user-id": userId,
+                        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                    },
+                    credentials: "include",
+                });
+                if (!res.ok) return;
+                const data = (await res.json()) as { user?: unknown };
+                const u = data && typeof data === "object" ? (data as { user?: Record<string, unknown> }).user : undefined;
+                if (!u || typeof u !== "object") return;
+
+                setUser((prev) => {
+                    const next = { ...prev };
+                    if (typeof u.name === "string") next.name = u.name;
+                    if (typeof u.email === "string") next.email = u.email;
+                    if (typeof u.phone === "string") next.phone = u.phone;
+                    if (typeof u.bio === "string") next.bio = u.bio;
+                    if (typeof u.avatar === "string") next.avatar = u.avatar;
+                    if (typeof u.school === "string") next.school = u.school;
+                    if (typeof u.city === "string") next.city = u.city;
+                    if (typeof u.guardian_phone === "string") next.guardian_phone = u.guardian_phone;
+                    if (typeof u.student_photo === "string") next.student_photo = u.student_photo;
+                    if (typeof u.class_grade === "number" && u.class_grade >= 1 && u.class_grade <= 12) next.class_grade = u.class_grade;
+                    const te = u.target_exam;
+                    if (te === "neet" || te === "jee" || te === "cbse" || te === "other") next.target_exam = te;
+                    const st = u.stream;
+                    if (st === "pcm" || st === "pcb" || st === "commerce" || st === "arts" || st === "na") next.stream = st;
+                    const md = u.medium;
+                    if (md === "english" || md === "hindi" || md === "other") next.medium = md;
+                    return next;
+                });
+
+                localStorage.setItem("xamsathi_user", JSON.stringify(u));
+                window.dispatchEvent(new Event("storage"));
+            } catch {
+                setLoadError("Failed to load profile. Please refresh.");
+            }
+        };
+
+        hydrateFromLocalStorage();
+        void fetchFromBackend();
+    }, [token, userId]);
 
     const onDrop = (acceptedFiles: File[]) => {
         const file = acceptedFiles[0];
@@ -60,7 +175,23 @@ export default function ProfilePage() {
         }
     };
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    const onDropStudentPhoto = (acceptedFiles: File[]) => {
+        const file = acceptedFiles[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+            const base64String = reader.result as string;
+            if (!base64String) return;
+            if (base64String.length > 5.2 * 1024 * 1024) {
+                alert("Image is too large. Please upload a smaller image.");
+                return;
+            }
+            setStudentPhotoPreview(base64String);
+        };
+        reader.readAsDataURL(file);
+    };
+
+    const { getRootProps, getInputProps } = useDropzone({
         onDrop,
         accept: {
             'image/*': ['.jpeg', '.png', '.jpg', '.webp']
@@ -68,51 +199,46 @@ export default function ProfilePage() {
         maxFiles: 1
     });
 
+    const {
+        getRootProps: getStudentPhotoRootProps,
+        getInputProps: getStudentPhotoInputProps,
+        isDragActive: isStudentPhotoDragActive,
+    } = useDropzone({
+        onDrop: onDropStudentPhoto,
+        accept: { 'image/*': ['.jpeg', '.png', '.jpg', '.webp'] },
+        maxFiles: 1,
+    });
+
     const handleSave = async () => {
         setIsLoading(true);
 
         try {
-            // Get user token/id from localStorage if using token authentication
-            const token = localStorage.getItem("xamsathi_token") || localStorage.getItem("token") || "";
-            // Also need User ID if passed in headers, though usually token is enough. 
-            // In existing frontend code, we saw x-user-id header usage.
-            // Let's grab user id from localStorage "xamsathi_user" -> "id" or "_id"
-            const savedUserStr = localStorage.getItem("xamsathi_user");
-            let userId = "";
-            if (savedUserStr) {
-                const parsed = JSON.parse(savedUserStr);
-                userId = parsed.id || parsed._id || parsed.user_id;
+            if (!userId) {
+                alert("Missing user session. Please login again.");
+                return;
             }
-
-            const getBackendBase = () => {
-                const envBase = (process.env.NEXT_PUBLIC_BACKEND_URL || "").trim();
-                if (envBase) return envBase;
-                if (typeof window !== "undefined") {
-                    const host = window.location.hostname;
-                    if (host === "localhost" || host === "127.0.0.1") return "http://localhost:3001";
-                }
-                return "http://localhost:3001";
-            };
 
             const base = getBackendBase();
-            const payload: Record<string, unknown> = { ...user };
-            if (preview) {
-                payload.avatar = preview; // Preview is the Data URL (Base64)
-            }
-
             const res = await fetch(`${base}/api/me/profile`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
-                    "x-user-id": userId || "", // Headers based on existing backend logic
-                    "Authorization": token ? `Bearer ${token}` : ""
+                    "x-user-id": userId,
+                    ...(token ? { Authorization: `Bearer ${token}` } : {})
                 },
                 body: JSON.stringify({
                     name: user.name,
                     phone: user.phone,
                     class_grade: Number(user.class_grade),
                     bio: user.bio,
-                    avatar: preview || user.avatar
+                    avatar: preview || user.avatar,
+                    target_exam: user.target_exam,
+                    stream: user.stream,
+                    medium: user.medium,
+                    school: user.school,
+                    city: user.city,
+                    guardian_phone: user.guardian_phone,
+                    student_photo: studentPhotoPreview || user.student_photo,
                 })
             });
 
@@ -123,10 +249,12 @@ export default function ProfilePage() {
                     const newUser = { ...JSON.parse(localStorage.getItem("xamsathi_user") || "{}"), ...data.user };
                     // Ensure avatar is updated
                     if (data.user.avatar) newUser.avatar = data.user.avatar;
+                    if (data.user.student_photo) newUser.student_photo = data.user.student_photo;
                     localStorage.setItem("xamsathi_user", JSON.stringify(newUser));
 
-                    setUser(prev => ({ ...prev, avatar: data.user.avatar, name: data.user.name }));
+                    setUser(prev => ({ ...prev, ...(data.user as Record<string, unknown>) } as typeof prev));
                     if (preview) setPreview(null);
+                    if (studentPhotoPreview) setStudentPhotoPreview(null);
                     window.dispatchEvent(new Event("storage"));
                     setIsEditing(false);
                 }
@@ -145,6 +273,12 @@ export default function ProfilePage() {
         <div className="max-w-4xl mx-auto space-y-8">
             <h1 className="text-3xl font-bold text-white mb-8">My Profile</h1>
 
+            {loadError ? (
+                <div className="bg-red-500/10 border border-red-500/30 text-red-200 px-4 py-3 rounded-xl text-sm">
+                    {loadError}
+                </div>
+            ) : null}
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {/* Profile Card */}
                 <div className="md:col-span-1">
@@ -154,7 +288,7 @@ export default function ProfilePage() {
                         <div className="relative mb-4 group-hover:scale-105 transition-transform duration-300">
                             <div className="w-32 h-32 rounded-full border-4 border-slate-800 shadow-xl overflow-hidden bg-slate-800 relative">
                                 <Image
-                                    src={preview || user.avatar}
+                                    src={preview || user.avatar || "https://api.dicebear.com/7.x/avataaars/svg?seed=Xamsathi"}
                                     alt={user.name}
                                     fill
                                     className="object-cover"
@@ -184,7 +318,7 @@ export default function ProfilePage() {
                         </div>
 
                         <h2 className="text-2xl font-bold text-white mb-1">{user.name}</h2>
-                        <p className="text-indigo-400 font-medium text-sm mb-4">{user.course}</p>
+                        <p className="text-indigo-400 font-medium text-sm mb-4">{user.course || ""}</p>
 
                         <div className="w-full space-y-3">
                             <div className="flex items-center justify-between p-3 bg-slate-800/50 rounded-xl border border-slate-800">
@@ -290,6 +424,90 @@ export default function ProfilePage() {
                                     className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all resize-none"
                                 />
                             </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="profile_target_exam" className="text-sm font-medium text-slate-400">Target Exam</label>
+                                <select
+                                    id="profile_target_exam"
+                                    disabled={!isEditing}
+                                    value={user.target_exam}
+                                    onChange={(e) => setUser({ ...user, target_exam: e.target.value as TargetExam })}
+                                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                >
+                                    <option value="cbse">CBSE</option>
+                                    <option value="neet">NEET</option>
+                                    <option value="jee">JEE</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="profile_stream" className="text-sm font-medium text-slate-400">Stream</label>
+                                <select
+                                    id="profile_stream"
+                                    disabled={!isEditing}
+                                    value={user.stream}
+                                    onChange={(e) => setUser({ ...user, stream: e.target.value as Stream })}
+                                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                >
+                                    <option value="na">N/A</option>
+                                    <option value="pcm">PCM</option>
+                                    <option value="pcb">PCB</option>
+                                    <option value="commerce">Commerce</option>
+                                    <option value="arts">Arts</option>
+                                </select>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="profile_medium" className="text-sm font-medium text-slate-400">Medium</label>
+                                <select
+                                    id="profile_medium"
+                                    disabled={!isEditing}
+                                    value={user.medium}
+                                    onChange={(e) => setUser({ ...user, medium: e.target.value as Medium })}
+                                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                >
+                                    <option value="english">English</option>
+                                    <option value="hindi">Hindi</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="profile_school" className="text-sm font-medium text-slate-400">School</label>
+                                <input
+                                    id="profile_school"
+                                    type="text"
+                                    disabled={!isEditing}
+                                    value={user.school}
+                                    onChange={(e) => setUser({ ...user, school: e.target.value })}
+                                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="profile_city" className="text-sm font-medium text-slate-400">City</label>
+                                <input
+                                    id="profile_city"
+                                    type="text"
+                                    disabled={!isEditing}
+                                    value={user.city}
+                                    onChange={(e) => setUser({ ...user, city: e.target.value })}
+                                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="profile_guardian_phone" className="text-sm font-medium text-slate-400">Guardian Phone</label>
+                                <input
+                                    id="profile_guardian_phone"
+                                    type="tel"
+                                    disabled={!isEditing}
+                                    value={user.guardian_phone}
+                                    onChange={(e) => setUser({ ...user, guardian_phone: e.target.value })}
+                                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                />
+                            </div>
                         </div>
 
                         {isEditing && (
@@ -298,18 +516,33 @@ export default function ProfilePage() {
                                     <Upload className="w-5 h-5 text-indigo-400" />
                                 </div>
                                 <div>
-                                    <h4 className="text-indigo-300 font-bold text-sm mb-1">Upload Profile Photo</h4>
+                                    <h4 className="text-indigo-300 font-bold text-sm mb-1">Upload Student Photo</h4>
                                     <p className="text-indigo-200/60 text-xs mb-3">
-                                        Drag and drop or click to upload a new profile picture. This will be visible on the Leaderboard.
+                                        Drag and drop or click to upload student photo. This will be used on Leaderboard.
                                     </p>
                                     <div
-                                        {...getRootProps()}
-                                        className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors ${isDragActive ? 'border-indigo-500 bg-indigo-500/10' : 'border-slate-700 hover:border-indigo-500/50 hover:bg-slate-800'}`}
+                                        {...getStudentPhotoRootProps()}
+                                        className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors ${isStudentPhotoDragActive ? 'border-indigo-500 bg-indigo-500/10' : 'border-slate-700 hover:border-indigo-500/50 hover:bg-slate-800'}`}
                                     >
-                                        <input {...getInputProps()} />
+                                        <input
+                                            {...getStudentPhotoInputProps()}
+                                            ref={(el) => {
+                                                studentPhotoInputRef.current = el;
+                                            }}
+                                        />
                                         <div className="flex flex-col items-center gap-2">
                                             <Camera className="w-8 h-8 text-slate-500" />
                                             <span className="text-slate-400 text-sm">Drop image here or click to browse</span>
+                                        </div>
+                                    </div>
+                                    <div className="mt-4">
+                                        <div className="relative w-28 h-28 rounded-2xl overflow-hidden bg-slate-950 border border-slate-800">
+                                            <Image
+                                                src={studentPhotoPreview || user.student_photo || "https://api.dicebear.com/7.x/identicon/svg?seed=Student"}
+                                                alt="Student photo"
+                                                fill
+                                                className="object-cover"
+                                            />
                                         </div>
                                     </div>
                                 </div>
