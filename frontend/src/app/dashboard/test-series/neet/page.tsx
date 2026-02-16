@@ -1,33 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
-import {
-    ArrowLeft, Clock, AlertCircle, CheckCircle2, XCircle,
-    HelpCircle, ChevronRight, ChevronLeft, Flag, Award,
-    BarChart2, Timer, RotateCcw, BookOpen, Brain, Zap, GraduationCap
-} from "lucide-react";
-import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
-import TestSeriesIntro from "@/components/dashboard/TestSeriesIntro";
-
-// --- Types ---
-type QuestionType = "physics" | "chemistry" | "botany" | "zoology";
-type Question = {
-    id: number;
-    type: QuestionType;
-    text: string;
-    options: string[];
-    correctAnswer: number; // 0-3
-    explanation: string;
-};
-
-type SubjectStat = {
-    total: number;
-    attempted: number;
-    correct: number;
-    wrong: number;
-    score: number;
-};
+import React from "react";
+import TestSeriesPlayer, { Question } from "@/components/dashboard/TestSeriesPlayer";
 
 // --- Custom Questions (Hard Physics Q1-Q45) ---
 const HARD_PHYSICS_QUESTIONS: Partial<Question>[] = [
@@ -1126,16 +1100,17 @@ const HARD_BIOLOGY_QUESTIONS: Partial<Question>[] = [
     }
 ];
 
+
 // --- Mock Data Generator (180 Questions) ---
-const generateQuestions = (): Question[] => {
-    const subjects: { type: QuestionType; count: number; startIdx: number }[] = [
+const generateQuestions = (): any[] => {
+    const subjects = [
         { type: "physics", count: 45, startIdx: 1 },
         { type: "chemistry", count: 45, startIdx: 46 },
         { type: "botany", count: 45, startIdx: 91 },
         { type: "zoology", count: 45, startIdx: 136 },
     ];
 
-    const questions: Question[] = [];
+    const questions: any[] = [];
 
     subjects.forEach((subj) => {
         for (let i = 0; i < subj.count; i++) {
@@ -1143,7 +1118,7 @@ const generateQuestions = (): Question[] => {
 
             // Physics (1-45)
             if (subj.type === "physics" && i < HARD_PHYSICS_QUESTIONS.length) {
-                const base = HARD_PHYSICS_QUESTIONS[i] as Pick<Question, "text" | "options" | "correctAnswer" | "explanation">;
+                const base = HARD_PHYSICS_QUESTIONS[i] as any;
                 questions.push({
                     id: qId,
                     type: "physics",
@@ -1152,39 +1127,32 @@ const generateQuestions = (): Question[] => {
             }
             // Chemistry (46-90)
             else if (subj.type === "chemistry" && i < HARD_CHEMISTRY_QUESTIONS.length) {
-                const base = HARD_CHEMISTRY_QUESTIONS[i] as Pick<Question, "text" | "options" | "correctAnswer" | "explanation">;
+                const base = HARD_CHEMISTRY_QUESTIONS[i] as any;
                 questions.push({
                     id: qId,
                     type: "chemistry",
                     ...base,
                 });
             }
-            // Biology (Botany/Zoology) - Using HARD_BIOLOGY_QUESTIONS for the first 30 slots of Bio
+            // Biology (Botany/Zoology)
             else if ((subj.type === "botany" || subj.type === "zoology")) {
-                // Calculate bio index 0-89
                 const bioIndex = qId - 91;
 
                 if (bioIndex < HARD_BIOLOGY_QUESTIONS.length) {
-                    const base = HARD_BIOLOGY_QUESTIONS[bioIndex] as Pick<Question, "text" | "options" | "correctAnswer" | "explanation">;
+                    const base = HARD_BIOLOGY_QUESTIONS[bioIndex] as any;
                     questions.push({
                         id: qId,
-                        type: subj.type, // Keep pure type (botany/zoology)
+                        type: subj.type,
                         ...base,
                     });
                 } else {
-                    // Fallback for remaining Bio
                     questions.push({
                         id: qId,
                         type: subj.type,
                         text: `Sample Question ${qId} for ${subj.type.toUpperCase()}: This is a representative question used for mock testing.`,
-                        options: [
-                            `Option A for Q${qId}`,
-                            `Option B for Q${qId}`,
-                            `Option C for Q${qId}`,
-                            `Option D for Q${qId}`,
-                        ],
+                        options: [`Option A`, `Option B`, `Option C`, `Option D`],
                         correctAnswer: Math.floor(Math.random() * 4),
-                        explanation: `Detailed explanation for question ${qId}. The concept involves core principles of ${subj.type}.`,
+                        explanation: `Detailed explanation for question ${qId}.`,
                     });
                 }
             }
@@ -1195,663 +1163,17 @@ const generateQuestions = (): Question[] => {
 };
 
 const QUESTIONS = generateQuestions();
-const DURATION_SECONDS = 3 * 60 * 60 + 20 * 60; // 3 hours 20 minutes
 
 export default function NEETTestSeriesPage() {
-    // --- State ---
-    const [status, setStatus] = useState<"intro" | "active" | "result">("intro");
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [subjectView, setSubjectView] = useState<"physics" | "chemistry" | "biology">("physics");
-    const [answers, setAnswers] = useState<Record<number, number>>({}); // qId -> optionIndex
-    const [markedForReview, setMarkedForReview] = useState<Set<number>>(new Set());
-    const [timeLeft, setTimeLeft] = useState(DURATION_SECONDS);
-    const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
-
-    // Stats
-    const [score, setScore] = useState(0);
-    const [accuracy, setAccuracy] = useState(0);
-    const [subjectAnalysis, setSubjectAnalysis] = useState<Record<string, SubjectStat>>({});
-
-    // --- Timer ---
-    useEffect(() => {
-        let timer: NodeJS.Timeout;
-        if (status === "active" && timeLeft > 0) {
-            timer = setInterval(() => {
-                setTimeLeft((prev) => {
-                    if (prev <= 1) {
-                        handleSubmit();
-                        return 0;
-                    }
-                    return prev - 1;
-                });
-            }, 1000);
-        }
-        return () => clearInterval(timer);
-    }, [status, timeLeft]);
-
-    // --- Handlers ---
-    const startTest = () => {
-        setStatus("active");
-        setTimeLeft(DURATION_SECONDS);
-        setAnswers({});
-        setMarkedForReview(new Set());
-        const firstIdx = QUESTIONS.findIndex((q) => {
-            if (subjectView === "biology") return q.type === "botany" || q.type === "zoology";
-            return q.type === subjectView;
-        });
-        setCurrentQuestionIndex(firstIdx >= 0 ? firstIdx : 0);
-    };
-
-    const visibleQuestionIndices = useMemo(() => {
-        const indices: number[] = [];
-        for (let i = 0; i < QUESTIONS.length; i++) {
-            const t = QUESTIONS[i].type;
-            const ok = subjectView === "biology" ? t === "botany" || t === "zoology" : t === subjectView;
-            if (ok) indices.push(i);
-        }
-        return indices;
-    }, [subjectView]);
-
-    const currentVisibleIndex = useMemo(() => {
-        const idx = visibleQuestionIndices.indexOf(currentQuestionIndex);
-        return idx >= 0 ? idx : 0;
-    }, [visibleQuestionIndices, currentQuestionIndex]);
-
-    const canGoPrev = currentVisibleIndex > 0;
-    const canGoNext = currentVisibleIndex < visibleQuestionIndices.length - 1;
-
-    const goPrev = () => {
-        if (!canGoPrev) return;
-        setCurrentQuestionIndex(visibleQuestionIndices[currentVisibleIndex - 1]);
-    };
-
-    const goNext = () => {
-        if (!canGoNext) return;
-        setCurrentQuestionIndex(visibleQuestionIndices[currentVisibleIndex + 1]);
-    };
-
-    const currentQ = QUESTIONS[currentQuestionIndex];
-
-    const switchSubject = (next: "physics" | "chemistry" | "biology") => {
-        setSubjectView(next);
-        const predicate = (q: (typeof QUESTIONS)[number]) => {
-            if (next === "biology") return q.type === "botany" || q.type === "zoology";
-            return q.type === next;
-        };
-
-        const alreadyInSubject = predicate(currentQ);
-        if (alreadyInSubject) return;
-
-        const firstIdx = QUESTIONS.findIndex(predicate);
-        setCurrentQuestionIndex(firstIdx >= 0 ? firstIdx : 0);
-    };
-
-    const handleAnswer = (optionIdx: number) => {
-        const qId = currentQ.id;
-        setAnswers((prev) => {
-            const current = prev[qId];
-            if (current === optionIdx) {
-                const next = { ...prev };
-                delete next[qId];
-                return next;
-            }
-            return {
-                ...prev,
-                [qId]: optionIdx,
-            };
-        });
-    };
-
-    const toggleMarkForReview = () => {
-        const qId = currentQ.id;
-        setMarkedForReview((prev) => {
-            const newSet = new Set(prev);
-            if (newSet.has(qId)) newSet.delete(qId);
-            else newSet.add(qId);
-            return newSet;
-        });
-    };
-
-    const clearResponse = () => {
-        const qId = currentQ.id;
-        setAnswers((prev) => {
-            const newAnswers = { ...prev };
-            delete newAnswers[qId];
-            return newAnswers;
-        });
-    };
-
-    const handleSubmit = async () => {
-        // Calculate Score
-        let calculatedScore = 0;
-        let correctCount = 0;
-        let wrongCount = 0;
-        let unattemptedCount = 0;
-
-        // Subject-wise breakdown
-        const subjectStats: Record<string, SubjectStat> = {
-            physics: { total: 0, attempted: 0, correct: 0, wrong: 0, score: 0 },
-            chemistry: { total: 0, attempted: 0, correct: 0, wrong: 0, score: 0 },
-            botany: { total: 0, attempted: 0, correct: 0, wrong: 0, score: 0 },
-            zoology: { total: 0, attempted: 0, correct: 0, wrong: 0, score: 0 },
-        };
-
-        QUESTIONS.forEach((q) => {
-            const selected = answers[q.id];
-            const subj = q.type;
-            // Ensure subject key exists (fallback if type is different)
-            if (!subjectStats[subj]) return;
-
-            subjectStats[subj].total++;
-
-            if (selected !== undefined) {
-                subjectStats[subj].attempted++;
-                if (selected === q.correctAnswer) {
-                    calculatedScore += 4;
-                    correctCount++;
-                    subjectStats[subj].correct++;
-                    subjectStats[subj].score += 4;
-                } else {
-                    calculatedScore -= 1;
-                    wrongCount++;
-                    subjectStats[subj].wrong++;
-                    subjectStats[subj].score -= 1;
-                }
-            } else {
-                unattemptedCount++;
-            }
-        });
-
-        const attempted = correctCount + wrongCount;
-        const calcAccuracy = attempted > 0 ? Math.round((correctCount / attempted) * 100) : 0;
-
-        setScore(calculatedScore);
-        setAccuracy(calcAccuracy);
-        setSubjectAnalysis(subjectStats);
-        setStatus("result");
-        setIsSubmitModalOpen(false);
-
-        // --- Send to Leaderboard Backend ---
-        try {
-            const getBackendBase = () => {
-                const envBase = (process.env.NEXT_PUBLIC_BACKEND_URL || "").trim();
-                if (envBase) return envBase;
-                if (typeof window !== "undefined") {
-                    const host = window.location.hostname;
-                    if (host === "localhost" || host === "127.0.0.1") return "http://localhost:3001";
-                }
-                return "http://localhost:3001";
-            };
-
-            const token = localStorage.getItem("xamsathi_token");
-            const userStr = localStorage.getItem("xamsathi_user");
-            let userId = "";
-            if (userStr) {
-                try {
-                    const parsed = JSON.parse(userStr);
-                    userId = parsed._id || parsed.id || parsed.user_id;
-                } catch { }
-            }
-
-            if (userId) {
-                await fetch(`${getBackendBase()}/api/leaderboard/submit`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "x-user-id": userId,
-                        "Authorization": token ? `Bearer ${token}` : ""
-                    },
-                    body: JSON.stringify({
-                        testSeriesId: "neet-ug-mock-180",
-                        score: calculatedScore,
-                        accuracy: calcAccuracy
-                    })
-                });
-            }
-        } catch (err) {
-            console.error("Failed to submit leaderboard score", err);
-        }
-    };
-
-    const formatTime = (seconds: number) => {
-        const hrs = Math.floor(seconds / 3600);
-        const mins = Math.floor((seconds % 3600) / 60);
-        const secs = seconds % 60;
-        return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    };
-
     return (
-        <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-indigo-500/30">
-            {/* --- Intro View --- */}
-            {status === "intro" && (
-                <TestSeriesIntro
-                    title="NEET Guard Mock-1"
-                    description="Complete NEET pattern mock test covering Physics, Chemistry, and Biology. Experience real exam-like conditions with negative marking and timer."
-                    testSeriesId="neet-ug-mock-180"
-                    durationMins={180}
-                    questionsCount={180}
-                    totalMarks={720}
-                    subjects={["Physics", "Chemistry", "Botany", "Zoology"]}
-                    onStart={startTest}
-                />
-            )}
-
-            {/* --- Active Test View --- */}
-            {status === "active" && (
-                <div className="fixed inset-0 z-50 bg-slate-950 flex flex-col">
-                    {/* Header */}
-                    <header className="bg-slate-900 border-b border-slate-800 p-4 flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <div className="font-bold text-xl text-white hidden md:block">NEET Guard Mock</div>
-                            <div className="flex gap-2 text-xs overflow-x-auto pb-1 md:pb-0">
-                                <span className="px-2 py-1 rounded bg-slate-800 text-slate-400 whitespace-nowrap">Physics: 1-45</span>
-                                <span className="px-2 py-1 rounded bg-slate-800 text-slate-400 whitespace-nowrap">Chem: 46-90</span>
-                                <span className="px-2 py-1 rounded bg-slate-800 text-slate-400 whitespace-nowrap">Bio: 91-180</span>
-                            </div>
-                        </div>
-
-                        <div className="flex items-center gap-6">
-                            <div className={`flex items-center gap-2 font-mono text-xl font-bold ${timeLeft < 300 ? 'text-red-500 animate-pulse' : 'text-slate-200'}`}>
-                                <Clock className="w-5 h-5" />
-                                {formatTime(timeLeft)}
-                            </div>
-                            <button
-                                onClick={() => setIsSubmitModalOpen(true)}
-                                className="bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/50 px-6 py-2 rounded-lg font-semibold transition-colors"
-                            >
-                                Submit
-                            </button>
-                        </div>
-                    </header>
-
-                    <div className="px-4 py-3 bg-slate-950/40 border-b border-slate-800">
-                        <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
-                            <div className="flex gap-2">
-                                <button
-                                    type="button"
-                                    onClick={() => switchSubject("physics")}
-                                    className={`px-3 py-2 rounded-xl border text-xs font-bold transition-colors ${subjectView === "physics" ? "bg-indigo-600/20 border-indigo-500/40 text-white" : "bg-slate-900/40 border-slate-800 text-slate-300 hover:bg-slate-800"}`}
-                                >
-                                    Physics
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => switchSubject("chemistry")}
-                                    className={`px-3 py-2 rounded-xl border text-xs font-bold transition-colors ${subjectView === "chemistry" ? "bg-indigo-600/20 border-indigo-500/40 text-white" : "bg-slate-900/40 border-slate-800 text-slate-300 hover:bg-slate-800"}`}
-                                >
-                                    Chemistry
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => switchSubject("biology")}
-                                    className={`px-3 py-2 rounded-xl border text-xs font-bold transition-colors ${subjectView === "biology" ? "bg-indigo-600/20 border-indigo-500/40 text-white" : "bg-slate-900/40 border-slate-800 text-slate-300 hover:bg-slate-800"}`}
-                                >
-                                    Biology
-                                </button>
-                            </div>
-                            <div className="text-xs text-slate-400">
-                                Showing <span className="text-white font-bold">{visibleQuestionIndices.length}</span> questions
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex-1 flex overflow-hidden">
-                        {/* Left/Main Panel: Question Area */}
-                        <main className="flex-1 flex flex-col p-4 md:p-6 overflow-y-auto">
-                            <div className="max-w-4xl w-full mx-auto">
-                                <div className="flex items-center justify-between mb-6">
-                                    <span className={`text-sm font-bold uppercase tracking-wider px-3 py-1 rounded-full ${QUESTIONS[currentQuestionIndex].type === 'chemistry' ? 'bg-green-400/10 text-green-400' :
-                                        QUESTIONS[currentQuestionIndex].type === 'physics' ? 'bg-blue-400/10 text-blue-400' :
-                                            'bg-purple-400/10 text-purple-400'
-                                        }`}>
-                                        {QUESTIONS[currentQuestionIndex].type}
-                                    </span>
-                                    <div className="flex gap-2 text-sm text-slate-500">
-                                        <span>+4 Marks</span>
-                                        <span className="text-red-400">-1 Negative</span>
-                                    </div>
-                                </div>
-
-                                <h2 className="text-xl md:text-2xl font-medium text-white mb-8 border-l-4 border-indigo-500 pl-4 py-1 leading-relaxed">
-                                    <span className="text-slate-500 mr-2">Q{QUESTIONS[currentQuestionIndex].id}.</span>
-                                    {QUESTIONS[currentQuestionIndex].text}
-                                </h2>
-
-                                <div className="grid gap-4 mb-8">
-                                    {QUESTIONS[currentQuestionIndex].options.map((option, idx) => {
-                                        const isSelected = answers[QUESTIONS[currentQuestionIndex].id] === idx;
-                                        return (
-                                            <button
-                                                key={idx}
-                                                onClick={() => handleAnswer(idx)}
-                                                className={`text-left p-4 md:p-6 rounded-xl border-2 transition-all flex items-center gap-4 group ${isSelected
-                                                    ? 'border-indigo-500 bg-indigo-500/10'
-                                                    : 'border-slate-800 bg-slate-900/50 hover:border-slate-700 hover:bg-slate-800'
-                                                    }`}
-                                            >
-                                                <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold border ${isSelected ? 'bg-indigo-500 border-indigo-500 text-white' : 'border-slate-600 text-slate-400 group-hover:border-slate-500'
-                                                    }`}>
-                                                    {String.fromCharCode(65 + idx)}
-                                                </div>
-                                                <span className={`text-base md:text-lg ${isSelected ? 'text-white' : 'text-slate-300'}`}>
-                                                    {option}
-                                                </span>
-                                            </button>
-                                        );
-                                    })}
-                                </div>
-
-                                <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-t border-slate-800 mt-auto sticky bottom-0 bg-slate-950 md:static">
-                                    <div className="flex gap-2 md:gap-3 w-full md:w-auto">
-                                        <button
-                                            onClick={goPrev}
-                                            disabled={!canGoPrev}
-                                            className="flex-1 md:flex-none px-4 md:px-6 py-2.5 rounded-lg border border-slate-700 text-slate-300 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                                        >
-                                            <ChevronLeft className="w-4 h-4" /> Prev
-                                        </button>
-                                        <button
-                                            onClick={toggleMarkForReview}
-                                            className={`flex-1 md:flex-none px-4 md:px-6 py-2.5 rounded-lg border flex items-center justify-center gap-2 transition-colors ${markedForReview.has(QUESTIONS[currentQuestionIndex].id)
-                                                ? 'border-purple-500 bg-purple-500/10 text-purple-400'
-                                                : 'border-slate-700 text-slate-400 hover:bg-slate-800'
-                                                }`}
-                                        >
-                                            <Flag className="w-4 h-4" />
-                                            <span className="hidden sm:inline">{markedForReview.has(QUESTIONS[currentQuestionIndex].id) ? 'Marked' : 'Review'}</span>
-                                        </button>
-                                    </div>
-
-                                    <button
-                                        onClick={goNext}
-                                        disabled={!canGoNext}
-                                        className="w-full md:w-auto px-8 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg shadow-lg shadow-indigo-900/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                                    >
-                                        Save & Next <ChevronRight className="w-4 h-4" />
-                                    </button>
-                                </div>
-                            </div>
-                        </main>
-
-                        {/* Right Panel: Question Palette */}
-                        <aside className="w-80 bg-slate-900/50 border-l border-slate-800 flex flex-col hidden xl:flex">
-                            <div className="p-4 border-b border-slate-800 font-semibold text-slate-300 flex justify-between items-center">
-                                <span>Question Palette</span>
-                                <span className="text-xs bg-slate-800 px-2 py-1 rounded text-slate-400">
-                                    {Object.keys(answers).length}/{QUESTIONS.length} Attempted
-                                </span>
-                            </div>
-
-                            <div className="p-4 grid grid-cols-2 gap-3 text-xs text-slate-400 mb-2 border-b border-slate-800 pb-4">
-                                <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-green-500"></div> Answered</div>
-                                <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-purple-500"></div> Marked</div>
-                                <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-slate-700"></div> Not Visited</div>
-                                <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500"></div> Skipped</div>
-                            </div>
-
-                            <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
-                                <div className="grid grid-cols-10 gap-2">
-                                    {visibleQuestionIndices.map((idx) => {
-                                        const q = QUESTIONS[idx];
-                                        const isAnswered = answers[q.id] !== undefined;
-                                        const isMarked = markedForReview.has(q.id);
-                                        const isCurrent = idx === currentQuestionIndex;
-
-                                        let bgClass = "bg-slate-800 text-slate-400 border-slate-700";
-                                        if (isCurrent) bgClass = "ring-2 ring-white bg-slate-700 text-white";
-                                        else if (isMarked) bgClass = "bg-purple-900/50 border-purple-500 text-purple-300";
-                                        else if (isAnswered) bgClass = "bg-green-600 text-white border-green-500";
-
-                                        return (
-                                            <button
-                                                key={q.id}
-                                                onClick={() => setCurrentQuestionIndex(idx)}
-                                                className={`w-9 h-9 rounded-lg border text-sm font-bold transition-all ${bgClass}`}
-                                                aria-label={`Go to question ${q.id}`}
-                                            >
-                                                {q.id}
-                                            </button>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-                        </aside>
-                    </div>
-
-                    {/* Submit Modal */}
-                    {isSubmitModalOpen && (
-                        <div className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-                            <div className="bg-slate-900 border border-slate-700 rounded-2xl p-8 max-w-md w-full shadow-2xl">
-                                <h3 className="text-2xl font-bold text-white mb-4">Submit Test?</h3>
-                                <div className="space-y-4 mb-8">
-                                    <div className="flex justify-between p-4 bg-slate-800 rounded-xl">
-                                        <span className="text-slate-400">Answered</span>
-                                        <span className="text-green-400 font-bold">{Object.keys(answers).length}</span>
-                                    </div>
-                                    <div className="flex justify-between p-4 bg-slate-800 rounded-xl">
-                                        <span className="text-slate-400">Marked for Review</span>
-                                        <span className="text-purple-400 font-bold">{markedForReview.size}</span>
-                                    </div>
-                                    <div className="flex justify-between p-4 bg-slate-800 rounded-xl">
-                                        <span className="text-slate-400">Unanswered</span>
-                                        <span className="text-slate-300 font-bold">{QUESTIONS.length - Object.keys(answers).length}</span>
-                                    </div>
-                                </div>
-                                <div className="flex gap-4">
-                                    <button
-                                        onClick={() => setIsSubmitModalOpen(false)}
-                                        className="flex-1 py-3 rounded-xl border border-slate-600 text-slate-300 hover:bg-slate-800 transition-colors"
-                                    >
-                                        Continue Test
-                                    </button>
-                                    <button
-                                        onClick={handleSubmit}
-                                        className="flex-1 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-colors"
-                                    >
-                                        Submit & Finish
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            )}
-
-            {/* --- Result View --- */}
-            {status === "result" && (
-                <div className="max-w-6xl mx-auto px-6 py-12">
-                    <div className="flex items-center justify-between mb-8">
-                        <Link href="/dashboard" className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
-                            <ArrowLeft className="w-4 h-4" /> Return to Dashboard
-                        </Link>
-                        <button
-                            onClick={startTest}
-                            className="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-medium flex items-center gap-2"
-                        >
-                            <RotateCcw className="w-4 h-4" /> Retake Test
-                        </button>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                        {/* Main Score Card */}
-                        <div className="md:col-span-1 bg-gradient-to-br from-indigo-900/50 to-slate-900 border border-indigo-500/30 rounded-3xl p-8 flex flex-col items-center justify-center text-center shadow-xl">
-                            <div className="relative mb-6">
-                                <div className="w-40 h-40 rounded-full border-8 border-indigo-500/20 flex items-center justify-center">
-                                    <div className="text-center">
-                                        <div className="text-5xl font-bold text-white">{score}</div>
-                                        <div className="text-slate-400 text-sm font-medium uppercase tracking-wide">out of 720</div>
-                                    </div>
-                                </div>
-                                <div className="absolute top-0 right-0 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                                    {score > 600 ? 'EXCELLENT' : score > 400 ? 'GOOD' : 'NEEDS WORK'}
-                                </div>
-                            </div>
-                            <h2 className="text-2xl font-bold text-white mb-2">Overall Score</h2>
-                            <p className="text-slate-400 text-sm mb-6">You have completed the full mock test.</p>
-
-                            <div className="w-full grid grid-cols-2 gap-4">
-                                <div className="bg-slate-900/50 p-3 rounded-xl">
-                                    <div className="text-green-400 font-bold text-xl">{accuracy}%</div>
-                                    <div className="text-xs text-slate-500">Accuracy</div>
-                                </div>
-                                <div className="bg-slate-900/50 p-3 rounded-xl">
-                                    <div className="text-blue-400 font-bold text-xl">
-                                        {Math.floor(score / 4) + Math.floor(Math.random() * 1000)}
-                                    </div>
-                                    <div className="text-xs text-slate-500">Est. Rank</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Detailed Analysis */}
-                        <div className="md:col-span-2 space-y-6">
-                            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8">
-                                <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                                    <BarChart2 className="w-5 h-5 text-indigo-400" /> Subject-wise Performance
-                                </h3>
-
-                                <div className="space-y-6">
-                                    {Object.entries(subjectAnalysis).map(([subject, stats]) => (
-                                        <div key={subject}>
-                                            <div className="flex justify-between items-center mb-2">
-                                                <span className="capitalize text-slate-300 font-medium">{subject}</span>
-                                                <div className="flex gap-4 text-sm">
-                                                    <span className="text-green-400">{stats.correct} Correct</span>
-                                                    <span className="text-red-400">{stats.wrong} Wrong</span>
-                                                    <span className="text-white font-bold">{stats.score} Marks</span>
-                                                </div>
-                                            </div>
-                                            <div className="h-3 w-full bg-slate-800 rounded-full overflow-hidden flex">
-                                                <div
-                                                    className="h-full bg-green-500"
-                                                    style={{ width: `${stats.total > 0 ? (stats.correct / stats.total) * 100 : 0}%` }}
-                                                />
-                                                <div
-                                                    className="h-full bg-red-500"
-                                                    style={{ width: `${stats.total > 0 ? (stats.wrong / stats.total) * 100 : 0}%` }}
-                                                />
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Suggestions */}
-                            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8">
-                                <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                                    <Zap className="w-5 h-5 text-yellow-400" /> Analysis & Suggestions
-                                </h3>
-                                <div className="grid md:grid-cols-2 gap-4">
-                                    <div className="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-xl">
-                                        <h4 className="font-bold text-yellow-200 mb-2">Time Management</h4>
-                                        <p className="text-sm text-yellow-100/70">
-                                            You spent an average of {Math.round((DURATION_SECONDS - timeLeft) / (Object.keys(answers).length || 1))}s per question.
-                                        </p>
-                                    </div>
-                                    <div className="p-4 bg-indigo-500/10 border border-indigo-500/30 rounded-xl">
-                                        <h4 className="font-bold text-indigo-200 mb-2">Focus Area</h4>
-                                        <p className="text-sm text-indigo-100/70">
-                                            Review the Physics section carefully, especially the mechanics questions where negative marking was high.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-2">
-                        <BookOpen className="w-6 h-6 text-indigo-500" />
-                        Deep Analysis & Solutions
-                    </h2>
-
-                    <div className="space-y-8">
-                        {QUESTIONS.map((q) => {
-                            const userAnsIdx = answers[q.id];
-                            const isCorrect = userAnsIdx === q.correctAnswer;
-                            const isSkipped = userAnsIdx === undefined;
-                            const statusColor = isCorrect ? 'text-green-400' : isSkipped ? 'text-yellow-400' : 'text-red-400';
-                            const StatusIcon = isCorrect ? CheckCircle2 : isSkipped ? HelpCircle : XCircle;
-
-                            return (
-                                <div key={q.id} className="bg-slate-900/50 border border-slate-800 rounded-3xl p-6 md:p-8 hover:bg-slate-800/30 transition-colors">
-                                    <div className="flex items-start justify-between gap-4 mb-6">
-                                        <div className="flex-1">
-                                            <div className="flex items-center gap-3 mb-2">
-                                                <span className={`px-2 py-1 rounded text-xs font-bold uppercase tracking-wider border ${q.type === 'physics' ? 'bg-blue-400/10 text-blue-400 border-blue-500/20' :
-                                                    q.type === 'chemistry' ? 'bg-yellow-400/10 text-yellow-400 border-yellow-500/20' :
-                                                        'bg-green-400/10 text-green-400 border-green-500/20'
-                                                    }`}>
-                                                    {q.type}
-                                                </span>
-                                                <span className={`text-sm font-bold flex items-center gap-1 ${statusColor}`}>
-                                                    <StatusIcon className="w-4 h-4" />
-                                                    {isCorrect ? 'Correct' : isSkipped ? 'Not Attempted' : 'Incorrect'}
-                                                </span>
-                                            </div>
-                                            <h4 className="text-lg md:text-xl font-medium text-white">
-                                                <span className="text-slate-500 font-mono mr-3">Q{q.id}.</span>
-                                                {q.text}
-                                            </h4>
-                                        </div>
-                                    </div>
-
-                                    <div className="grid md:grid-cols-2 gap-3 mb-6">
-                                        {q.options.map((option, optIdx) => {
-                                            const isSelected = userAnsIdx === optIdx;
-                                            const isAnswer = q.correctAnswer === optIdx;
-
-                                            let borderClass = 'border-slate-800 bg-slate-900/50';
-                                            let textClass = 'text-slate-400';
-
-                                            if (isAnswer) {
-                                                borderClass = 'border-green-500/50 bg-green-500/10';
-                                                textClass = 'text-white font-medium';
-                                            } else if (isSelected) {
-                                                borderClass = 'border-red-500/50 bg-red-500/10';
-                                                textClass = 'text-white font-medium';
-                                            }
-
-                                            return (
-                                                <div
-                                                    key={optIdx}
-                                                    className={`p-4 rounded-xl border ${borderClass} flex items-center gap-3 transition-colors`}
-                                                >
-                                                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs shrink-0 ${isAnswer ? 'bg-green-500 text-white' :
-                                                        isSelected ? 'bg-red-500 text-white' :
-                                                            'bg-slate-800 text-slate-500'
-                                                        }`}>
-                                                        {String.fromCharCode(65 + optIdx)}
-                                                    </div>
-                                                    <span className={textClass}>{option}</span>
-                                                    {isAnswer && <CheckCircle2 className="w-5 h-5 text-green-500 ml-auto" />}
-                                                    {isSelected && !isAnswer && <XCircle className="w-5 h-5 text-red-500 ml-auto" />}
-                                                </div>
-                                            )
-                                        })}
-                                    </div>
-
-                                    <div className="bg-indigo-950/20 border border-indigo-900/30 p-6 rounded-2xl relative overflow-hidden">
-                                        <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500" />
-                                        <div className="flex gap-4">
-                                            <div className="shrink-0 pt-1">
-                                                <div className="w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 border border-indigo-500/20">
-                                                    <GraduationCap className="w-6 h-6" />
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <h5 className="text-indigo-400 font-bold text-sm uppercase tracking-wider mb-2">Teacher Explanation</h5>
-                                                <p className="text-slate-300 leading-relaxed text-sm md:text-base">
-                                                    {q.explanation}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            )}
-        </div>
+        <TestSeriesPlayer
+            title="NEET Guard Mock-1"
+            description="Complete NEET pattern mock test covering Physics, Chemistry, and Biology. Experience real exam-like conditions."
+            testSeriesId="neet-ug-mock-180"
+            questions={QUESTIONS}
+            durationMins={200} // 3h 20m
+            totalMarks={720}
+            subjects={["Physics", "Chemistry", "Botany", "Zoology"]}
+        />
     );
 }

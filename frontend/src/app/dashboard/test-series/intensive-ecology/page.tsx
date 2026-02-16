@@ -1,30 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import {
-    ArrowLeft, Clock, AlertCircle, ChevronRight, ChevronLeft, Flag,
-    RotateCcw, Brain, Zap, Target, Layers, Calculator,
-    BookOpen, CheckCircle2, HelpCircle, XCircle, GraduationCap
-} from "lucide-react";
-import Link from "next/link";
-import TestSeriesIntro from "@/components/dashboard/TestSeriesIntro";
-
-// --- Types ---
-type Question = {
-    id: number;
-    section: string;
-    text: string;
-    options: string[];
-    correctAnswer: number; // 0-3
-    explanation: string;
-};
+import React from "react";
+import TestSeriesPlayer, { Question } from "@/components/dashboard/TestSeriesPlayer";
 
 // --- DATA: Intensive Ecology Series ---
 const QUESTIONS: Question[] = [
     // SECTION A: Concept Fusion MCQs
     {
         id: 1,
-        section: "Concept Fusion",
+        type: "Concept Fusion",
         text: "In logistic growth, when the population size (N) equals half the carrying capacity (K/2), the growth rate (dN/dt) is:",
         options: ["Zero", "Maximum", "Minimum", "Equal to intrinsic rate (r)"],
         correctAnswer: 1, // B
@@ -32,15 +16,15 @@ const QUESTIONS: Question[] = [
     },
     {
         id: 2,
-        section: "Concept Fusion",
+        type: "Concept Fusion",
         text: "If a population is at carrying capacity (K), which of the following is TRUE?",
         options: ["Natality = Mortality", "Intrinsic rate of increase (r) = 0", "Growth rate (dN/dt) = 0", "All of the above"],
-        correctAnswer: 3, // D (User Key D) - Wait, r is constant for species. dN/dt becomes 0. Natality approx Mortality. User says D. Let's trace logic: At K, birth=death -> dN/dt=0. Realized r (actual growth) is 0. Intrinsic r is potential. Options are tricky. Let's stick to User Key D implies 'Realized' context for r."
+        correctAnswer: 3, // D
         explanation: "At carrying capacity, the population stabilizes because birth rate equals death rate, leading to zero net growth."
     },
     {
         id: 3,
-        section: "Concept Fusion",
+        type: "Concept Fusion",
         text: "Which of the following ecological pyramids can be inverted?\n1. Pyramid of Energy\n2. Pyramid of Biomass (aquatic)\n3. Pyramid of Number (tree ecosystem)",
         options: ["1 only", "2 & 3", "1 & 2", "1, 2 & 3"],
         correctAnswer: 1, // B
@@ -48,7 +32,7 @@ const QUESTIONS: Question[] = [
     },
     {
         id: 4,
-        section: "Concept Fusion",
+        type: "Concept Fusion",
         text: "Match the following correctly:\n1. GPP (Gross Primary Productivity)\n2. NPP (Net Primary Productivity)\n3. Secondary productivity\n\na. Energy available to herbivores\nb. Total photosynthesis\nc. Biomass formed by consumers",
         options: ["1–b, 2–a, 3–c", "1–a, 2–b, 3–c", "1–c, 2–b, 3–a", "1–b, 2–c, 3–a"],
         correctAnswer: 0, // A
@@ -56,15 +40,15 @@ const QUESTIONS: Question[] = [
     },
     {
         id: 5,
-        section: "Concept Fusion",
+        type: "Concept Fusion",
         text: "If 1,000 J of energy is available at the producer level, the energy available to the tertiary consumer will be:",
         options: ["10 J", "1 J", "100 J", "0.1 J"],
-        correctAnswer: 1, // B (User Key B). Let's calc: Prod(1000) -> Pri(100) -> Sec(10) -> Ter(1). Yes, B. Wait user says B: 1J. Correct.
+        correctAnswer: 1, // B
         explanation: "Apply 10% law: Producers (1000) -> Primary (100) -> Secondary (10) -> Tertiary (1)."
     },
     {
         id: 6,
-        section: "Concept Fusion",
+        type: "Concept Fusion",
         text: "Which of these are density-dependent factors regulating population?\n1. Predation\n2. Competition\n3. Flood\n4. Disease",
         options: ["1, 2, 4", "1, 2, 3", "2, 3, 4", "All"],
         correctAnswer: 0, // A
@@ -72,7 +56,7 @@ const QUESTIONS: Question[] = [
     },
     {
         id: 7,
-        section: "Concept Fusion",
+        type: "Concept Fusion",
         text: "If immigration > emigration and natality = mortality, the population size will:",
         options: ["Decrease", "Remain Stable", "Increase", "Go Extinct"],
         correctAnswer: 2, // C
@@ -80,17 +64,16 @@ const QUESTIONS: Question[] = [
     },
     {
         id: 8,
-        section: "Concept Fusion",
+        type: "Concept Fusion",
         text: "Which nutrient cycle lacks a significant gaseous phase?",
         options: ["Nitrogen cycle", "Carbon cycle", "Phosphorus cycle", "Oxygen cycle"],
         correctAnswer: 2, // C
         explanation: "The Phosphorus cycle is a sedimentary cycle with no significant atmospheric component."
     },
-
     // SECTION B: Data + Numerical Intensive
     {
         id: 9,
-        section: "Data & Numerical",
+        type: "Data & Numerical",
         text: "In a forest ecosystem:\nGPP = 25,000 kcal/m²/yr\nRespiration loss (R) = 10,000 kcal/m²/yr\nWhat does NPP equal?",
         options: ["15,000", "10,000", "35,000", "5,000"],
         correctAnswer: 0, // A
@@ -98,7 +81,7 @@ const QUESTIONS: Question[] = [
     },
     {
         id: 10,
-        section: "Data & Numerical",
+        type: "Data & Numerical",
         text: "If the ecological efficiency of energy transfer becomes 5% instead of the usual 10%, the potential length of the food chain will:",
         options: ["Increase", "Decrease", "Remain same", "Double"],
         correctAnswer: 1, // B
@@ -106,7 +89,7 @@ const QUESTIONS: Question[] = [
     },
     {
         id: 11,
-        section: "Data & Numerical",
+        type: "Data & Numerical",
         text: "If the Z-value (slope) in a species-area relationship increases (steepens), it indicates:",
         options: ["Lower slope/less diversity change", "Higher endemism / Richness increases faster with area", "Weak relationship", "No change"],
         correctAnswer: 1, // B
@@ -114,7 +97,7 @@ const QUESTIONS: Question[] = [
     },
     {
         id: 12,
-        section: "Data & Numerical",
+        type: "Data & Numerical",
         text: "In exponential growth, if the intrinsic rate r = 0.3 and population N = 100, what is the growth rate dN/dt?",
         options: ["30", "100", "0.3", "300"],
         correctAnswer: 0, // A
@@ -122,17 +105,16 @@ const QUESTIONS: Question[] = [
     },
     {
         id: 13,
-        section: "Data & Numerical",
+        type: "Data & Numerical",
         text: "If a population doubles every 5 years regardless of its size, the growth pattern is:",
         options: ["Logistic", "Exponential", "Linear", "Stable"],
         correctAnswer: 1, // B
         explanation: "Constant doubling time is a hallmark of unregulated exponential growth."
     },
-
     // SECTION C: Multi-Statement Trap
     {
         id: 14,
-        section: "Multi-Statement",
+        type: "Multi-Statement",
         text: "Which statements are correct?\n1. Energy flow is unidirectional\n2. Nutrient cycle is cyclic\n3. Energy pyramid is always upright\n4. Biomass pyramid is always upright",
         options: ["1, 2, 3", "1, 2", "1, 2, 3, 4", "2, 3, 4"],
         correctAnswer: 0, // A
@@ -140,7 +122,7 @@ const QUESTIONS: Question[] = [
     },
     {
         id: 15,
-        section: "Multi-Statement",
+        type: "Multi-Statement",
         text: "The 'Edge Effect' in ecology generally leads to:\n1. Increased biodiversity at the boundary\n2. Increased predation risk\n3. Habitat fragmentation stress",
         options: ["1 only", "1 & 2", "1, 2, & 3", "2 only"],
         correctAnswer: 2, // C
@@ -148,7 +130,7 @@ const QUESTIONS: Question[] = [
     },
     {
         id: 16,
-        section: "Multi-Statement",
+        type: "Multi-Statement",
         text: "During eutrophication of a water body:\n1. Biochemical Oxygen Demand (BOD) increases\n2. Dissolved Oxygen (DO) decreases\n3. Fish mortality increases",
         options: ["1 & 2", "2 & 3", "1, 2, & 3", "1 only"],
         correctAnswer: 2, // C
@@ -156,17 +138,16 @@ const QUESTIONS: Question[] = [
     },
     {
         id: 17,
-        section: "Multi-Statement",
+        type: "Multi-Statement",
         text: "To be designated as a Biodiversity Hotspot, a region must have:\n1. High endemism\n2. High threat level\n3. At least 1500 endemic vascular plants",
         options: ["1 & 2", "1 & 3", "1, 2, & 3", "2 & 3"],
         correctAnswer: 2, // C
         explanation: "Myers' criteria include strictly: >1500 endemic vascular plants (Endemism) and >70% habitat loss (Threat)."
     },
-
     // SECTION D: Case Intensive
     {
         id: 18,
-        section: "Case Intensive",
+        type: "Case Intensive",
         text: "In an experiment, when a top predator was removed, the prey population initially exploded and then crashed spectacularly. The crash was most likely due to:",
         options: ["Resource depletion / Starvation", "Spontaneous mutation", "Carrying capacity increase", "Migration"],
         correctAnswer: 0, // A
@@ -174,7 +155,7 @@ const QUESTIONS: Question[] = [
     },
     {
         id: 19,
-        section: "Case Intensive",
+        type: "Case Intensive",
         text: "If secondary succession is occurring on abandoned farmland, the pioneer species are most likely:",
         options: ["Lichens", "Mosses", "Grasses/Weeds", "Phytoplankton"],
         correctAnswer: 2, // C
@@ -182,7 +163,7 @@ const QUESTIONS: Question[] = [
     },
     {
         id: 20,
-        section: "Case Intensive",
+        type: "Case Intensive",
         text: "Which scenario demonstrates the Principle of Competitive Exclusion being active?",
         options: ["Two species competing for identical niche cannot coexist", "Resource partitioning allowing coexistence", "Mutualism", "Predation controlling prey"],
         correctAnswer: 0, // A
@@ -190,25 +171,24 @@ const QUESTIONS: Question[] = [
     },
     {
         id: 21,
-        section: "Case Intensive",
+        type: "Case Intensive",
         text: "As the population size N approaches the carrying capacity K, which term in the logistic equation approaches zero?",
         options: ["Intrinsic rate r", "Environmental resistance term (K − N)/K", "Population N", "Growth rate dN/dt"],
-        correctAnswer: 1, // B (User Key: B, wait. If N->K, K-N -> 0. so (K-N)/K -> 0. Correct. Resulting in dN/dt -> 0. Option B refers to the term itself.)
+        correctAnswer: 1, // B
         explanation: "The term (K-N)/K represents the unutilized opportunity for growth. As N -> K, this term approaches zero, slowing growth."
     },
     {
         id: 22,
-        section: "Case Intensive",
+        type: "Case Intensive",
         text: "In a deep ocean ecosystem (hydrothermal vents) where sunlight is absent, the primary producers are:",
         options: ["Algae", "Phytoplankton", "Chemosynthetic bacteria", "Moss"],
         correctAnswer: 2, // C
         explanation: "Without light, photosynthesis is impossible. Producers use chemical energy (chemosynthesis) from vents."
     },
-
     // SECTION E: Ultra Concept Trap
     {
         id: 23,
-        section: "Ultra Concept Trap",
+        type: "Ultra Concept",
         text: "Biomagnification is strongest (most dangerous) in ecosystems with:",
         options: ["Short food chains", "Long food chains", "Single trophic level", "Producers only"],
         correctAnswer: 1, // B
@@ -216,7 +196,7 @@ const QUESTIONS: Question[] = [
     },
     {
         id: 24,
-        section: "Ultra Concept Trap",
+        type: "Ultra Concept",
         text: "Which ONE factor is the most significant cause of driving animals and plants to extinction ('The Evil Quartet')?",
         options: ["Alien species invasion", "Habitat loss and fragmentation", "Overexploitation", "Coextinction"],
         correctAnswer: 1, // B
@@ -224,7 +204,7 @@ const QUESTIONS: Question[] = [
     },
     {
         id: 25,
-        section: "Ultra Concept Trap",
+        type: "Ultra Concept",
         text: "If global temperatures increase, which ecosystem is ecologically most vulnerable to collapse?",
         options: ["Tropical rainforest", "Coral reefs", "Grassland", "Desert"],
         correctAnswer: 1, // B
@@ -232,7 +212,7 @@ const QUESTIONS: Question[] = [
     },
     {
         id: 26,
-        section: "Ultra Concept Trap",
+        type: "Ultra Concept",
         text: "Ecological succession stops when the community reaches:",
         options: ["Pioneer stage", "Climax community", "Secondary stage", "Shrub stage"],
         correctAnswer: 1, // B
@@ -240,7 +220,7 @@ const QUESTIONS: Question[] = [
     },
     {
         id: 27,
-        section: "Ultra Concept Trap",
+        type: "Ultra Concept",
         text: "Net Ecosystem Productivity (NEP) is positive when:",
         options: ["Respiration > GPP", "GPP > Total ecosystem respiration", "NPP = 0", "Consumers > Producers"],
         correctAnswer: 1, // B
@@ -248,7 +228,7 @@ const QUESTIONS: Question[] = [
     },
     {
         id: 28,
-        section: "Ultra Concept Trap",
+        type: "Ultra Concept",
         text: "Which is a characteristic trait of K-selected species?",
         options: ["High fecundity", "Small body size", "Parental care", "Early maturity"],
         correctAnswer: 2, // C
@@ -256,7 +236,7 @@ const QUESTIONS: Question[] = [
     },
     {
         id: 29,
-        section: "Ultra Concept Trap",
+        type: "Ultra Concept",
         text: "The concept of 'Maximum Sustainable Yield' is most closely related to which population growth model?",
         options: ["Carrying capacity (K)", "Logistic growth (at K/2)", "Biodiversity hotspots", "Biomagnification"],
         correctAnswer: 1, // B
@@ -264,7 +244,7 @@ const QUESTIONS: Question[] = [
     },
     {
         id: 30,
-        section: "Ultra Concept Trap",
+        type: "Ultra Concept",
         text: "If allele frequencies fluctuate randomly in a small population simply by chance, this evolutionary force is:",
         options: ["Migration", "Mutation", "Genetic Drift", "Environmental Resistance"],
         correctAnswer: 2, // C
@@ -272,379 +252,16 @@ const QUESTIONS: Question[] = [
     }
 ];
 
-const DURATION_SECONDS = 45 * 60; // 45 Minutes
-
 export default function IntensiveEcologyPage() {
-    // --- State ---
-    const [status, setStatus] = useState<"intro" | "active" | "result">("intro");
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [answers, setAnswers] = useState<Record<number, number>>({});
-    const [markedForReview, setMarkedForReview] = useState<Set<number>>(new Set());
-    const [timeLeft, setTimeLeft] = useState(DURATION_SECONDS);
-    const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
-
-    // Stats
-    const [score, setScore] = useState(0);
-    const [accuracy, setAccuracy] = useState(0);
-
-    // --- Timer ---
-    useEffect(() => {
-        let timer: NodeJS.Timeout;
-        if (status === "active" && timeLeft > 0) {
-            timer = setInterval(() => {
-                setTimeLeft((prev) => {
-                    if (prev <= 1) {
-                        handleSubmit();
-                        return 0;
-                    }
-                    return prev - 1;
-                });
-            }, 1000);
-        }
-        return () => clearInterval(timer);
-    }, [status, timeLeft]);
-
-    // --- Handlers ---
-    const startTest = () => {
-        setStatus("active");
-        setTimeLeft(DURATION_SECONDS);
-        setAnswers({});
-        setMarkedForReview(new Set());
-        setCurrentQuestionIndex(0);
-    };
-
-    const handleAnswer = (optionIdx: number) => {
-        const qId = QUESTIONS[currentQuestionIndex].id;
-        setAnswers((prev) => {
-            const current = prev[qId];
-            if (current === optionIdx) {
-                const next = { ...prev };
-                delete next[qId];
-                return next;
-            }
-            return {
-                ...prev,
-                [qId]: optionIdx,
-            };
-        });
-    };
-
-    const toggleMarkForReview = () => {
-        const qId = QUESTIONS[currentQuestionIndex].id;
-        setMarkedForReview((prev) => {
-            const newSet = new Set(prev);
-            if (newSet.has(qId)) newSet.delete(qId);
-            else newSet.add(qId);
-            return newSet;
-        });
-    };
-
-    const handleSubmit = () => {
-        let calculatedScore = 0;
-        let correctCount = 0;
-        let wrongCount = 0;
-
-        QUESTIONS.forEach((q) => {
-            const selected = answers[q.id];
-            if (selected !== undefined) {
-                if (selected === q.correctAnswer) {
-                    calculatedScore += 4;
-                    correctCount++;
-                } else {
-                    calculatedScore -= 1;
-                    wrongCount++;
-                }
-            }
-        });
-
-        setScore(calculatedScore);
-        const attempted = correctCount + wrongCount;
-        const accuracyVal = attempted > 0 ? Math.round((correctCount / attempted) * 100) : 0;
-        setAccuracy(accuracyVal);
-
-        // --- Leaderboard Submission ---
-        submitScore(calculatedScore, accuracyVal);
-
-        setStatus("result");
-        setIsSubmitModalOpen(false);
-    };
-
-    const submitScore = async (score: number, accuracy: number) => {
-        try {
-            const userStr = localStorage.getItem("xamsathi_user");
-            let userId = "";
-            if (userStr) {
-                try {
-                    const parsed = JSON.parse(userStr);
-                    userId = parsed._id || parsed.id || parsed.user_id;
-                } catch { }
-            }
-
-            if (!userId) return;
-
-            const envBase = (process.env.NEXT_PUBLIC_BACKEND_URL || "").trim();
-            const base = envBase || (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? "http://localhost:3001" : "http://localhost:3001");
-
-            await fetch(`${base}/api/leaderboard/submit`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "x-user-id": userId
-                },
-                body: JSON.stringify({
-                    testSeriesId: "intensive-ecology",
-                    score: score,
-                    accuracy: accuracy
-                })
-            });
-        } catch (error) {
-            console.error("Failed to submit score", error);
-        }
-    };
-
-    const formatTime = (seconds: number) => {
-        const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    };
-
-    const currentQ = QUESTIONS[currentQuestionIndex];
-
     return (
-        <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-orange-500/30">
-            {/* --- Intro View --- */}
-            {status === "intro" && (
-                <TestSeriesIntro
-                    title="Intensive Ecology Series"
-                    description="Concept Fusion • Multi-Statement • Trap Based. A high-density assessment designed for students aiming for 680+ level in NEET."
-                    testSeriesId="intensive-ecology"
-                    durationMins={45}
-                    questionsCount={30}
-                    totalMarks={120}
-                    subjects={["Concept Fusion", "Data & Numerical", "Multi-Statement", "Case Intensive", "Ultra Concept"]}
-                    onStart={startTest}
-                />
-            )}
-
-            {/* --- Active Test View --- */}
-            {status === "active" && (
-                <div className="fixed inset-0 z-50 bg-slate-950 flex flex-col">
-                    <header className="bg-slate-900 border-b border-slate-800 p-4 flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <div className="font-bold text-xl text-white">Intensive Ecology</div>
-                            <div className="text-sm text-slate-400 hidden sm:block">Part 1: Ultra Concept</div>
-                        </div>
-
-                        <div className="flex items-center gap-6">
-                            <div className={`flex items-center gap-2 font-mono text-xl font-bold ${timeLeft < 300 ? 'text-red-500 animate-pulse' : 'text-slate-200'}`}>
-                                <Clock className="w-5 h-5" />
-                                {formatTime(timeLeft)}
-                            </div>
-                            <button
-                                onClick={() => setIsSubmitModalOpen(true)}
-                                className="bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/50 px-6 py-2 rounded-lg font-semibold transition-colors"
-                            >
-                                Submit
-                            </button>
-                        </div>
-                    </header>
-
-                    <div className="flex-1 flex overflow-hidden">
-                        <main className="flex-1 flex flex-col p-4 md:p-6 overflow-y-auto">
-                            <div className="max-w-4xl w-full mx-auto">
-                                <div className="flex items-center justify-between mb-6">
-                                    <span className="text-sm font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-orange-500/10 text-orange-400 border border-orange-500/20">
-                                        {currentQ.section}
-                                    </span>
-                                    <span className="text-slate-500 text-sm">Question {currentQuestionIndex + 1} of {QUESTIONS.length}</span>
-                                </div>
-
-                                <h2 className="text-xl md:text-2xl font-medium text-white mb-8 border-l-4 border-orange-500 pl-4 py-1 leading-relaxed">
-                                    {currentQ.text.split('\n').map((line, i) => (
-                                        <span key={i} className="block mb-2">{line}</span>
-                                    ))}
-                                </h2>
-
-                                <div className="grid gap-4 mb-8">
-                                    {currentQ.options.map((option, idx) => {
-                                        const isSelected = answers[currentQ.id] === idx;
-                                        return (
-                                            <button
-                                                key={idx}
-                                                onClick={() => handleAnswer(idx)}
-                                                className={`text-left p-4 md:p-6 rounded-xl border-2 transition-all flex items-center gap-4 group ${isSelected
-                                                    ? 'border-orange-500 bg-orange-500/10'
-                                                    : 'border-slate-800 bg-slate-900/50 hover:border-slate-700 hover:bg-slate-800'
-                                                    }`}
-                                            >
-                                                <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold border ${isSelected ? 'bg-orange-500 border-orange-500 text-white' : 'border-slate-600 text-slate-400 group-hover:border-slate-500'
-                                                    }`}>
-                                                    {String.fromCharCode(65 + idx)}
-                                                </div>
-                                                <span className={`text-base md:text-lg ${isSelected ? 'text-white' : 'text-slate-300'}`}>
-                                                    {option}
-                                                </span>
-                                            </button>
-                                        );
-                                    })}
-                                </div>
-
-                                <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-t border-slate-800 mt-auto">
-                                    <div className="flex gap-2">
-                                        <button
-                                            onClick={() => setCurrentQuestionIndex(prev => Math.max(0, prev - 1))}
-                                            disabled={currentQuestionIndex === 0}
-                                            className="px-6 py-2.5 rounded-lg border border-slate-700 text-slate-300 hover:bg-slate-800 disabled:opacity-50 flex items-center gap-2"
-                                        >
-                                            <ChevronLeft className="w-4 h-4" /> <span className="hidden sm:inline">Prev</span>
-                                        </button>
-                                        <button
-                                            onClick={toggleMarkForReview}
-                                            className={`px-6 py-2.5 rounded-lg border flex items-center gap-2 transition-colors ${markedForReview.has(currentQ.id)
-                                                ? 'border-yellow-500 bg-yellow-500/10 text-yellow-400'
-                                                : 'border-slate-700 text-slate-400 hover:bg-slate-800'
-                                                }`}
-                                        >
-                                            <Flag className="w-4 h-4" /> <span className="hidden sm:inline">Review</span>
-                                        </button>
-                                    </div>
-
-                                    <button
-                                        onClick={() => setCurrentQuestionIndex(prev => Math.min(QUESTIONS.length - 1, prev + 1))}
-                                        disabled={currentQuestionIndex === QUESTIONS.length - 1}
-                                        className="px-8 py-2.5 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-lg shadow-lg shadow-orange-900/20 disabled:opacity-50 flex items-center gap-2"
-                                    >
-                                        <span className="hidden sm:inline">Next</span> <ChevronRight className="w-4 h-4" />
-                                    </button>
-                                </div>
-                            </div>
-                        </main>
-                    </div>
-
-                    {isSubmitModalOpen && (
-                        <div className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-                            <div className="bg-slate-900 border border-slate-700 rounded-2xl p-8 max-w-md w-full">
-                                <h3 className="text-2xl font-bold text-white mb-4">Submit Intensive Test?</h3>
-                                <div className="flex gap-4">
-                                    <button onClick={() => setIsSubmitModalOpen(false)} className="flex-1 py-3 rounded-xl border border-slate-600 text-slate-300">Continue</button>
-                                    <button onClick={handleSubmit} className="flex-1 py-3 rounded-xl bg-orange-600 text-white font-bold">Submit</button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            )}
-
-            {/* --- Result View --- */}
-            {status === "result" && (
-                <div className="max-w-4xl mx-auto px-6 py-12">
-                    <div className="flex items-center justify-between mb-8">
-                        <Link href="/dashboard" className="inline-flex items-center gap-2 text-slate-400 hover:text-white">
-                            <ArrowLeft className="w-4 h-4" /> Dashboard
-                        </Link>
-                        <button onClick={startTest} className="px-6 py-2 bg-orange-600 text-white rounded-lg font-medium flex items-center gap-2">
-                            <RotateCcw className="w-4 h-4" /> Retake
-                        </button>
-                    </div>
-
-                    <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center mb-8">
-                        <h2 className="text-3xl font-bold text-white mb-2">Test Complete</h2>
-                        <p className="text-slate-400 mb-8">Part 1: Ultra Concept + Trap Based</p>
-
-                        <div className="text-5xl font-bold text-white mb-2">{score} <span className="text-2xl text-slate-500">/ 120</span></div>
-                        <div className="text-orange-400 font-bold text-xl mb-6">{accuracy}% Accuracy</div>
-                    </div>
-
-                    <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-2">
-                        <BookOpen className="w-6 h-6 text-orange-500" />
-                        Deep Analysis & Solutions
-                    </h2>
-
-                    <div className="space-y-8">
-                        {QUESTIONS.map((q, qIdx) => {
-                            const userAnsIdx = answers[q.id];
-                            const isCorrect = userAnsIdx === q.correctAnswer;
-                            const isSkipped = userAnsIdx === undefined;
-                            const statusColor = isCorrect ? 'text-green-400' : isSkipped ? 'text-yellow-400' : 'text-red-400';
-                            const StatusIcon = isCorrect ? CheckCircle2 : isSkipped ? HelpCircle : XCircle;
-
-                            return (
-                                <div key={q.id} className="bg-slate-900/50 border border-slate-800 rounded-3xl p-6 md:p-8 hover:bg-slate-800/30 transition-colors">
-                                    <div className="flex items-start justify-between gap-4 mb-6">
-                                        <div className="flex-1">
-                                            <div className="flex items-center gap-3 mb-2">
-                                                <span className="px-2 py-1 rounded bg-slate-800 text-xs font-mono text-slate-400 border border-slate-700">
-                                                    {q.section}
-                                                </span>
-                                                <span className={`text-sm font-bold flex items-center gap-1 ${statusColor}`}>
-                                                    <StatusIcon className="w-4 h-4" />
-                                                    {isCorrect ? 'Correct' : isSkipped ? 'Not Attempted' : 'Incorrect'}
-                                                </span>
-                                            </div>
-                                            <h4 className="text-lg md:text-xl font-medium text-white">
-                                                <span className="text-slate-500 font-mono mr-3">Q{q.id}.</span>
-                                                {q.text}
-                                            </h4>
-                                        </div>
-                                    </div>
-
-                                    <div className="grid md:grid-cols-2 gap-3 mb-6">
-                                        {q.options.map((option, optIdx) => {
-                                            const isSelected = userAnsIdx === optIdx;
-                                            const isAnswer = q.correctAnswer === optIdx;
-
-                                            let borderClass = 'border-slate-800 bg-slate-900/50';
-                                            let textClass = 'text-slate-400';
-
-                                            if (isAnswer) {
-                                                borderClass = 'border-green-500/50 bg-green-500/10';
-                                                textClass = 'text-white font-medium';
-                                            } else if (isSelected) {
-                                                borderClass = 'border-red-500/50 bg-red-500/10';
-                                                textClass = 'text-white font-medium';
-                                            }
-
-                                            return (
-                                                <div
-                                                    key={optIdx}
-                                                    className={`p-4 rounded-xl border ${borderClass} flex items-center gap-3 transition-colors`}
-                                                >
-                                                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs shrink-0 ${isAnswer ? 'bg-green-500 text-white' :
-                                                        isSelected ? 'bg-red-500 text-white' :
-                                                            'bg-slate-800 text-slate-500'
-                                                        }`}>
-                                                        {String.fromCharCode(65 + optIdx)}
-                                                    </div>
-                                                    <span className={textClass}>{option}</span>
-                                                    {isAnswer && <CheckCircle2 className="w-5 h-5 text-green-500 ml-auto" />}
-                                                    {isSelected && !isAnswer && <XCircle className="w-5 h-5 text-red-500 ml-auto" />}
-                                                </div>
-                                            )
-                                        })}
-                                    </div>
-
-                                    <div className="bg-orange-950/20 border border-orange-900/30 p-6 rounded-2xl relative overflow-hidden">
-                                        <div className="absolute top-0 left-0 w-1 h-full bg-orange-500" />
-                                        <div className="flex gap-4">
-                                            <div className="shrink-0 pt-1">
-                                                <div className="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-400 border border-orange-500/20">
-                                                    <GraduationCap className="w-6 h-6" />
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <h5 className="text-orange-400 font-bold text-sm uppercase tracking-wider mb-2">Teacher's Explanation</h5>
-                                                <p className="text-slate-300 leading-relaxed text-sm md:text-base">
-                                                    {q.explanation}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            )}
-        </div>
+        <TestSeriesPlayer
+            title="Intensive Ecology Series"
+            description="Concept Fusion • Multi-Statement • Trap Based. A high-density assessment designed for students aiming for 680+ level in NEET."
+            testSeriesId="intensive-ecology-series"
+            questions={QUESTIONS}
+            durationMins={45}
+            totalMarks={120}
+            subjects={["Concept Fusion", "Data & Numerical", "Multi-Statement", "Case Intensive", "Ultra Concept"]}
+        />
     );
 }
