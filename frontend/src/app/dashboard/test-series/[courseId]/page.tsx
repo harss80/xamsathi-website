@@ -34,6 +34,7 @@ export default function CourseSeriesPage() {
     const [error, setError] = useState<string | null>(null);
     const [hasPurchased, setHasPurchased] = useState(false);
     const [userId, setUserId] = useState<string | null>(null);
+    const [classGrade, setClassGrade] = useState<number | null>(null);
 
     // Gamification State
     const [unlockedTests, setUnlockedTests] = useState<string[]>([]);
@@ -49,19 +50,45 @@ export default function CourseSeriesPage() {
                 if (!apiBase) {
                     throw new Error("NEXT_PUBLIC_API_URL is not set");
                 }
+
+                let localClass: number | null = null;
+                try {
+                    const userStr = localStorage.getItem("xamsathi_user");
+                    if (userStr) {
+                        const userObj = JSON.parse(userStr);
+                        const cg = userObj?.class_grade;
+                        if (typeof cg === "number" && cg >= 1 && cg <= 12) localClass = cg;
+                        if (typeof cg === "string") {
+                            const n = Number(String(cg).replace(/[^0-9]/g, ""));
+                            if (!Number.isNaN(n) && n >= 1 && n <= 12) localClass = n;
+                        }
+                    }
+                } catch {
+                    // ignore
+                }
+                setClassGrade(localClass);
+
                 // 1. Fetch Tests
-                const resTests = await fetch(`${apiBase}/api/tests/courses/${courseId}/tests`);
+                const resTests = await fetch(`${apiBase}/api/tests/courses/${courseId}/tests`, {
+                    headers: localClass ? { "x-class-grade": String(localClass) } : undefined,
+                });
                 if (!resTests.ok) throw new Error("Failed to load tests");
                 const dataTests = await resTests.json();
                 setTests(dataTests.items || []);
 
                 // 1b. Try to find course title
-                const resCourses = await fetch(`${apiBase}/api/tests/courses`);
+                const resCourses = await fetch(`${apiBase}/api/tests/courses`, {
+                    headers: localClass ? { "x-class-grade": String(localClass) } : undefined,
+                });
                 if (resCourses.ok) {
                     const dataCourses = await resCourses.json();
                     const course = dataCourses.items?.find((c: any) => c._id === courseId);
                     if (course) setCourseTitle(course.title);
-                    else setCourseTitle("Premium Test Series");
+                    else {
+                        setError("This course is not available for your class.");
+                        setLoading(false);
+                        return;
+                    }
                 }
 
                 // 2. Fetch User Status

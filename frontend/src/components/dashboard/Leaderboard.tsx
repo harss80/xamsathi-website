@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 type LeaderboardEntry = {
     rank: number;
@@ -27,6 +28,7 @@ const TEST_SERIES_ID = "neet-ug-mock-180";
 export default function Leaderboard() {
     const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [userName, setUserName] = useState<string>("");
 
     const getBackendBase = () => {
         const envBase = (process.env.NEXT_PUBLIC_BACKEND_URL || "").trim();
@@ -47,15 +49,13 @@ export default function Leaderboard() {
                 let userId = "";
                 if (userStr) {
                     try {
-                        const parsed = JSON.parse(userStr) as Record<string, unknown>;
-                        const id = parsed.id || parsed._id || parsed.user_id;
-                        userId = typeof id === "string" ? id : "";
+                        const parsed = JSON.parse(userStr) as Record<string, any>;
+                        userId = parsed.id || parsed._id || parsed.user_id || "";
+                        if (parsed.name) setUserName(parsed.name);
                     } catch { }
                 }
-                if (!userId) {
-                    setLeaderboardData([]);
-                    return;
-                }
+
+                // We fetch even if userId is empty to show the global leaderboard
                 const res = await fetch(`${base}/api/leaderboard/${TEST_SERIES_ID}`, {
                     headers: {
                         "x-user-id": userId
@@ -239,36 +239,53 @@ export default function Leaderboard() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-800">
-                                {rest.map((student) => (
-                                    <tr key={student.rank} className="hover:bg-slate-800/50 transition-colors group">
-                                        <td className="p-4 text-center">
-                                            <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-800 text-slate-400 font-bold font-mono text-sm border border-slate-700 group-hover:bg-indigo-500 group-hover:text-white group-hover:border-indigo-400 transition-all">
-                                                {student.rank}
-                                            </div>
-                                        </td>
-                                        <td className="p-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-slate-800 overflow-hidden relative">
-                                                    <Image
-                                                        src={student.avatar || "/default-avatar.png"}
-                                                        alt={student.name}
-                                                        fill
-                                                        className="object-cover"
-                                                    />
+                                {rest.map((student) => {
+                                    const isMe = student.name === userName;
+                                    return (
+                                        <tr key={student.rank} className={cn(
+                                            "hover:bg-slate-800/50 transition-colors group",
+                                            isMe && "bg-indigo-500/10 border-l-4 border-l-indigo-500"
+                                        )}>
+                                            <td className="p-4 text-center">
+                                                <div className={cn(
+                                                    "inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-800 text-slate-400 font-bold font-mono text-sm border border-slate-700 transition-all",
+                                                    isMe ? "bg-indigo-500 text-white border-indigo-400" : "group-hover:bg-indigo-500 group-hover:text-white group-hover:border-indigo-400"
+                                                )}>
+                                                    {student.rank}
                                                 </div>
-                                                <span className="font-semibold text-slate-200 group-hover:text-white transition-colors">{student.name}</span>
-                                            </div>
-                                        </td>
-                                        <td className="p-4 text-center font-bold text-white font-mono">{student.score}</td>
-                                        <td className="p-4 text-center text-slate-400 hidden sm:table-cell">{student.accuracy}%</td>
-                                        <td className="p-4 text-right">
-                                            <div className="inline-flex items-center gap-2 text-sm text-slate-400">
-                                                <ChevronUp className="w-4 h-4 text-green-400" />
-                                                {student.change || "0"}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
+                                            </td>
+                                            <td className="p-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-8 h-8 rounded-full bg-slate-800 overflow-hidden relative border border-slate-700">
+                                                        <Image
+                                                            src={student.avatar || "/default-avatar.png"}
+                                                            alt={student.name}
+                                                            fill
+                                                            className="object-cover"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <span className={cn(
+                                                            "font-semibold transition-colors",
+                                                            isMe ? "text-indigo-400" : "text-slate-200 group-hover:text-white"
+                                                        )}>
+                                                            {student.name}
+                                                        </span>
+                                                        {isMe && <span className="ml-2 text-[10px] bg-indigo-500 text-white px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">You</span>}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="p-4 text-center font-bold text-white font-mono">{student.score}</td>
+                                            <td className="p-4 text-center text-slate-400 hidden sm:table-cell">{student.accuracy}%</td>
+                                            <td className="p-4 text-right">
+                                                <div className="inline-flex items-center gap-2 text-sm text-slate-400">
+                                                    <ChevronUp className="w-4 h-4 text-green-400" />
+                                                    {student.change || "0"}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     </div>

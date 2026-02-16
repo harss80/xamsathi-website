@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import TestSeriesIntro from "@/components/dashboard/TestSeriesIntro";
 
 // --- Types ---
 type QuestionType = "physics" | "chemistry" | "botany" | "zoology";
@@ -385,7 +386,7 @@ export default function PrakritiSeriesPage() {
             timer = setInterval(() => {
                 setTimeLeft((prev) => {
                     if (prev <= 1) {
-                        setShowResult(true);
+                        handleFinish();
                         return 0;
                     }
                     return prev - 1;
@@ -438,71 +439,62 @@ export default function PrakritiSeriesPage() {
         return { score, correct, incorrect, skipped };
     };
 
+    const submitScore = async (score: number, accuracy: number) => {
+        try {
+            const userStr = localStorage.getItem("xamsathi_user");
+            let userId = "";
+            if (userStr) {
+                try {
+                    const parsed = JSON.parse(userStr);
+                    userId = parsed._id || parsed.id || parsed.user_id;
+                } catch { }
+            }
+
+            if (!userId) return;
+
+            const envBase = (process.env.NEXT_PUBLIC_BACKEND_URL || "").trim();
+            const base = envBase || (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? "http://localhost:3001" : "http://localhost:3001");
+
+            await fetch(`${base}/api/leaderboard/submit`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-user-id": userId
+                },
+                body: JSON.stringify({
+                    testSeriesId: "prakriti-series",
+                    score: score,
+                    accuracy: accuracy
+                })
+            });
+        } catch (error) {
+            console.error("Failed to submit score", error);
+        }
+    };
+
     const stats = calculateScore();
+
+    const handleFinish = () => {
+        const results = calculateScore();
+        const attempted = results.correct + results.incorrect;
+        const accuracy = attempted > 0 ? Math.round((results.correct / attempted) * 100) : 0;
+
+        submitScore(results.score, accuracy);
+        setShowResult(true);
+    };
 
     if (!started) {
         return (
-            <div className="min-h-screen bg-[#0B1120] text-white p-6 flex items-center justify-center">
-                <div className="max-w-2xl w-full">
-                    <Link href="/dashboard/test-series" className="inline-flex items-center text-slate-400 hover:text-white mb-6 transition-colors">
-                        <ArrowLeft className="w-4 h-4 mr-2" />
-                        Back to Test Series
-                    </Link>
-
-                    <div className="bg-slate-900/50 border border-slate-800 rounded-3xl p-8 backdrop-blur-xl">
-                        <div className="flex items-center justify-between mb-8">
-                            <span className="px-3 py-1 bg-green-500/10 text-green-400 border border-green-500/20 rounded-full text-xs font-bold uppercase tracking-wider">
-                                New Series
-                            </span>
-                        </div>
-
-                        <h1 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-green-400 to-emerald-600 bg-clip-text text-transparent">
-                            Prakriti Series
-                        </h1>
-                        <p className="text-slate-400 text-lg mb-8 leading-relaxed">
-                            A comprehensive test series covering Physics, Chemistry, Botany, and Zoology.
-                            Test your knowledge with 40 curated questions designed to challenge your understanding.
-                        </p>
-
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                            <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
-                                <div className="text-slate-400 text-xs uppercase tracking-wider mb-1">Questions</div>
-                                <div className="text-xl font-bold text-white">40</div>
-                            </div>
-                            <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
-                                <div className="text-slate-400 text-xs uppercase tracking-wider mb-1">Duration</div>
-                                <div className="text-xl font-bold text-white">45 Mins</div>
-                            </div>
-                            <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
-                                <div className="text-slate-400 text-xs uppercase tracking-wider mb-1">Marks</div>
-                                <div className="text-xl font-bold text-white">160</div>
-                            </div>
-                            <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
-                                <div className="text-slate-400 text-xs uppercase tracking-wider mb-1">Subjects</div>
-                                <div className="text-xl font-bold text-white">PCMB</div>
-                            </div>
-                        </div>
-
-                        <div className="space-y-4 mb-8">
-                            <div className="flex items-center gap-3 text-slate-300">
-                                <CheckCircle2 className="w-5 h-5 text-green-500" />
-                                <span>+4 marks for correct answer</span>
-                            </div>
-                            <div className="flex items-center gap-3 text-slate-300">
-                                <XCircle className="w-5 h-5 text-red-500" />
-                                <span>-1 mark for incorrect answer</span>
-                            </div>
-                        </div>
-
-                        <button
-                            onClick={() => setStarted(true)}
-                            className="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-bold text-lg hover:shadow-lg hover:shadow-green-500/20 transition-all active:scale-[0.98]"
-                        >
-                            Start Test Now
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <TestSeriesIntro
+                title="Prakriti Series"
+                description="A comprehensive test series covering Physics, Chemistry, Botany, and Zoology. Test your knowledge with 40 curated questions designed to challenge your understanding."
+                testSeriesId="prakriti-series"
+                durationMins={45}
+                questionsCount={40}
+                totalMarks={160}
+                subjects={["Physics", "Chemistry", "Botany", "Zoology"]}
+                onStart={() => setStarted(true)}
+            />
         );
     }
 
@@ -597,7 +589,7 @@ export default function PrakritiSeriesPage() {
 
                         {currentQuestion === QUESTIONS.length - 1 ? (
                             <button
-                                onClick={() => setShowResult(true)}
+                                onClick={handleFinish}
                                 className="px-8 py-3 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold hover:shadow-lg hover:shadow-green-500/20 transition-all flex items-center gap-2"
                             >
                                 Submit Test

@@ -195,7 +195,7 @@ function DashboardContent() {
                                     </div>
                                 </Link>
 
-                                {(!classGrade || classGrade >= 11) && (
+                                {(typeof classGrade === "number" && classGrade >= 11) && (
                                     <Link
                                     href="/dashboard/test-series/neet"
                                     onClick={() => {
@@ -232,7 +232,7 @@ function DashboardContent() {
                                     </Link>
                                 )}
 
-                                {(!classGrade || classGrade >= 11) && (
+                                {(typeof classGrade === "number" && classGrade >= 11) && (
                                     <Link
                                     href="/dashboard/test-series/neet/mock-1"
                                     onClick={() => {
@@ -269,6 +269,7 @@ function DashboardContent() {
                                 </Link>
                                 )}
 
+                                {(typeof classGrade === "number" && classGrade >= 11) && (
                                 <Link
                                     href="/dashboard/test-series/ultra-hard"
                                     onClick={() => {
@@ -303,7 +304,9 @@ function DashboardContent() {
                                         </div>
                                     </div>
                                 </Link>
+                                )}
 
+                                {(typeof classGrade === "number" && classGrade >= 11) && (
                                 <Link
                                     href="/dashboard/test-series/ecology-case-study"
                                     onClick={() => {
@@ -338,7 +341,9 @@ function DashboardContent() {
                                         </div>
                                     </div>
                                 </Link>
+                                )}
 
+                                {(typeof classGrade === "number" && classGrade >= 11) && (
                                 <Link
                                     href="/dashboard/test-series/ecology-graphs"
                                     onClick={() => {
@@ -373,7 +378,9 @@ function DashboardContent() {
                                         </div>
                                     </div>
                                 </Link>
+                                )}
 
+                                {(typeof classGrade === "number" && classGrade >= 11) && (
                                 <Link
                                     href="/dashboard/test-series/intensive-ecology"
                                     onClick={() => {
@@ -408,7 +415,9 @@ function DashboardContent() {
                                         </div>
                                     </div>
                                 </Link>
+                                )}
 
+                                {(typeof classGrade === "number" && classGrade >= 11) && (
                                 <Link
                                     href="/dashboard/test-series/prakriti-series"
                                     onClick={() => {
@@ -443,8 +452,9 @@ function DashboardContent() {
                                         </div>
                                     </div>
                                 </Link>
+                                )}
 
-                                {(!classGrade || classGrade === 9) && (
+                                {(classGrade === 9) && (
                                 <Link
                                     href="/dashboard/test-series/698f874c217f7f278986466d"
                                     onClick={() => {
@@ -482,7 +492,7 @@ function DashboardContent() {
                                 )}
 
                                 {/* Class 12 Board Booster */}
-                                {(!classGrade || classGrade === 12) && (
+                                {(classGrade === 12) && (
                                 <Link
                                     href="/dashboard/test-series/698f8a866fadfeda52b1916a"
                                     className="group relative p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-indigo-500/50 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden col-span-1 md:col-span-2 lg:col-span-3"
@@ -516,6 +526,7 @@ function DashboardContent() {
                                 )}
 
                                 {/* Class 11 Final Prep */}
+                                {(classGrade === 11) && (
                                 <Link
                                     href="/dashboard/test-series/698f8a866fadfeda52b19140"
                                     className="group relative p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-pink-500/50 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden md:col-span-2 lg:col-span-2"
@@ -536,8 +547,10 @@ function DashboardContent() {
                                         <div className="flex items-center gap-2 text-sm font-bold text-pink-400 group-hover:translate-x-1 transition-transform">View Series <ArrowRight className="w-4 h-4" /></div>
                                     </div>
                                 </Link>
+                                )}
 
                                 {/* Class 10 Board Booster */}
+                                {(classGrade === 10) && (
                                 <Link
                                     href="/dashboard/test-series/698f8a866fadfeda52b19110"
                                     className="group relative p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-yellow-500/50 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden"
@@ -558,8 +571,10 @@ function DashboardContent() {
                                         <div className="flex items-center gap-2 text-sm font-bold text-yellow-400 group-hover:translate-x-1 transition-transform">View Series <ArrowRight className="w-4 h-4" /></div>
                                     </div>
                                 </Link>
+                                )}
 
                                 {/* Class 8 */}
+                                {(classGrade === 8) && (
                                 <Link
                                     href="/dashboard/test-series/698f89db6aaedcf04fa55612"
                                     className="group relative p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-blue-500/50 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden"
@@ -580,8 +595,10 @@ function DashboardContent() {
                                         <div className="flex items-center gap-2 text-sm font-bold text-blue-400 group-hover:translate-x-1 transition-transform">View Series <ArrowRight className="w-4 h-4" /></div>
                                     </div>
                                 </Link>
+                                )}
 
                                 {/* Class 7 */}
+                                {(classGrade === 7) && (
                                 <Link
                                     href="/dashboard/test-series/698f89db6aaedcf04fa555f1"
                                     className="group relative p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-cyan-500/50 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden"
@@ -602,8 +619,10 @@ function DashboardContent() {
                                         <div className="flex items-center gap-2 text-sm font-bold text-cyan-400 group-hover:translate-x-1 transition-transform">View Series <ArrowRight className="w-4 h-4" /></div>
                                     </div>
                                 </Link>
+                                )}
 
                                 {/* Class 6 */}
+                                {(classGrade === 6) && (
                                 <Link
                                     href="/dashboard/test-series/698f89db6aaedcf04fa555d0"
                                     className="group relative p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-teal-500/50 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden"
@@ -624,8 +643,10 @@ function DashboardContent() {
                                         <div className="flex items-center gap-2 text-sm font-bold text-teal-400 group-hover:translate-x-1 transition-transform">View Series <ArrowRight className="w-4 h-4" /></div>
                                     </div>
                                 </Link>
+                                )}
 
                                 {/* Class 5 */}
+                                {(classGrade === 5) && (
                                 <Link
                                     href="/dashboard/test-series/698f89db6aaedcf04fa5559d"
                                     className="group relative p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-orange-500/50 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden"
@@ -646,8 +667,10 @@ function DashboardContent() {
                                         <div className="flex items-center gap-2 text-sm font-bold text-orange-400 group-hover:translate-x-1 transition-transform">View Series <ArrowRight className="w-4 h-4" /></div>
                                     </div>
                                 </Link>
+                                )}
 
                                 {/* 1-Week Mastery Class 5 */}
+                                {(classGrade === 5) && (
                                 <Link
                                     href="/dashboard/test-series/class5-mastery"
                                     className="group relative p-6 rounded-3xl bg-indigo-900/20 border border-indigo-500/30 hover:border-indigo-500 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden"
@@ -676,6 +699,7 @@ function DashboardContent() {
                                         </div>
                                     </div>
                                 </Link>
+                                )}
 
                                 {/* Placeholder for other tests */}
                                 <div className="p-6 rounded-3xl bg-slate-900/50 border border-slate-800 border-dashed flex flex-col items-center justify-center text-center opacity-50 hover:opacity-100 transition-opacity">

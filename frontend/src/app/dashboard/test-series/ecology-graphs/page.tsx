@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import TestSeriesIntro from "@/components/dashboard/TestSeriesIntro";
 
 // --- Types ---
 type GraphCase = {
@@ -346,9 +347,47 @@ export default function GraphInterpretationTestPage() {
 
         setScore(calculatedScore);
         const totalAttempted = correctCount + wrongCount;
-        setAccuracy(totalAttempted > 0 ? Math.round((correctCount / totalAttempted) * 100) : 0);
+        const accuracyVal = totalAttempted > 0 ? Math.round((correctCount / totalAttempted) * 100) : 0;
+        setAccuracy(accuracyVal);
+
+        // --- Leaderboard Submission ---
+        submitScore(calculatedScore, accuracyVal);
+
         setStatus("result");
         setIsSubmitModalOpen(false);
+    };
+
+    const submitScore = async (score: number, accuracy: number) => {
+        try {
+            const userStr = localStorage.getItem("xamsathi_user");
+            let userId = "";
+            if (userStr) {
+                try {
+                    const parsed = JSON.parse(userStr);
+                    userId = parsed._id || parsed.id || parsed.user_id;
+                } catch { }
+            }
+
+            if (!userId) return;
+
+            const envBase = (process.env.NEXT_PUBLIC_BACKEND_URL || "").trim();
+            const base = envBase || (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? "http://localhost:3001" : "http://localhost:3001");
+
+            await fetch(`${base}/api/leaderboard/submit`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-user-id": userId
+                },
+                body: JSON.stringify({
+                    testSeriesId: "ecology-graphs",
+                    score: score,
+                    accuracy: accuracy
+                })
+            });
+        } catch (error) {
+            console.error("Failed to submit score", error);
+        }
     };
 
     const formatTime = (seconds: number) => {
@@ -363,54 +402,16 @@ export default function GraphInterpretationTestPage() {
         <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-blue-500/30">
             {/* --- Intro View --- */}
             {status === "intro" && (
-                <div className="max-w-5xl mx-auto px-6 py-12">
-                    <Link href="/dashboard" className="inline-flex items-center gap-2 text-slate-400 hover:text-white mb-8 transition-colors">
-                        <ArrowLeft className="w-4 h-4" /> Back to Dashboard
-                    </Link>
-
-                    <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-3 opacity-10 bg-blue-500 blur-3xl rounded-bl-full w-64 h-64" />
-
-                        <div className="relative z-10">
-                            <div className="flex items-center gap-4 mb-6">
-                                <div className="p-4 bg-blue-500/10 rounded-2xl text-blue-400">
-                                    <BarChart2 className="w-10 h-10" />
-                                </div>
-                                <div>
-                                    <h1 className="text-3xl font-bold text-white">DATA INTERPRETATION - GRAPHS</h1>
-                                    <p className="text-slate-400">New NEET Pattern • Graph Based Ecology</p>
-                                </div>
-                            </div>
-
-                            <div className="grid md:grid-cols-3 gap-6 mb-10">
-                                <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50">
-                                    <Clock className="w-6 h-6 text-blue-400 mb-3" />
-                                    <h3 className="text-lg font-semibold text-white">40 Minutes</h3>
-                                    <p className="text-sm text-slate-400">~8m per Graph Case</p>
-                                </div>
-                                <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50">
-                                    <PieChart className="w-6 h-6 text-purple-400 mb-3" />
-                                    <h3 className="text-lg font-semibold text-white">5 Graph Cases</h3>
-                                    <p className="text-sm text-slate-400">5 Questions Each (Total 25)</p>
-                                </div>
-                                <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50">
-                                    <Activity className="w-6 h-6 text-green-400 mb-3" />
-                                    <h3 className="text-lg font-semibold text-white">Analysis Focus</h3>
-                                    <p className="text-sm text-slate-400">Interpret, Analyze, Eliminate</p>
-                                </div>
-                            </div>
-
-                            <div className="flex flex-col sm:flex-row gap-4">
-                                <button
-                                    onClick={startTest}
-                                    className="flex-1 bg-blue-600 hover:bg-blue-500 text-white text-lg font-bold py-4 rounded-xl shadow-lg shadow-blue-900/20 transition-all hover:scale-[1.02] flex items-center justify-center gap-2"
-                                >
-                                    Start Graph Test <ChevronRight className="w-5 h-5" />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <TestSeriesIntro
+                    title="Ecology Graph Interpretation"
+                    description="New NEET Pattern • Graph Based Ecology. Master the visual data interpretation skills required for top NEET scores."
+                    testSeriesId="ecology-graphs"
+                    durationMins={40}
+                    questionsCount={25}
+                    totalMarks={100}
+                    subjects={["Growth Curves", "Species-Area", "Energy Flow", "DO & BOD", "Predator-Prey"]}
+                    onStart={startTest}
+                />
             )}
 
             {/* --- Active Test View --- */}
@@ -711,8 +712,8 @@ export default function GraphInterpretationTestPage() {
                                                                 className={`p-4 rounded-xl border ${borderClass} flex items-center gap-3 transition-colors`}
                                                             >
                                                                 <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs shrink-0 ${isAnswer ? 'bg-green-500 text-white' :
-                                                                        isSelected ? 'bg-red-500 text-white' :
-                                                                            'bg-slate-800 text-slate-500'
+                                                                    isSelected ? 'bg-red-500 text-white' :
+                                                                        'bg-slate-800 text-slate-500'
                                                                     }`}>
                                                                     {String.fromCharCode(65 + optIdx)}
                                                                 </div>

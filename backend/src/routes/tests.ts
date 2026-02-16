@@ -29,6 +29,19 @@ router.get('/courses/:courseId/tests', async (req: Request, res: Response) => {
   const { courseId } = req.params;
   if (!courseId) return res.status(400).json({ error: 'courseId required' });
 
+  const classHeader = req.header('x-class-grade');
+  const classGrade = classHeader ? Number(classHeader) : NaN;
+
+  if (classHeader && Number.isNaN(classGrade)) {
+    return res.status(400).json({ error: 'x-class-grade header must be a number' });
+  }
+
+  if (!Number.isNaN(classGrade)) {
+    const course = await Course.findById(courseId).select('_id class_grade').lean();
+    if (!course) return res.status(404).json({ error: 'course not found' });
+    if ((course as any).class_grade !== classGrade) return res.status(403).json({ error: 'forbidden for this class' });
+  }
+
   const tests = await Test.find({ course_id: courseId, active: true })
     .sort({ createdAt: 1 }) // Show in created order (Week 1 -> Week 4)
     .select('_id title difficulty duration_min')

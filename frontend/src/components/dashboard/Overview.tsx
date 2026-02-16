@@ -64,12 +64,12 @@ export default function Overview({ user }: { user: OverviewUser }) {
                 let userId = "";
                 if (userStr) {
                     try {
-                        const parsed = JSON.parse(userStr) as Record<string, unknown>;
-                        const id = parsed.id || parsed._id || parsed.user_id;
-                        userId = typeof id === "string" ? id : "";
+                        const parsed = JSON.parse(userStr) as Record<string, any>;
+                        userId = parsed.id || parsed._id || parsed.user_id || "";
                     } catch { }
                 }
-                if (!userId) return;
+
+                // We fetch even if userId is empty to show the global leaderboard
                 const res = await fetch(`${base}/api/leaderboard/${TEST_SERIES_ID}`, {
                     headers: { "x-user-id": userId }
                 });

@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import TestSeriesIntro from "@/components/dashboard/TestSeriesIntro";
 
 // --- Types ---
 type QuestionType = "physics" | "chemistry" | "botany" | "zoology";
@@ -1386,7 +1387,10 @@ export default function NEETTestSeriesPage() {
             const userStr = localStorage.getItem("xamsathi_user");
             let userId = "";
             if (userStr) {
-                try { userId = JSON.parse(userStr)._id || JSON.parse(userStr).id; } catch { }
+                try {
+                    const parsed = JSON.parse(userStr);
+                    userId = parsed._id || parsed.id || parsed.user_id;
+                } catch { }
             }
 
             if (userId) {
@@ -1420,100 +1424,16 @@ export default function NEETTestSeriesPage() {
         <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-indigo-500/30">
             {/* --- Intro View --- */}
             {status === "intro" && (
-                <div className="max-w-5xl mx-auto px-6 py-12">
-                    <Link href="/dashboard" className="inline-flex items-center gap-2 text-slate-400 hover:text-white mb-8 transition-colors">
-                        <ArrowLeft className="w-4 h-4" /> Back to Dashboard
-                    </Link>
-
-                    <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-3 opacity-10 bg-green-500 blur-3xl rounded-bl-full w-64 h-64" />
-
-                        <div className="relative z-10">
-                            <div className="flex items-center gap-4 mb-6">
-                                <div className="p-4 bg-green-500/10 rounded-2xl text-green-400">
-                                    <Brain className="w-10 h-10" />
-                                </div>
-                                <div>
-                                    <h1 className="text-3xl font-bold text-white">NEET 2026 – ADVANCE GUARD MOCK TEST</h1>
-                                    <p className="text-slate-400">High-yield questions with negative marking</p>
-                                </div>
-                            </div>
-
-                            <div className="grid md:grid-cols-3 gap-6 mb-10">
-                                <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50">
-                                    <Clock className="w-6 h-6 text-blue-400 mb-3" />
-                                    <h3 className="text-lg font-semibold text-white">3 Hours 20 Mins</h3>
-                                    <p className="text-sm text-slate-400">Strict time limit</p>
-                                </div>
-                                <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50">
-                                    <HelpCircle className="w-6 h-6 text-purple-400 mb-3" />
-                                    <h3 className="text-lg font-semibold text-white">180 Questions</h3>
-                                    <p className="text-sm text-slate-400">Physics, Chem, Bio</p>
-                                </div>
-                                <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50">
-                                    <AlertCircle className="w-6 h-6 text-red-400 mb-3" />
-                                    <h3 className="text-lg font-semibold text-white">Negative Marking</h3>
-                                    <p className="text-sm text-slate-400">+4 for Correct, -1 for Wrong</p>
-                                </div>
-                            </div>
-
-                            <div className="bg-indigo-900/20 border border-indigo-500/30 rounded-2xl p-6 mb-10">
-                                <h3 className="text-lg font-semibold text-indigo-300 mb-4 flex items-center gap-2">
-                                    <BookOpen className="w-5 h-5" /> Syllabus Coverage
-                                </h3>
-                                <ul className="grid md:grid-cols-2 gap-3 text-slate-300 text-sm">
-                                    <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-indigo-500" /> Physics: Mechanics, Electrodynamics & Modern Physics</li>
-                                    <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-indigo-500" /> Chemistry: Organic, Inorganic & Physical (Complete)</li>
-                                    <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-indigo-500" /> Botany: Genetics, Ecology, Plant Physiology</li>
-                                    <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-indigo-500" /> Zoology: Human Physiology, Reproduction, Evolution</li>
-                                </ul>
-                            </div>
-
-                            <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50 mb-10">
-                                <div className="text-sm font-bold text-slate-200 mb-3">Start with</div>
-                                <div className="grid grid-cols-3 gap-2">
-                                    <button
-                                        type="button"
-                                        onClick={() => setSubjectView("physics")}
-                                        className={`px-3 py-3 rounded-xl border text-sm font-bold transition-colors ${subjectView === "physics" ? "bg-indigo-600/20 border-indigo-500/40 text-white" : "bg-slate-950/30 border-white/10 text-slate-300 hover:bg-white/5"}`}
-                                    >
-                                        Physics
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => setSubjectView("chemistry")}
-                                        className={`px-3 py-3 rounded-xl border text-sm font-bold transition-colors ${subjectView === "chemistry" ? "bg-indigo-600/20 border-indigo-500/40 text-white" : "bg-slate-950/30 border-white/10 text-slate-300 hover:bg-white/5"}`}
-                                    >
-                                        Chemistry
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => setSubjectView("biology")}
-                                        className={`px-3 py-3 rounded-xl border text-sm font-bold transition-colors ${subjectView === "biology" ? "bg-indigo-600/20 border-indigo-500/40 text-white" : "bg-slate-950/30 border-white/10 text-slate-300 hover:bg-white/5"}`}
-                                    >
-                                        Biology
-                                    </button>
-                                </div>
-                                <div className="text-xs text-slate-500 mt-3">You can change subject anytime during the test.</div>
-                            </div>
-
-                            <div className="flex flex-col sm:flex-row gap-4">
-                                <button
-                                    onClick={startTest}
-                                    className="flex-1 bg-green-600 hover:bg-green-500 text-white text-lg font-bold py-4 rounded-xl shadow-lg shadow-green-900/20 transition-all hover:scale-[1.02] flex items-center justify-center gap-2"
-                                >
-                                    Start Test Now <ChevronRight className="w-5 h-5" />
-                                </button>
-                                <Link
-                                    href="/dashboard"
-                                    className="px-8 py-4 rounded-xl border border-slate-700 hover:bg-slate-800 text-slate-300 font-medium transition-colors text-center"
-                                >
-                                    Cancel
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <TestSeriesIntro
+                    title="NEET Guard Mock-1"
+                    description="Complete NEET pattern mock test covering Physics, Chemistry, and Biology. Experience real exam-like conditions with negative marking and timer."
+                    testSeriesId="neet-ug-mock-180"
+                    durationMins={180}
+                    questionsCount={180}
+                    totalMarks={720}
+                    subjects={["Physics", "Chemistry", "Botany", "Zoology"]}
+                    onStart={startTest}
+                />
             )}
 
             {/* --- Active Test View --- */}

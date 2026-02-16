@@ -17,6 +17,26 @@ export default function CbseTestSeriesPage() {
     const [items, setItems] = useState<CourseItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [classGrade, setClassGrade] = useState<number | null>(null);
+
+    useEffect(() => {
+        try {
+            const savedUser = localStorage.getItem("xamsathi_user");
+            if (!savedUser) return;
+            const parsed = JSON.parse(savedUser) as Record<string, unknown>;
+            const cg = parsed.class_grade;
+            if (typeof cg === "number" && cg >= 1 && cg <= 12) {
+                setClassGrade(cg);
+                return;
+            }
+            if (typeof cg === "string") {
+                const n = Number(String(cg).replace(/[^0-9]/g, ""));
+                if (!Number.isNaN(n) && n >= 1 && n <= 12) setClassGrade(n);
+            }
+        } catch {
+            // ignore
+        }
+    }, []);
 
     useEffect(() => {
         const fetchAll = async () => {
@@ -24,23 +44,25 @@ export default function CbseTestSeriesPage() {
                 if (!API_BASE) {
                     throw new Error("NEXT_PUBLIC_API_URL is not set");
                 }
+                if (!classGrade) {
+                    setItems([]);
+                    return;
+                }
                 setError(null);
 
-                const grades = [9, 10, 11, 12];
-                const results = await Promise.all(
-                    grades.map(async (g) => {
-                        const res = await fetch(`${API_BASE}/api/tests/courses`, {
-                            headers: { "x-class-grade": String(g) },
-                            cache: "no-store",
-                        });
+                const res = await fetch(`${API_BASE}/api/tests/courses`, {
+                    headers: { "x-class-grade": String(classGrade) },
+                    cache: "no-store",
+                });
 
-                        if (!res.ok) return [] as CourseItem[];
-                        const data = (await res.json()) as { items?: CourseItem[] };
-                        return (data.items || []).filter((c) => c.class_grade === g);
-                    })
-                );
+                if (!res.ok) {
+                    setItems([]);
+                    return;
+                }
 
-                setItems(results.flat());
+                const data = (await res.json()) as { items?: CourseItem[] };
+                const list = Array.isArray(data.items) ? data.items : [];
+                setItems(list.filter((c) => c && typeof c === "object" && c.class_grade === classGrade));
             } catch (e) {
                 console.error(e);
                 if (!API_BASE) {
@@ -54,17 +76,7 @@ export default function CbseTestSeriesPage() {
         };
 
         fetchAll();
-    }, []);
-
-    const grouped = useMemo(() => {
-        const map = new Map<number, CourseItem[]>();
-        for (const c of items) {
-            const list = map.get(c.class_grade) || [];
-            list.push(c);
-            map.set(c.class_grade, list);
-        }
-        return map;
-    }, [items]);
+    }, [classGrade]);
 
     return (
         <div className="min-h-screen bg-slate-950 text-slate-200">
@@ -82,9 +94,9 @@ export default function CbseTestSeriesPage() {
                     <div>
                         <h1 className="text-3xl font-bold text-white flex items-center gap-3 mb-2">
                             <GraduationCap className="w-8 h-8 text-cyan-400" />
-                            CBSE Test Series (Class 9–12)
+                            {classGrade ? `CBSE Test Series (Class ${classGrade})` : "CBSE Test Series"}
                         </h1>
-                        <p className="text-slate-400">Preview and open your Class 9–12 test-series courses (no payment required to view).</p>
+                        <p className="text-slate-400">Open your class test-series courses (no payment required to view).</p>
                     </div>
                 </div>
 
@@ -110,47 +122,44 @@ export default function CbseTestSeriesPage() {
                     </div>
                 )}
 
-                {!loading && !error && items.length > 0 && (
-                    <div className="space-y-10">
-                        {[9, 10, 11, 12].map((grade) => {
-                            const list = grouped.get(grade) || [];
-                            if (list.length === 0) return null;
+                {!loading && !error && classGrade && items.length > 0 && (
+                    <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-xl font-bold text-white">Class {classGrade}</h2>
+                            <div className="text-xs text-slate-500">{items.length} course(s)</div>
+                        </div>
 
-                            return (
-                                <div key={grade} className="space-y-4">
-                                    <div className="flex items-center justify-between">
-                                        <h2 className="text-xl font-bold text-white">Class {grade}</h2>
-                                        <div className="text-xs text-slate-500">{list.length} course(s)</div>
-                                    </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {items.map((course) => (
+                                <div
+                                    key={course._id}
+                                    className="group p-6 rounded-2xl bg-slate-900 border border-slate-800 hover:border-cyan-500/40 transition-all hover:shadow-xl"
+                                >
+                                    <h3 className="text-lg font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
+                                        {course.title}
+                                    </h3>
+                                    {course.description ? (
+                                        <p className="text-sm text-slate-400 mb-6 line-clamp-3">{course.description}</p>
+                                    ) : (
+                                        <p className="text-sm text-slate-500 mb-6">No description</p>
+                                    )}
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                        {list.map((course) => (
-                                            <div
-                                                key={course._id}
-                                                className="group p-6 rounded-2xl bg-slate-900 border border-slate-800 hover:border-cyan-500/40 transition-all hover:shadow-xl"
-                                            >
-                                                <h3 className="text-lg font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
-                                                    {course.title}
-                                                </h3>
-                                                {course.description ? (
-                                                    <p className="text-sm text-slate-400 mb-6 line-clamp-3">{course.description}</p>
-                                                ) : (
-                                                    <p className="text-sm text-slate-500 mb-6">No description</p>
-                                                )}
-
-                                                <Link
-                                                    href={`/dashboard/test-series/${course._id}`}
-                                                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 font-bold hover:bg-cyan-500/15 transition-colors"
-                                                >
-                                                    See Tests
-                                                    <ChevronRight className="w-4 h-4" />
-                                                </Link>
-                                            </div>
-                                        ))}
-                                    </div>
+                                    <Link
+                                        href={`/dashboard/test-series/${course._id}`}
+                                        className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 font-bold hover:bg-cyan-500/15 transition-colors"
+                                    >
+                                        See Tests
+                                        <ChevronRight className="w-4 h-4" />
+                                    </Link>
                                 </div>
-                            );
-                        })}
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {!loading && !error && !classGrade && (
+                    <div className="p-6 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-200">
+                        Please complete your profile (Class/Grade) to see your class content.
                     </div>
                 )}
             </div>

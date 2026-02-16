@@ -7,6 +7,7 @@ import {
     CheckCircle2, XCircle, HelpCircle, BookOpen, GraduationCap, Target
 } from "lucide-react";
 import Link from "next/link";
+import TestSeriesIntro from "@/components/dashboard/TestSeriesIntro";
 
 // --- Types ---
 type CaseStudy = {
@@ -331,9 +332,47 @@ export default function CaseStudyTestPage() {
 
         setScore(calculatedScore);
         const totalAttempted = correctCount + wrongCount;
-        setAccuracy(totalAttempted > 0 ? Math.round((correctCount / totalAttempted) * 100) : 0);
+        const accuracyVal = totalAttempted > 0 ? Math.round((correctCount / totalAttempted) * 100) : 0;
+        setAccuracy(accuracyVal);
+
+        // --- Leaderboard Submission ---
+        submitScore(calculatedScore, accuracyVal);
+
         setStatus("result");
         setIsSubmitModalOpen(false);
+    };
+
+    const submitScore = async (score: number, accuracy: number) => {
+        try {
+            const userStr = localStorage.getItem("xamsathi_user");
+            let userId = "";
+            if (userStr) {
+                try {
+                    const parsed = JSON.parse(userStr);
+                    userId = parsed._id || parsed.id || parsed.user_id;
+                } catch { }
+            }
+
+            if (!userId) return;
+
+            const envBase = (process.env.NEXT_PUBLIC_BACKEND_URL || "").trim();
+            const base = envBase || (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? "http://localhost:3001" : "http://localhost:3001");
+
+            await fetch(`${base}/api/leaderboard/submit`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-user-id": userId
+                },
+                body: JSON.stringify({
+                    testSeriesId: "ecology-case-study",
+                    score: score,
+                    accuracy: accuracy
+                })
+            });
+        } catch (error) {
+            console.error("Failed to submit score", error);
+        }
     };
 
     const formatTime = (seconds: number) => {
@@ -348,54 +387,16 @@ export default function CaseStudyTestPage() {
         <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500/30">
             {/* --- Intro View --- */}
             {status === "intro" && (
-                <div className="max-w-5xl mx-auto px-6 py-12">
-                    <Link href="/dashboard" className="inline-flex items-center gap-2 text-slate-400 hover:text-white mb-8 transition-colors">
-                        <ArrowLeft className="w-4 h-4" /> Back to Dashboard
-                    </Link>
-
-                    <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-3 opacity-10 bg-emerald-500 blur-3xl rounded-bl-full w-64 h-64" />
-
-                        <div className="relative z-10">
-                            <div className="flex items-center gap-4 mb-6">
-                                <div className="p-4 bg-emerald-500/10 rounded-2xl text-emerald-400">
-                                    <FileText className="w-10 h-10" />
-                                </div>
-                                <div>
-                                    <h1 className="text-3xl font-bold text-white">CASE-STUDY ECOLOGY SET</h1>
-                                    <p className="text-slate-400">New NEET Pattern • Concept Application</p>
-                                </div>
-                            </div>
-
-                            <div className="grid md:grid-cols-3 gap-6 mb-10">
-                                <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50">
-                                    <Clock className="w-6 h-6 text-blue-400 mb-3" />
-                                    <h3 className="text-lg font-semibold text-white">45 Minutes</h3>
-                                    <p className="text-sm text-slate-400">Time per Case Study ~9m</p>
-                                </div>
-                                <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50">
-                                    <Microscope className="w-6 h-6 text-purple-400 mb-3" />
-                                    <h3 className="text-lg font-semibold text-white">5 Case Studies</h3>
-                                    <p className="text-sm text-slate-400">5 Questions Each (Total 25)</p>
-                                </div>
-                                <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50">
-                                    <AlertCircle className="w-6 h-6 text-red-400 mb-3" />
-                                    <h3 className="text-lg font-semibold text-white">Negative Marking</h3>
-                                    <p className="text-sm text-slate-400">+4 Correct, -1 Wrong</p>
-                                </div>
-                            </div>
-
-                            <div className="flex flex-col sm:flex-row gap-4">
-                                <button
-                                    onClick={startTest}
-                                    className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-lg font-bold py-4 rounded-xl shadow-lg shadow-emerald-900/20 transition-all hover:scale-[1.02] flex items-center justify-center gap-2"
-                                >
-                                    Start Case Studies <ChevronRight className="w-5 h-5" />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <TestSeriesIntro
+                    title="Ecology Case Study Set"
+                    description="New NEET Pattern • Concept Application. Master the art of solving case studies with this targeted ecology set."
+                    testSeriesId="ecology-case-study"
+                    durationMins={45}
+                    questionsCount={25}
+                    totalMarks={100}
+                    subjects={["Lake Ecosystem", "Island Biogeography", "Growth Models", "Biomagnification", "Conservation"]}
+                    onStart={startTest}
+                />
             )}
 
             {/* --- Active Test View --- */}
