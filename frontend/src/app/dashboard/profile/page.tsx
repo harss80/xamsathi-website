@@ -168,8 +168,9 @@ export default function ProfilePage() {
             const reader = new FileReader();
             reader.onload = () => {
                 const base64String = reader.result as string;
-                if (base64String.length > 500 * 1024) {
-                    alert("Image too large (max 500KB)");
+                // Increased limit to 2MB for profile avatar
+                if (base64String.length > 2 * 1024 * 1024 * 1.33) {
+                    alert("Image too large (max 2MB)");
                     return;
                 }
                 setPreview(base64String);
@@ -184,7 +185,8 @@ export default function ProfilePage() {
         const reader = new FileReader();
         reader.onload = () => {
             const base64String = reader.result as string;
-            if (base64String.length > 5 * 1024 * 1024) {
+            // Increased limit to 5MB for student photo
+            if (base64String.length > 5 * 1024 * 1024 * 1.33) {
                 alert("Image too large (max 5MB)");
                 return;
             }
@@ -211,7 +213,10 @@ export default function ProfilePage() {
     const handleSave = async () => {
         setIsLoading(true);
         try {
-            if (!userId) return;
+            if (!userId) {
+                alert("Session expired. Please login again.");
+                return;
+            }
             const base = getBackendBase();
             const res = await fetch(`${base}/api/me/profile`, {
                 method: "PUT",
@@ -238,12 +243,15 @@ export default function ProfilePage() {
                     setStudentPhotoPreview(null);
                     window.dispatchEvent(new Event("storage"));
                     setIsEditing(false);
+                    alert("Profile updated successfully!");
                 }
             } else {
-                alert("Failed to save changes");
+                const errData = await res.json().catch(() => ({ error: "Unknown error" }));
+                alert(`Failed to save changes: ${errData.error || res.statusText}`);
             }
         } catch (error) {
             console.error(error);
+            alert("Network error. Please check your connection.");
         } finally {
             setIsLoading(false);
         }
