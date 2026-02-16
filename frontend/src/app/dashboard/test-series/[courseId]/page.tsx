@@ -20,15 +20,7 @@ type TestItem = {
     // locked: boolean; // Future: handle locking
 };
 
-function getBackendBase(): string {
-    const envBase = (process.env.NEXT_PUBLIC_BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || "").trim();
-    if (envBase) return envBase;
-    if (typeof window !== "undefined") {
-        const host = window.location.hostname;
-        if (host === "localhost" || host === "127.0.0.1") return "http://localhost:3001";
-    }
-    return "";
-}
+import { getBackendBase } from "@/lib/api";
 
 export default function CourseSeriesPage() {
     const params = useParams();
