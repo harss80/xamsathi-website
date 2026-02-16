@@ -82,7 +82,10 @@ export default function CourseSeriesPage() {
                 const resTests = await fetch(`${apiBase}/api/tests/courses/${courseId}/tests`, {
                     headers: localClass ? { "x-class-grade": String(localClass) } : undefined,
                 });
-                if (!resTests.ok) throw new Error("Failed to load tests");
+                if (!resTests.ok) {
+                    const errorData = await resTests.json().catch(() => ({}));
+                    throw new Error(errorData.error || `Failed to load tests (Code: ${resTests.status})`);
+                }
                 const dataTests = await resTests.json();
                 setTests(dataTests.items || []);
 
@@ -95,9 +98,7 @@ export default function CourseSeriesPage() {
                     const course = dataCourses.items?.find((c: any) => c._id === courseId);
                     if (course) setCourseTitle(course.title);
                     else {
-                        setError("This course is not available for your class.");
-                        setLoading(false);
-                        return;
+                        throw new Error("This course is not available for your class. Please update your class/grade in your profile.");
                     }
                 }
 
@@ -139,12 +140,12 @@ export default function CourseSeriesPage() {
                     }
                 }
 
-            } catch (err) {
+            } catch (err: any) {
                 console.error(err);
                 if (!apiBase) {
                     setError("Backend URL missing. Set NEXT_PUBLIC_API_URL (Vercel env) to your backend base URL (example: https://YOUR-RENDER-SERVICE.onrender.com). Then redeploy the frontend.");
                 } else {
-                    setError("Could not load the test series. Please try again later.");
+                    setError(err.message || "Could not load the test series. Please try again later.");
                 }
             } finally {
                 setLoading(false);
