@@ -362,7 +362,15 @@ function AdmissionPageInner() {
   );
 }
 
-function AdmissionInput({ label, icon: Icon, value, onChange, placeholder }: any) {
+interface AdmissionInputProps {
+  label: string;
+  icon: any;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+}
+
+function AdmissionInput({ label, icon: Icon, value, onChange, placeholder }: AdmissionInputProps) {
   return (
     <div className="space-y-3">
       <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">{label}</label>
@@ -372,7 +380,7 @@ function AdmissionInput({ label, icon: Icon, value, onChange, placeholder }: any
           type="text"
           required
           value={value}
-          onChange={(e) => onChange?.(e.target.value)}
+          onChange={(e) => onChange(e.target.value)}
           className="w-full bg-white/5 border border-white/5 rounded-2xl py-4 pl-12 pr-6 text-white text-sm font-bold placeholder:text-slate-600 focus:bg-white/10 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/40 transition-all outline-none"
           placeholder={placeholder}
         />
@@ -381,7 +389,15 @@ function AdmissionInput({ label, icon: Icon, value, onChange, placeholder }: any
   );
 }
 
-function AdmissionSelect({ label, icon: Icon, value, options, onChange }: any) {
+interface AdmissionSelectProps {
+  label: string;
+  icon: any;
+  value: string;
+  options: Array<{ v: string | number; l: string }>;
+  onChange: (v: string) => void;
+}
+
+function AdmissionSelect({ label, icon: Icon, value, options, onChange }: AdmissionSelectProps) {
   return (
     <div className="space-y-3 font-bold font-sans">
       <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">{label}</label>
@@ -389,10 +405,10 @@ function AdmissionSelect({ label, icon: Icon, value, options, onChange }: any) {
         <Icon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-500/50 group-focus-within:text-indigo-400 transition-colors" />
         <select
           value={value}
-          onChange={(e) => onChange?.(e.target.value)}
+          onChange={(e) => onChange(e.target.value)}
           className="w-full bg-slate-900 border border-white/5 rounded-2xl py-4 pl-12 pr-6 text-white text-sm font-bold focus:bg-white/10 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/40 transition-all appearance-none outline-none"
         >
-          {options.map((opt: any) => (
+          {options.map((opt) => (
             <option key={opt.v} value={opt.v} className="bg-slate-900">{opt.l}</option>
           ))}
         </select>

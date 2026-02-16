@@ -351,12 +351,16 @@ export default function ProfilePage() {
                                                     initial={{ opacity: 0 }}
                                                     animate={{ opacity: 1 }}
                                                     exit={{ opacity: 0 }}
-                                                    {...getRootProps()}
-                                                    className="absolute inset-0 bg-black/60 backdrop-blur-[2px] flex flex-col items-center justify-center cursor-pointer group/upload"
+                                                    className="absolute inset-0 z-20"
                                                 >
-                                                    <input {...getInputProps()} ref={fileInputRef} />
-                                                    <Camera className="w-8 h-8 text-white mb-2 group-hover/upload:scale-110 transition-transform" />
-                                                    <span className="text-[10px] font-black uppercase tracking-tighter text-white/70">Change Photo</span>
+                                                    <div
+                                                        {...getRootProps()}
+                                                        className="w-full h-full bg-black/60 backdrop-blur-[2px] flex flex-col items-center justify-center cursor-pointer group/upload"
+                                                    >
+                                                        <input {...getInputProps()} ref={fileInputRef} />
+                                                        <Camera className="w-8 h-8 text-white mb-2 group-hover/upload:scale-110 transition-transform" />
+                                                        <span className="text-[10px] font-black uppercase tracking-tighter text-white/70">Change Photo</span>
+                                                    </div>
                                                 </motion.div>
                                             )}
                                         </AnimatePresence>
@@ -598,7 +602,16 @@ export default function ProfilePage() {
 
 // --- Internal Components ---
 
-function ProfileInput({ label, icon: Icon, value, disabled, onChange }: any) {
+interface ProfileInputProps {
+    label: string;
+    icon: any;
+    value: string;
+    onChange?: (v: string) => void;
+    placeholder?: string;
+    disabled?: boolean;
+}
+
+function ProfileInput({ label, icon: Icon, value, onChange, placeholder, disabled }: ProfileInputProps) {
     return (
         <div className="space-y-3">
             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">{label}</label>
@@ -606,30 +619,39 @@ function ProfileInput({ label, icon: Icon, value, disabled, onChange }: any) {
                 <Icon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-500/50 group-focus-within:text-indigo-400 transition-colors" />
                 <input
                     type="text"
-                    disabled={disabled}
                     value={value}
                     onChange={(e) => onChange?.(e.target.value)}
+                    disabled={disabled}
                     className="w-full bg-white/5 border border-white/5 rounded-2xl py-4 pl-12 pr-6 text-white text-sm font-bold placeholder:text-slate-600 focus:bg-white/10 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/40 disabled:opacity-50 disabled:cursor-not-allowed transition-all outline-none"
-                    placeholder={`Enter ${label.toLowerCase()}`}
+                    placeholder={placeholder}
                 />
             </div>
         </div>
     );
 }
 
-function ProfileSelect({ label, icon: Icon, value, disabled, options, onChange }: any) {
+interface ProfileSelectProps {
+    label: string;
+    icon: any;
+    value: string;
+    options: Array<{ v: string | number; l: string }>;
+    onChange?: (v: string) => void;
+    disabled?: boolean;
+}
+
+function ProfileSelect({ label, icon: Icon, value, options, onChange, disabled }: ProfileSelectProps) {
     return (
         <div className="space-y-3">
             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">{label}</label>
-            <div className="relative group text-white">
+            <div className="relative group">
                 <Icon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-500/50 group-focus-within:text-indigo-400 transition-colors" />
                 <select
-                    disabled={disabled}
                     value={value}
                     onChange={(e) => onChange?.(e.target.value)}
+                    disabled={disabled}
                     className="w-full bg-white/5 border border-white/5 rounded-2xl py-4 pl-12 pr-6 text-white text-sm font-bold focus:bg-white/10 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/40 disabled:opacity-50 disabled:cursor-not-allowed transition-all appearance-none outline-none"
                 >
-                    {options.map((opt: any) => (
+                    {options.map((opt) => (
                         <option key={opt.v} value={opt.v} className="bg-slate-900 text-white">{opt.l}</option>
                     ))}
                 </select>
