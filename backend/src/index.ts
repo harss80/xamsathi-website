@@ -13,6 +13,7 @@ import leaderboardRouter from './routes/leaderboard';
 import type { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
 import { ensureBootstrapAdmin } from './lib/bootstrap-admin';
+import { ensureBootstrapCourses } from './lib/bootstrap-courses';
 import paymentsRouter from './routes/payments';
 import gamificationRouter from './routes/gamification';
 
@@ -83,8 +84,9 @@ connectMongo()
   .then(async () => {
     try {
       await ensureBootstrapAdmin();
+      await ensureBootstrapCourses();
     } catch (e) {
-      console.error('Bootstrap admin error:', (e as Error).message);
+      console.error('Bootstrap error:', (e as Error).message);
     }
   })
   .catch((e) => console.error('Mongo: startup connect error', (e as Error).message));
