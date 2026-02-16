@@ -1,7 +1,12 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import { User, Camera, Mail, Phone, BookOpen, Upload, Loader2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+    User, Camera, Mail, Phone, BookOpen, Upload, Loader2,
+    MapPin, School, GraduationCap, Shield, Edit3, Save, X,
+    Star, Target, Trophy, Clock, ChevronDown, MessageCircle
+} from "lucide-react";
 import Image from "next/image";
 import { useDropzone } from "react-dropzone";
 
@@ -160,13 +165,11 @@ export default function ProfilePage() {
     const onDrop = (acceptedFiles: File[]) => {
         const file = acceptedFiles[0];
         if (file) {
-            // Convert to Base64
             const reader = new FileReader();
             reader.onload = () => {
                 const base64String = reader.result as string;
-                // Basic client-side size check (approximate)
-                if (base64String.length > 500 * 1024) { // 500KB limit for now
-                    alert("Image is too large. Please upload an image smaller than 500KB.");
+                if (base64String.length > 500 * 1024) {
+                    alert("Image too large (max 500KB)");
                     return;
                 }
                 setPreview(base64String);
@@ -181,9 +184,8 @@ export default function ProfilePage() {
         const reader = new FileReader();
         reader.onload = () => {
             const base64String = reader.result as string;
-            if (!base64String) return;
-            if (base64String.length > 5.2 * 1024 * 1024) {
-                alert("Image is too large. Please upload a smaller image.");
+            if (base64String.length > 5 * 1024 * 1024) {
+                alert("Image too large (max 5MB)");
                 return;
             }
             setStudentPhotoPreview(base64String);
@@ -193,16 +195,13 @@ export default function ProfilePage() {
 
     const { getRootProps, getInputProps } = useDropzone({
         onDrop,
-        accept: {
-            'image/*': ['.jpeg', '.png', '.jpg', '.webp']
-        },
+        accept: { 'image/*': ['.jpeg', '.png', '.jpg', '.webp'] },
         maxFiles: 1
     });
 
     const {
         getRootProps: getStudentPhotoRootProps,
         getInputProps: getStudentPhotoInputProps,
-        isDragActive: isStudentPhotoDragActive,
     } = useDropzone({
         onDrop: onDropStudentPhoto,
         accept: { 'image/*': ['.jpeg', '.png', '.jpg', '.webp'] },
@@ -211,13 +210,8 @@ export default function ProfilePage() {
 
     const handleSave = async () => {
         setIsLoading(true);
-
         try {
-            if (!userId) {
-                alert("Missing user session. Please login again.");
-                return;
-            }
-
+            if (!userId) return;
             const base = getBackendBase();
             const res = await fetch(`${base}/api/me/profile`, {
                 method: "PUT",
@@ -227,17 +221,9 @@ export default function ProfilePage() {
                     ...(token ? { Authorization: `Bearer ${token}` } : {})
                 },
                 body: JSON.stringify({
-                    name: user.name,
-                    phone: user.phone,
+                    ...user,
                     class_grade: Number(user.class_grade),
-                    bio: user.bio,
                     avatar: preview || user.avatar,
-                    target_exam: user.target_exam,
-                    stream: user.stream,
-                    medium: user.medium,
-                    school: user.school,
-                    city: user.city,
-                    guardian_phone: user.guardian_phone,
                     student_photo: studentPhotoPreview || user.student_photo,
                 })
             });
@@ -245,312 +231,413 @@ export default function ProfilePage() {
             if (res.ok) {
                 const data = await res.json();
                 if (data.user) {
-                    // Update local storage
                     const newUser = { ...JSON.parse(localStorage.getItem("xamsathi_user") || "{}"), ...data.user };
-                    // Ensure avatar is updated
-                    if (data.user.avatar) newUser.avatar = data.user.avatar;
-                    if (data.user.student_photo) newUser.student_photo = data.user.student_photo;
                     localStorage.setItem("xamsathi_user", JSON.stringify(newUser));
-
-                    setUser(prev => ({ ...prev, ...(data.user as Record<string, unknown>) } as typeof prev));
-                    if (preview) setPreview(null);
-                    if (studentPhotoPreview) setStudentPhotoPreview(null);
+                    setUser(prev => ({ ...prev, ...data.user }));
+                    setPreview(null);
+                    setStudentPhotoPreview(null);
                     window.dispatchEvent(new Event("storage"));
                     setIsEditing(false);
                 }
             } else {
-                console.error("Failed to save profile");
-                alert("Failed to save profile. Please try again.");
+                alert("Failed to save changes");
             }
         } catch (error) {
-            console.error("Error saving profile:", error);
+            console.error(error);
         } finally {
             setIsLoading(false);
         }
     };
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8">
-            <h1 className="text-3xl font-bold text-white mb-8">My Profile</h1>
+        <div className="min-h-screen pb-20 px-4 md:px-0">
+            {/* Background Decorations */}
+            <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+                <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-indigo-600/10 blur-[120px] rounded-full" />
+                <div className="absolute bottom-[10%] left-[-5%] w-[400px] h-[400px] bg-purple-600/10 blur-[100px] rounded-full" />
+            </div>
 
-            {loadError ? (
-                <div className="bg-red-500/10 border border-red-500/30 text-red-200 px-4 py-3 rounded-xl text-sm">
-                    {loadError}
-                </div>
-            ) : null}
+            <div className="max-w-5xl mx-auto relative z-10 pt-8">
+                {/* Header Section */}
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+                    <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="space-y-1"
+                    >
+                        <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight">
+                            Personal <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Profile</span>
+                        </h1>
+                        <p className="text-slate-400 font-medium">Manage your educational journey and preferences.</p>
+                    </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {/* Profile Card */}
-                <div className="md:col-span-1">
-                    <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 flex flex-col items-center text-center relative overflow-hidden group">
-                        <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-indigo-600/20 to-transparent" />
-
-                        <div className="relative mb-4 group-hover:scale-105 transition-transform duration-300">
-                            <div className="w-32 h-32 rounded-full border-4 border-slate-800 shadow-xl overflow-hidden bg-slate-800 relative">
-                                <Image
-                                    src={preview || user.avatar || "https://api.dicebear.com/7.x/avataaars/svg?seed=Xamsathi"}
-                                    alt={user.name}
-                                    fill
-                                    className="object-cover"
-                                />
-                                {isEditing && (
-                                    <div {...getRootProps()} className="absolute inset-0 bg-black/50 flex items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <input
-                                            {...getInputProps()}
-                                            ref={(el) => {
-                                                fileInputRef.current = el;
-                                            }}
-                                        />
-                                        <Camera className="w-8 h-8 text-white" />
-                                    </div>
-                                )}
-                            </div>
-                            {isEditing && (
-                                <button
-                                    type="button"
-                                    onClick={() => fileInputRef.current?.click()}
-                                    aria-label="Upload photo"
-                                    className="absolute bottom-0 right-0 bg-indigo-600 p-2 rounded-full border-4 border-slate-900 shadow-lg hover:bg-indigo-500 transition-colors"
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="flex gap-3"
+                    >
+                        <AnimatePresence mode="wait">
+                            {isEditing ? (
+                                <motion.div
+                                    key="editing-btns"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    className="flex gap-3"
                                 >
-                                    <Camera className="w-4 h-4 text-white" />
-                                </button>
+                                    <button
+                                        onClick={() => {
+                                            setIsEditing(false);
+                                            setPreview(null);
+                                            setStudentPhotoPreview(null);
+                                        }}
+                                        className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold transition-all border border-slate-700"
+                                    >
+                                        <X className="w-4 h-4" /> Cancel
+                                    </button>
+                                    <button
+                                        onClick={handleSave}
+                                        disabled={isLoading}
+                                        className="flex items-center gap-2 px-8 py-2.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:shadow-lg hover:shadow-indigo-500/25 text-white font-bold transition-all active:scale-95 disabled:opacity-50"
+                                    >
+                                        {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Save className="w-4 h-4" /> Save Changes</>}
+                                    </button>
+                                </motion.div>
+                            ) : (
+                                <motion.button
+                                    key="edit-btn"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    onClick={() => setIsEditing(true)}
+                                    className="flex items-center gap-2 px-8 py-2.5 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-bold transition-all border border-white/10 hover:border-white/20 active:scale-95"
+                                >
+                                    <Edit3 className="w-4 h-4 text-indigo-400" /> Edit Profile
+                                </motion.button>
                             )}
-                        </div>
-
-                        <h2 className="text-2xl font-bold text-white mb-1">{user.name}</h2>
-                        <p className="text-indigo-400 font-medium text-sm mb-4">{user.course || ""}</p>
-
-                        <div className="w-full space-y-3">
-                            <div className="flex items-center justify-between p-3 bg-slate-800/50 rounded-xl border border-slate-800">
-                                <span className="text-slate-400 text-xs uppercase font-bold tracking-wider">Rank</span>
-                                <span className="text-white font-bold">#12</span>
-                            </div>
-                            <div className="flex items-center justify-between p-3 bg-slate-800/50 rounded-xl border border-slate-800">
-                                <span className="text-slate-400 text-xs uppercase font-bold tracking-wider">Tests Taken</span>
-                                <span className="text-white font-bold">8</span>
-                            </div>
-                        </div>
-                    </div>
+                        </AnimatePresence>
+                    </motion.div>
                 </div>
 
-                {/* Details Form */}
-                <div className="md:col-span-2">
-                    <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8">
-                        <div className="flex items-center justify-between mb-8">
-                            <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                                <User className="w-5 h-5 text-indigo-500" /> Personal Details
-                            </h3>
-                            <button
-                                onClick={() => isEditing ? handleSave() : setIsEditing(true)}
-                                disabled={isLoading}
-                                className={`px-6 py-2 rounded-xl font-bold text-sm transition-all ${isEditing
-                                    ? "bg-green-600 hover:bg-green-500 text-white shadow-lg shadow-green-900/20"
-                                    : "bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 hover:border-slate-600"
-                                    }`}
-                            >
-                                {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : isEditing ? "Save Changes" : "Edit Profile"}
-                            </button>
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                            <div className="space-y-2">
-                                <label htmlFor="profile_name" className="text-sm font-medium text-slate-400">Full Name</label>
-                                <div className="relative">
-                                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                                    <input
-                                        id="profile_name"
-                                        type="text"
-                                        disabled={!isEditing}
-                                        value={user.name}
-                                        onChange={(e) => setUser({ ...user, name: e.target.value })}
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-white focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                                    />
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="profile_email" className="text-sm font-medium text-slate-400">Email Address</label>
-                                <div className="relative">
-                                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                                    <input
-                                        id="profile_email"
-                                        type="email"
-                                        disabled={true} // Email usually not editable directly
-                                        value={user.email}
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-slate-400 cursor-not-allowed"
-                                    />
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="profile_phone" className="text-sm font-medium text-slate-400">Phone Number</label>
-                                <div className="relative">
-                                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                                    <input
-                                        id="profile_phone"
-                                        type="tel"
-                                        disabled={!isEditing}
-                                        value={user.phone}
-                                        onChange={(e) => setUser({ ...user, phone: e.target.value })}
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-white focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                                    />
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="profile_class_grade" className="text-sm font-medium text-slate-400">Class / Grade</label>
-                                <div className="relative">
-                                    <BookOpen className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                                    <select
-                                        id="profile_class_grade"
-                                        disabled={!isEditing}
-                                        value={String(user.class_grade)}
-                                        onChange={(e) => setUser({ ...user, class_grade: Number(e.target.value) })}
-                                        className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-white focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                                    >
-                                        {[...Array(12)].map((_, i) => (
-                                            <option key={i + 1} value={String(i + 1)}>
-                                                Class {i + 1}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-                            <div className="col-span-1 sm:col-span-2 space-y-2">
-                                <label htmlFor="profile_bio" className="text-sm font-medium text-slate-400">Bio</label>
-                                <textarea
-                                    id="profile_bio"
-                                    disabled={!isEditing}
-                                    value={user.bio}
-                                    onChange={(e) => setUser({ ...user, bio: e.target.value })}
-                                    rows={3}
-                                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all resize-none"
-                                />
-                            </div>
-
-                            <div className="space-y-2">
-                                <label htmlFor="profile_target_exam" className="text-sm font-medium text-slate-400">Target Exam</label>
-                                <select
-                                    id="profile_target_exam"
-                                    disabled={!isEditing}
-                                    value={user.target_exam}
-                                    onChange={(e) => setUser({ ...user, target_exam: e.target.value as TargetExam })}
-                                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                                >
-                                    <option value="cbse">CBSE</option>
-                                    <option value="neet">NEET</option>
-                                    <option value="jee">JEE</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-
-                            <div className="space-y-2">
-                                <label htmlFor="profile_stream" className="text-sm font-medium text-slate-400">Stream</label>
-                                <select
-                                    id="profile_stream"
-                                    disabled={!isEditing}
-                                    value={user.stream}
-                                    onChange={(e) => setUser({ ...user, stream: e.target.value as Stream })}
-                                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                                >
-                                    <option value="na">N/A</option>
-                                    <option value="pcm">PCM</option>
-                                    <option value="pcb">PCB</option>
-                                    <option value="commerce">Commerce</option>
-                                    <option value="arts">Arts</option>
-                                </select>
-                            </div>
-
-                            <div className="space-y-2">
-                                <label htmlFor="profile_medium" className="text-sm font-medium text-slate-400">Medium</label>
-                                <select
-                                    id="profile_medium"
-                                    disabled={!isEditing}
-                                    value={user.medium}
-                                    onChange={(e) => setUser({ ...user, medium: e.target.value as Medium })}
-                                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                                >
-                                    <option value="english">English</option>
-                                    <option value="hindi">Hindi</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-
-                            <div className="space-y-2">
-                                <label htmlFor="profile_school" className="text-sm font-medium text-slate-400">School</label>
-                                <input
-                                    id="profile_school"
-                                    type="text"
-                                    disabled={!isEditing}
-                                    value={user.school}
-                                    onChange={(e) => setUser({ ...user, school: e.target.value })}
-                                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                                />
-                            </div>
-
-                            <div className="space-y-2">
-                                <label htmlFor="profile_city" className="text-sm font-medium text-slate-400">City</label>
-                                <input
-                                    id="profile_city"
-                                    type="text"
-                                    disabled={!isEditing}
-                                    value={user.city}
-                                    onChange={(e) => setUser({ ...user, city: e.target.value })}
-                                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                                />
-                            </div>
-
-                            <div className="space-y-2">
-                                <label htmlFor="profile_guardian_phone" className="text-sm font-medium text-slate-400">Guardian Phone</label>
-                                <input
-                                    id="profile_guardian_phone"
-                                    type="tel"
-                                    disabled={!isEditing}
-                                    value={user.guardian_phone}
-                                    onChange={(e) => setUser({ ...user, guardian_phone: e.target.value })}
-                                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-white focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                                />
-                            </div>
-                        </div>
-
-                        {isEditing && (
-                            <div className="mt-8 p-4 bg-indigo-900/20 border border-indigo-500/20 rounded-xl flex items-start gap-3">
-                                <div className="p-2 bg-indigo-500/20 rounded-lg shrink-0">
-                                    <Upload className="w-5 h-5 text-indigo-400" />
-                                </div>
-                                <div>
-                                    <h4 className="text-indigo-300 font-bold text-sm mb-1">Upload Student Photo</h4>
-                                    <p className="text-indigo-200/60 text-xs mb-3">
-                                        Drag and drop or click to upload student photo. This will be used on Leaderboard.
-                                    </p>
-                                    <div
-                                        {...getStudentPhotoRootProps()}
-                                        className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors ${isStudentPhotoDragActive ? 'border-indigo-500 bg-indigo-500/10' : 'border-slate-700 hover:border-indigo-500/50 hover:bg-slate-800'}`}
-                                    >
-                                        <input
-                                            {...getStudentPhotoInputProps()}
-                                            ref={(el) => {
-                                                studentPhotoInputRef.current = el;
-                                            }}
-                                        />
-                                        <div className="flex flex-col items-center gap-2">
-                                            <Camera className="w-8 h-8 text-slate-500" />
-                                            <span className="text-slate-400 text-sm">Drop image here or click to browse</span>
-                                        </div>
-                                    </div>
-                                    <div className="mt-4">
-                                        <div className="relative w-28 h-28 rounded-2xl overflow-hidden bg-slate-950 border border-slate-800">
-                                            <Image
-                                                src={studentPhotoPreview || user.student_photo || "https://api.dicebear.com/7.x/identicon/svg?seed=Student"}
-                                                alt="Student photo"
-                                                fill
-                                                className="object-cover"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
+                {loadError && (
+                    <div className="mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 text-sm font-medium flex items-center gap-2">
+                        <Shield className="w-4 h-4" /> {loadError}
                     </div>
+                )}
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    {/* Left Side: Identity Card */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="lg:col-span-4 space-y-6"
+                    >
+                        <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] p-8 relative overflow-hidden group">
+                            <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-indigo-600/10 to-transparent" />
+
+                            <div className="relative flex flex-col items-center">
+                                <div className="relative mb-6">
+                                    <div className="w-36 h-36 rounded-full border-[6px] border-slate-900/50 shadow-2xl overflow-hidden bg-slate-800 relative ring-1 ring-white/10">
+                                        <Image
+                                            src={preview || user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name || 'Xamsathi'}`}
+                                            alt={user.name}
+                                            fill
+                                            className="object-cover"
+                                        />
+                                        <AnimatePresence>
+                                            {isEditing && (
+                                                <motion.div
+                                                    initial={{ opacity: 0 }}
+                                                    animate={{ opacity: 1 }}
+                                                    exit={{ opacity: 0 }}
+                                                    {...getRootProps()}
+                                                    className="absolute inset-0 bg-black/60 backdrop-blur-[2px] flex flex-col items-center justify-center cursor-pointer group/upload"
+                                                >
+                                                    <input {...getInputProps()} ref={fileInputRef} />
+                                                    <Camera className="w-8 h-8 text-white mb-2 group-hover/upload:scale-110 transition-transform" />
+                                                    <span className="text-[10px] font-black uppercase tracking-tighter text-white/70">Change Photo</span>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
+                                    {!isEditing && (
+                                        <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center border-4 border-slate-900 shadow-xl">
+                                            <Shield className="w-4 h-4 text-white" />
+                                        </div>
+                                    )}
+                                </div>
+
+                                <h2 className="text-2xl font-black text-white text-center mb-1">{user.name || "Set your name"}</h2>
+                                <p className="text-indigo-400 font-black text-xs uppercase tracking-[0.2em] mb-6">{user.target_exam || "Aspirant"}</p>
+
+                                <div className="w-full grid grid-cols-2 gap-3">
+                                    <div className="p-4 rounded-3xl bg-white/5 border border-white/5 text-center">
+                                        <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Board Rank</div>
+                                        <div className="text-xl font-black text-white flex items-center justify-center gap-1">
+                                            <Trophy className="w-4 h-4 text-amber-500" /> #12
+                                        </div>
+                                    </div>
+                                    <div className="p-4 rounded-3xl bg-white/5 border border-white/5 text-center">
+                                        <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">XP Points</div>
+                                        <div className="text-xl font-black text-white flex items-center justify-center gap-1">
+                                            <Star className="w-4 h-4 text-indigo-400 fill-indigo-400/20" /> 2.5k
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Quick Stats Card */}
+                        <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] p-8">
+                            <h3 className="text-sm font-black text-slate-500 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                <Clock className="w-4 h-4" /> Activity Stats
+                            </h3>
+                            <div className="space-y-4">
+                                {[
+                                    { label: "Tests Completed", val: "8", icon: Target, color: "text-emerald-400" },
+                                    { label: "Average Accuracy", val: "84%", icon: Star, color: "text-indigo-400" },
+                                    { label: "Study Streak", val: "5 Days", icon: Trophy, color: "text-amber-400" }
+                                ].map((stat, i) => (
+                                    <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5">
+                                        <div className="flex items-center gap-3">
+                                            <stat.icon className={`w-4 h-4 ${stat.color}`} />
+                                            <span className="text-sm font-bold text-slate-300">{stat.label}</span>
+                                        </div>
+                                        <span className="text-white font-black">{stat.val}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </motion.div>
+
+                    {/* Right Side: Detailed Details */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="lg:col-span-8"
+                    >
+                        <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] p-6 md:p-10">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                {/* Basic Info Section */}
+                                <div className="md:col-span-2">
+                                    <h3 className="text-xs font-black text-indigo-400 uppercase tracking-[0.3em] mb-8 flex items-center gap-2">
+                                        <User className="w-3 h-3" /> Basic Information
+                                    </h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <ProfileInput
+                                            label="Full Name"
+                                            icon={User}
+                                            value={user.name}
+                                            disabled={!isEditing}
+                                            onChange={(v) => setUser({ ...user, name: v })}
+                                        />
+                                        <ProfileInput
+                                            label="Email Address"
+                                            icon={Mail}
+                                            value={user.email}
+                                            disabled={true}
+                                        />
+                                        <ProfileInput
+                                            label="Phone Number"
+                                            icon={Phone}
+                                            value={user.phone}
+                                            disabled={!isEditing}
+                                            onChange={(v) => setUser({ ...user, phone: v })}
+                                        />
+                                        <div className="space-y-3">
+                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Class / Grade</label>
+                                            <div className="relative group">
+                                                <GraduationCap className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-500/50 group-focus-within:text-indigo-400 transition-colors" />
+                                                <select
+                                                    disabled={!isEditing}
+                                                    value={String(user.class_grade)}
+                                                    onChange={(e) => setUser({ ...user, class_grade: Number(e.target.value) })}
+                                                    className="w-full bg-white/5 border border-white/5 rounded-2xl py-4 pl-12 pr-6 text-white text-sm font-bold focus:bg-white/10 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/40 disabled:opacity-50 disabled:cursor-not-allowed transition-all appearance-none outline-none"
+                                                >
+                                                    {[...Array(12)].map((_, i) => (
+                                                        <option key={i + 1} value={String(i + 1)} className="bg-slate-900">Class {i + 1}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Deep Info Section */}
+                                <div className="md:col-span-2 mt-8">
+                                    <h3 className="text-xs font-black text-indigo-400 uppercase tracking-[0.3em] mb-8 flex items-center gap-2">
+                                        <BookOpen className="w-3 h-3" /> Academic Preferences
+                                    </h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <ProfileSelect
+                                            label="Target Exam"
+                                            icon={Target}
+                                            value={user.target_exam}
+                                            disabled={!isEditing}
+                                            options={[{ v: 'cbse', l: 'CBSE' }, { v: 'neet', l: 'NEET' }, { v: 'jee', l: 'JEE' }, { v: 'other', l: 'Other' }]}
+                                            onChange={(v) => setUser({ ...user, target_exam: v as TargetExam })}
+                                        />
+                                        <ProfileSelect
+                                            label="Stream"
+                                            icon={BookOpen}
+                                            value={user.stream}
+                                            disabled={!isEditing}
+                                            options={[{ v: 'na', l: 'N/A' }, { v: 'pcm', l: 'PCM' }, { v: 'pcb', l: 'PCB' }, { v: 'commerce', l: 'Commerce' }, { v: 'arts', l: 'Arts' }]}
+                                            onChange={(v) => setUser({ ...user, stream: v as Stream })}
+                                        />
+                                        <ProfileSelect
+                                            label="Medium"
+                                            icon={MessageCircle}
+                                            value={user.medium}
+                                            disabled={!isEditing}
+                                            options={[{ v: 'english', l: 'English' }, { v: 'hindi', l: 'Hindi' }, { v: 'other', l: 'Other' }]}
+                                            onChange={(v) => setUser({ ...user, medium: v as Medium })}
+                                        />
+                                        <ProfileInput
+                                            label="School Name"
+                                            icon={School}
+                                            value={user.school}
+                                            disabled={!isEditing}
+                                            onChange={(v) => setUser({ ...user, school: v })}
+                                        />
+                                        <ProfileInput
+                                            label="City"
+                                            icon={MapPin}
+                                            value={user.city}
+                                            disabled={!isEditing}
+                                            onChange={(v) => setUser({ ...user, city: v })}
+                                        />
+                                        <ProfileInput
+                                            label="Guardian Phone"
+                                            icon={Phone}
+                                            value={user.guardian_phone}
+                                            disabled={!isEditing}
+                                            onChange={(v) => setUser({ ...user, guardian_phone: v })}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Bio Section */}
+                                <div className="md:col-span-2 mt-8">
+                                    <h3 className="text-xs font-black text-indigo-400 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
+                                        <Edit3 className="w-3 h-3" /> Bio & About
+                                    </h3>
+                                    <textarea
+                                        disabled={!isEditing}
+                                        value={user.bio}
+                                        onChange={(e) => setUser({ ...user, bio: e.target.value })}
+                                        rows={4}
+                                        placeholder="Tell us about yourself..."
+                                        className="w-full bg-white/5 border border-white/5 rounded-3xl py-6 px-6 text-white text-sm font-medium focus:bg-white/10 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/40 disabled:opacity-50 disabled:cursor-not-allowed transition-all outline-none resize-none"
+                                    />
+                                </div>
+
+                                {/* Official Student Photo Card (Special Upload) */}
+                                <AnimatePresence>
+                                    {isEditing && (
+                                        <motion.div
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto' }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            className="md:col-span-2 mt-8 overflow-hidden"
+                                        >
+                                            <div className="p-8 bg-indigo-600/5 border border-indigo-500/20 rounded-[2.5rem] relative">
+                                                <div className="flex flex-col md:flex-row gap-8 items-start">
+                                                    <div className="space-y-4 flex-1">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="w-10 h-10 rounded-2xl bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+                                                                <Upload className="w-5 h-5" />
+                                                            </div>
+                                                            <div>
+                                                                <h4 className="text-white font-black text-lg">Official Student Photo</h4>
+                                                                <p className="text-slate-400 text-xs font-medium">This photo will represent you on global leaderboards.</p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div
+                                                            {...getStudentPhotoRootProps()}
+                                                            className="border-2 border-dashed border-white/10 rounded-3xl p-10 text-center cursor-pointer hover:border-indigo-500/50 hover:bg-white/5 transition-all group/official"
+                                                        >
+                                                            <input {...getStudentPhotoInputProps()} ref={studentPhotoInputRef} />
+                                                            <div className="flex flex-col items-center gap-2">
+                                                                <Camera className="w-10 h-10 text-slate-600 group-hover/official:text-indigo-400 transition-colors" />
+                                                                <span className="text-slate-400 text-sm font-bold">Drop your formal photo here or browse</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="shrink-0">
+                                                        <div className="relative w-40 h-40 rounded-[2rem] overflow-hidden bg-slate-950 border border-white/10 shadow-2xl">
+                                                            <Image
+                                                                src={studentPhotoPreview || user.student_photo || "https://api.dicebear.com/7.x/pixel-art/svg?seed=Formal"}
+                                                                alt="Student photo preview"
+                                                                fill
+                                                                className="object-cover"
+                                                            />
+                                                            {studentPhotoPreview && (
+                                                                <div className="absolute inset-0 bg-indigo-600/20 mix-blend-overlay" />
+                                                            )}
+                                                        </div>
+                                                        <p className="text-[10px] text-center mt-3 font-black uppercase text-indigo-400 tracking-widest">Preview</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                        </div>
+                    </motion.div>
                 </div>
             </div>
         </div>
     );
 }
+
+// --- Internal Components ---
+
+function ProfileInput({ label, icon: Icon, value, disabled, onChange }: any) {
+    return (
+        <div className="space-y-3">
+            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">{label}</label>
+            <div className="relative group">
+                <Icon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-500/50 group-focus-within:text-indigo-400 transition-colors" />
+                <input
+                    type="text"
+                    disabled={disabled}
+                    value={value}
+                    onChange={(e) => onChange?.(e.target.value)}
+                    className="w-full bg-white/5 border border-white/5 rounded-2xl py-4 pl-12 pr-6 text-white text-sm font-bold placeholder:text-slate-600 focus:bg-white/10 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/40 disabled:opacity-50 disabled:cursor-not-allowed transition-all outline-none"
+                    placeholder={`Enter ${label.toLowerCase()}`}
+                />
+            </div>
+        </div>
+    );
+}
+
+function ProfileSelect({ label, icon: Icon, value, disabled, options, onChange }: any) {
+    return (
+        <div className="space-y-3">
+            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">{label}</label>
+            <div className="relative group text-white">
+                <Icon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-500/50 group-focus-within:text-indigo-400 transition-colors" />
+                <select
+                    disabled={disabled}
+                    value={value}
+                    onChange={(e) => onChange?.(e.target.value)}
+                    className="w-full bg-white/5 border border-white/5 rounded-2xl py-4 pl-12 pr-6 text-white text-sm font-bold focus:bg-white/10 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/40 disabled:opacity-50 disabled:cursor-not-allowed transition-all appearance-none outline-none"
+                >
+                    {options.map((opt: any) => (
+                        <option key={opt.v} value={opt.v} className="bg-slate-900 text-white">{opt.l}</option>
+                    ))}
+                </select>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+                    <ChevronDown className="w-4 h-4" />
+                </div>
+            </div>
+        </div>
+    );
+}
+
