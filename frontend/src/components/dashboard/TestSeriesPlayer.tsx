@@ -48,6 +48,71 @@ interface TestSeriesPlayerProps {
     onFinish?: (results: any) => void;
 }
 
+interface QuestionPaletteProps {
+    questions: Question[];
+    currentQuestionIndex: number;
+    answers: Record<number, number>;
+    markedForReview: Set<number>;
+    setCurrentQuestionIndex: (index: number) => void;
+    setShowPalette: (show: boolean) => void;
+}
+
+const QuestionPalette = ({
+    questions,
+    currentQuestionIndex,
+    answers,
+    markedForReview,
+    setCurrentQuestionIndex,
+    setShowPalette
+}: QuestionPaletteProps) => (
+    <div className="flex flex-col h-full bg-slate-900/80 backdrop-blur-xl border-l border-white/10">
+        <div className="p-6 border-b border-white/5 flex justify-between items-center">
+            <h3 className="font-bold text-white flex items-center gap-2">
+                <Menu className="w-5 h-5 text-indigo-400" />
+                Question Palette
+            </h3>
+            <span className="text-xs bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-full border border-indigo-500/30">
+                {Object.keys(answers).length}/{questions.length} Done
+            </span>
+        </div>
+
+        <div className="p-6 grid grid-cols-2 gap-4 text-[10px] uppercase tracking-widest font-bold text-slate-500 mb-2 border-b border-white/5">
+            <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/20"></div> Answered</div>
+            <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-sm shadow-indigo-500/20"></div> Marked</div>
+            <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-slate-700 shadow-sm shadow-slate-700/20"></div> Unvisited</div>
+            <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full border border-red-500/50 bg-red-500/10"></div> Skipped</div>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
+            <div className="grid grid-cols-5 gap-3">
+                {questions.map((q, idx) => {
+                    const isAnswered = answers[q.id] !== undefined;
+                    const isMarked = markedForReview.has(q.id);
+                    const isCurrent = idx === currentQuestionIndex;
+
+                    let style = "bg-slate-800/50 text-slate-400 border-white/5 hover:border-white/20";
+                    if (isCurrent) style = "ring-2 ring-indigo-500 bg-indigo-500/20 text-white border-indigo-500/50 shadow-lg shadow-indigo-500/10";
+                    else if (isMarked) style = "bg-indigo-600/80 text-white border-indigo-400 shadow-md";
+                    else if (isAnswered) style = "bg-emerald-600/80 text-white border-emerald-400 shadow-md";
+
+                    return (
+                        <button
+                            key={q.id}
+                            onClick={() => {
+                                setCurrentQuestionIndex(idx);
+                                if (window.innerWidth < 1280) setShowPalette(false);
+                            }}
+                            className={`w-full aspect-square rounded-xl border text-[13px] font-bold transition-all transform active:scale-90 flex items-center justify-center ${style}`}
+                        >
+                            {idx + 1}
+                        </button>
+                    );
+                })}
+            </div>
+        </div>
+    </div>
+);
+
 export default function TestSeriesPlayer({
     title,
     description,
@@ -252,56 +317,6 @@ export default function TestSeriesPlayer({
             ? `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
             : `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     };
-
-    // --- Sub-components for better organization ---
-    const QuestionPalette = () => (
-        <div className="flex flex-col h-full bg-slate-900/80 backdrop-blur-xl border-l border-white/10">
-            <div className="p-6 border-b border-white/5 flex justify-between items-center">
-                <h3 className="font-bold text-white flex items-center gap-2">
-                    <Menu className="w-5 h-5 text-indigo-400" />
-                    Question Palette
-                </h3>
-                <span className="text-xs bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-full border border-indigo-500/30">
-                    {Object.keys(answers).length}/{questions.length} Done
-                </span>
-            </div>
-
-            <div className="p-6 grid grid-cols-2 gap-4 text-[10px] uppercase tracking-widest font-bold text-slate-500 mb-2 border-b border-white/5">
-                <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/20"></div> Answered</div>
-                <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-sm shadow-indigo-500/20"></div> Marked</div>
-                <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-slate-700 shadow-sm shadow-slate-700/20"></div> Unvisited</div>
-                <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full border border-red-500/50 bg-red-500/10"></div> Skipped</div>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-6 scrollbar-hide">
-                <div className="grid grid-cols-5 gap-3">
-                    {questions.map((q, idx) => {
-                        const isAnswered = answers[q.id] !== undefined;
-                        const isMarked = markedForReview.has(q.id);
-                        const isCurrent = idx === currentQuestionIndex;
-
-                        let style = "bg-slate-800/50 text-slate-400 border-white/5 hover:border-white/20";
-                        if (isCurrent) style = "ring-2 ring-indigo-500 bg-indigo-500/20 text-white border-indigo-500/50 shadow-lg shadow-indigo-500/10";
-                        else if (isMarked) style = "bg-indigo-600/80 text-white border-indigo-400 shadow-md";
-                        else if (isAnswered) style = "bg-emerald-600/80 text-white border-emerald-400 shadow-md";
-
-                        return (
-                            <button
-                                key={q.id}
-                                onClick={() => {
-                                    setCurrentQuestionIndex(idx);
-                                    if (window.innerWidth < 1280) setShowPalette(false);
-                                }}
-                                className={`w-full aspect-square rounded-xl border text-[13px] font-bold transition-all transform active:scale-90 flex items-center justify-center ${style}`}
-                            >
-                                {idx + 1}
-                            </button>
-                        );
-                    })}
-                </div>
-            </div>
-        </div>
-    );
 
     return (
         <div className="h-[100dvh] bg-[#0B1120] text-slate-100 selection:bg-indigo-500/30 overflow-hidden flex flex-col">
@@ -519,8 +534,15 @@ export default function TestSeriesPlayer({
                             </div>
 
                             {/* Desktop Sidebar Palette */}
-                            <aside className="w-[350px] hidden xl:block">
-                                <QuestionPalette />
+                            <aside className="w-[350px] hidden xl:block h-full overflow-hidden">
+                                <QuestionPalette
+                                    questions={questions}
+                                    currentQuestionIndex={currentQuestionIndex}
+                                    answers={answers}
+                                    markedForReview={markedForReview}
+                                    setCurrentQuestionIndex={setCurrentQuestionIndex}
+                                    setShowPalette={setShowPalette}
+                                />
                             </aside>
 
                             {/* Mobile Palette Overlay */}
@@ -541,7 +563,14 @@ export default function TestSeriesPlayer({
                                             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
                                             className="fixed top-0 right-0 bottom-0 w-[85%] max-w-sm bg-slate-900 z-[60] xl:hidden"
                                         >
-                                            <QuestionPalette />
+                                            <QuestionPalette
+                                                questions={questions}
+                                                currentQuestionIndex={currentQuestionIndex}
+                                                answers={answers}
+                                                markedForReview={markedForReview}
+                                                setCurrentQuestionIndex={setCurrentQuestionIndex}
+                                                setShowPalette={setShowPalette}
+                                            />
                                             <button
                                                 onClick={() => setShowPalette(false)}
                                                 className="absolute top-6 right-6 w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white"
