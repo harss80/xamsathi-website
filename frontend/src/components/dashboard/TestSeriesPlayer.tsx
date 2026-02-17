@@ -304,7 +304,7 @@ export default function TestSeriesPlayer({
     );
 
     return (
-        <div className="min-h-screen bg-[#020617] text-slate-100 selection:bg-indigo-500/30 overflow-x-hidden">
+        <div className="h-[100dvh] bg-[#0B1120] text-slate-100 selection:bg-indigo-500/30 overflow-hidden flex flex-col">
             <AnimatePresence mode="wait">
                 {/* --- Intro View --- */}
                 {status === "intro" && (
@@ -336,46 +336,44 @@ export default function TestSeriesPlayer({
                         exit={{ opacity: 0 }}
                         className="fixed inset-0 z-50 bg-[#020617] flex flex-col"
                     >
-                        {/* Premium Header */}
-                        <header className="bg-slate-900/50 backdrop-blur-xl border-b border-white/5 p-4 md:px-8 flex items-center justify-between h-20">
-                            <div className="flex items-center gap-6">
-                                <div className="hidden lg:flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-                                        <Award className="w-6 h-6 text-white" />
+                        {/* Mobile Optimized Header */}
+                        <header className="bg-[#0B1120]/80 backdrop-blur-xl border-b border-white/5 h-16 md:h-20 shrink-0 z-40 relative">
+                            <div className="h-full px-4 md:px-8 flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                    <div className="lg:hidden">
+                                        <button onClick={() => setShowPalette(!showPalette)} className="p-2 -ml-2 rounded-full hover:bg-white/5 text-slate-300">
+                                            <Menu className="w-6 h-6" />
+                                        </button>
                                     </div>
-                                    <div>
-                                        <h1 className="font-black text-lg text-white leading-none mb-1">{title}</h1>
-                                        <div className="flex gap-2 text-[10px] uppercase tracking-tighter text-slate-500 font-bold">
-                                            {subjects.map(s => <span key={s} className="px-2 py-0.5 rounded bg-white/5">{s}</span>)}
-                                        </div>
-                                    </div>
+                                    <h1 className="font-bold text-white truncate max-w-[150px] md:max-w-md text-sm md:text-lg">{title}</h1>
                                 </div>
-                                <div className="lg:hidden flex items-center gap-3">
-                                    <button onClick={() => setShowPalette(!showPalette)} className="p-2 rounded-xl bg-white/5 border border-white/10 text-white">
-                                        <Menu className="w-6 h-6" />
-                                    </button>
-                                    <h1 className="font-bold text-white truncate max-w-[150px]">{title}</h1>
-                                </div>
-                            </div>
 
-                            <div className="flex items-center gap-3 md:gap-6">
-                                <div className={`flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full border transition-all duration-500 ${timeLeft < 300 ? 'bg-red-500/20 border-red-500/50 text-red-400 animate-pulse' : 'bg-slate-800/50 border-white/10 text-indigo-300'}`}>
-                                    <Clock className={`w-4 h-4 ${timeLeft < 300 ? 'text-red-400' : 'text-indigo-400'}`} />
-                                    <span className="font-mono text-base md:text-lg font-bold">{formatTime(timeLeft)}</span>
+                                <div className="flex items-center gap-3">
+                                    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all ${timeLeft < 300 ? 'bg-red-500/10 border-red-500/20 text-red-400' : 'bg-white/5 border-white/5 text-slate-300'}`}>
+                                        <Timer className="w-4 h-4" />
+                                        <span className="font-mono text-sm md:text-base font-bold tabular-nums">{formatTime(timeLeft)}</span>
+                                    </div>
+                                    <button
+                                        onClick={() => setIsSubmitModalOpen(true)}
+                                        className="hidden md:flex bg-white/5 hover:bg-white/10 border border-white/5 text-white px-5 py-2 rounded-xl font-bold text-sm transition-all"
+                                    >
+                                        Submit Test
+                                    </button>
+                                    {/* Mobile Submit Icon */}
+                                    <button
+                                        onClick={() => setIsSubmitModalOpen(true)}
+                                        className="md:hidden w-9 h-9 flex items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg shadow-indigo-600/20"
+                                    >
+                                        <CheckCircle2 className="w-5 h-5" />
+                                    </button>
                                 </div>
-                                <button
-                                    onClick={() => setIsSubmitModalOpen(true)}
-                                    className="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2 md:px-6 md:py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-indigo-600/20 active:scale-95"
-                                >
-                                    Submit
-                                </button>
                             </div>
                         </header>
 
-                        {/* Subject Selector Bar */}
-                        <div className="bg-slate-900/80 border-b border-white/5 backdrop-blur-sm sticky top-16 md:top-20 z-30">
-                            <div className="max-w-7xl mx-auto px-4 overflow-x-auto no-scrollbar">
-                                <div className="flex items-center gap-2 py-3 min-w-max">
+                        {/* Clean Subject Bar */}
+                        <div className="bg-[#0B1120] border-b border-white/5 shrink-0 z-30">
+                            <div className="max-w-7xl mx-auto px-4">
+                                <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-2 mask-linear-fade">
                                     {subjects.map((subj) => (
                                         <button
                                             key={subj}
@@ -386,7 +384,10 @@ export default function TestSeriesPlayer({
                                                     setActiveSubject(subj.toLowerCase());
                                                 }
                                             }}
-                                            className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap ${activeSubject === subj.toLowerCase() ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/20" : "text-slate-400 hover:text-slate-200 hover:bg-white/5"}`}
+                                            className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide transition-all whitespace-nowrap ${activeSubject === subj.toLowerCase()
+                                                ? "bg-indigo-600 text-white shadow-lg shadow-indigo-900/40"
+                                                : "text-slate-500 hover:text-slate-300 hover:bg-white/5"
+                                                }`}
                                         >
                                             {subj}
                                         </button>
@@ -427,11 +428,15 @@ export default function TestSeriesPlayer({
                                             </div>
 
                                             {/* Question Text */}
-                                            <div>
-                                                <h2 className="text-lg md:text-xl font-medium text-slate-200 leading-relaxed font-sans">
-                                                    <span className="inline-block bg-white/10 text-white text-sm font-bold px-2 py-0.5 rounded mr-3 align-middle">Q{currentQ.id}</span>
-                                                    {currentQ.text}
-                                                </h2>
+                                            <div className="mb-6">
+                                                <div className="flex items-start gap-4">
+                                                    <span className="shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500/10 text-indigo-400 text-sm font-black border border-indigo-500/20 mt-1">
+                                                        Q{currentQ.id}
+                                                    </span>
+                                                    <h2 className="text-base md:text-xl font-medium text-slate-200 leading-relaxed">
+                                                        {currentQ.text}
+                                                    </h2>
+                                                </div>
                                             </div>
 
                                             {/* Question Image */}
@@ -456,18 +461,18 @@ export default function TestSeriesPlayer({
                                                         <button
                                                             key={idx}
                                                             onClick={() => handleAnswer(idx)}
-                                                            className={`w-full text-left p-4 rounded-xl border transition-all duration-200 flex items-start gap-4 group ${isSelected
-                                                                ? 'bg-indigo-600/20 border-indigo-500'
-                                                                : 'bg-slate-800/40 border-slate-700/50 hover:bg-slate-800/80 hover:border-slate-600'
+                                                            className={`w-full text-left p-4 rounded-xl border transition-all duration-200 flex items-center gap-4 group active:scale-[0.99] ${isSelected
+                                                                ? 'bg-indigo-500/10 border-indigo-500 ring-1 ring-indigo-500/50'
+                                                                : 'bg-slate-800/30 border-white/5 hover:bg-slate-800/60'
                                                                 }`}
                                                         >
-                                                            <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold border transition-colors ${isSelected
+                                                            <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border transition-colors ${isSelected
                                                                 ? 'bg-indigo-500 border-indigo-500 text-white'
-                                                                : 'border-slate-600 text-slate-400 group-hover:border-slate-500'
+                                                                : 'border-slate-600/50 text-slate-400 bg-slate-800/50 group-hover:border-slate-500'
                                                                 }`}>
                                                                 {String.fromCharCode(65 + idx)}
                                                             </div>
-                                                            <span className={`text-sm md:text-base ${isSelected ? 'text-white font-medium' : 'text-slate-300'}`}>
+                                                            <span className={`text-sm md:text-base leading-snug ${isSelected ? 'text-white font-medium' : 'text-slate-300'}`}>
                                                                 {option}
                                                             </span>
                                                         </button>
@@ -479,40 +484,36 @@ export default function TestSeriesPlayer({
                                 </div>
                             </main>
 
-                            {/* Professional Sticky Footer */}
-                            <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#0B1120]/95 backdrop-blur-md border-t border-white/5 px-4 py-3 md:py-4">
+                            {/* Refined Fixed Footer */}
+                            <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#0B1120] border-t border-white/5 px-4 py-3 md:py-4 safe-area-bottom">
                                 <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-                                    <div className="flex items-center gap-3">
+                                    <div className="flex items-center gap-2">
                                         <button
                                             onClick={goPrev}
                                             disabled={!canGoPrev}
-                                            className="w-10 h-10 md:w-12 md:h-12 rounded-xl border border-white/10 text-slate-300 flex items-center justify-center hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                                            title="Previous Question"
+                                            className="w-11 h-11 rounded-full bg-slate-800/50 border border-white/5 text-slate-400 flex items-center justify-center hover:bg-slate-800 disabled:opacity-30 transition-all active:scale-95"
                                         >
-                                            <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
+                                            <ChevronLeft className="w-5 h-5" />
                                         </button>
                                         <button
                                             onClick={toggleMarkForReview}
-                                            className={`w-10 h-10 md:w-12 md:h-12 rounded-xl border flex items-center justify-center transition-colors ${markedForReview.has(currentQ.id)
-                                                ? 'bg-purple-600 border-purple-500 text-white shadow-lg shadow-purple-500/20'
-                                                : 'border-white/10 text-slate-300 hover:bg-white/5'
+                                            className={`w-11 h-11 rounded-full border flex items-center justify-center transition-all active:scale-95 ${markedForReview.has(currentQ.id)
+                                                ? 'bg-purple-500/10 border-purple-500/50 text-purple-400'
+                                                : 'bg-slate-800/50 border-white/5 text-slate-400'
                                                 }`}
-                                            title="Mark for Review"
                                         >
-                                            <Flag className="w-4 h-4 md:w-5 md:h-5" />
+                                            <Flag className="w-4 h-4" />
                                         </button>
-                                    </div>
-
-                                    <div className="flex-1 flex justify-center text-xs font-medium text-slate-500 hidden md:flex">
-                                        {Object.keys(answers).length} of {questions.length} Answered
                                     </div>
 
                                     <button
                                         onClick={goNext}
                                         disabled={!canGoNext}
-                                        className="px-6 md:px-8 py-2.5 md:py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl flex items-center gap-2 transition-all shadow-lg shadow-indigo-600/20 active:scale-95 disabled:opacity-50 disabled:grayscale"
+                                        className="flex-1 max-w-sm h-11 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-full flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-600/20 active:scale-[0.98]"
+                                        style={{ boxShadow: '0 4px 20px -5px rgba(79, 70, 229, 0.4)' }}
                                     >
-                                        Save & Next <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
+                                        Save & Next
+                                        <ChevronRight className="w-4 h-4" />
                                     </button>
                                 </div>
                             </div>
