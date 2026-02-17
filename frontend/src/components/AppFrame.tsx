@@ -3,7 +3,6 @@
 import { usePathname } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import DashboardUtilities from "@/components/DashboardUtilities";
-import ThemeToggle from "@/components/ThemeToggle";
 import ShortcutHelp from "@/components/ShortcutHelp";
 import Footer from "@/components/Footer";
 
@@ -12,20 +11,19 @@ export default function AppFrame({ children }: { children: React.ReactNode }) {
   const hideLayout = pathname?.startsWith("/dashboard") || pathname?.startsWith("/admin") || pathname?.startsWith("/login") || pathname?.startsWith("/signup") || pathname?.startsWith("/register");
 
   if (hideLayout) {
-    return <>
-      {children}
-      <DashboardUtilities />
-      {children}
-      <DashboardUtilities />
-      <ShortcutHelp />
-    </>;
+    return (
+      <>
+        {children}
+        <DashboardUtilities />
+        <ShortcutHelp />
+      </>
+    );
   }
 
   return (
     <>
       <Navbar />
       {children}
-      <Footer />
       <Footer />
       <ShortcutHelp />
     </>
