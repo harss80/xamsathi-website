@@ -358,17 +358,16 @@ export default function TestSeriesPlayer({
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-4 md:gap-8">
-                                <div className={`flex items-center gap-3 px-5 py-2.5 rounded-2xl border transition-all duration-500 ${timeLeft < 300 ? 'bg-red-500/20 border-red-500/50 text-red-400 animate-pulse shadow-lg shadow-red-500/10' : 'bg-white/5 border-white/10 text-indigo-300'}`}>
-                                    <Clock className={`w-5 h-5 ${timeLeft < 300 ? 'text-red-400' : 'text-indigo-400'}`} />
-                                    <span className="font-mono text-xl font-black">{formatTime(timeLeft)}</span>
+                            <div className="flex items-center gap-3 md:gap-6">
+                                <div className={`flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full border transition-all duration-500 ${timeLeft < 300 ? 'bg-red-500/20 border-red-500/50 text-red-400 animate-pulse' : 'bg-slate-800/50 border-white/10 text-indigo-300'}`}>
+                                    <Clock className={`w-4 h-4 ${timeLeft < 300 ? 'text-red-400' : 'text-indigo-400'}`} />
+                                    <span className="font-mono text-base md:text-lg font-bold">{formatTime(timeLeft)}</span>
                                 </div>
                                 <button
                                     onClick={() => setIsSubmitModalOpen(true)}
-                                    className="relative group overflow-hidden bg-red-500 hover:bg-red-600 text-white px-8 py-3 rounded-2xl font-black text-sm transition-all shadow-lg shadow-red-500/20 active:scale-95"
+                                    className="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2 md:px-6 md:py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-indigo-600/20 active:scale-95"
                                 >
-                                    <span className="relative z-10">SUBMIT</span>
-                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                                    Submit
                                 </button>
                             </div>
                         </header>
@@ -386,7 +385,7 @@ export default function TestSeriesPlayer({
                                                 setActiveSubject(subj.toLowerCase());
                                             }
                                         }}
-                                        className={`px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeSubject === subj.toLowerCase() ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20 ring-1 ring-indigo-400" : "text-slate-500 hover:text-slate-300 border border-white/5 hover:bg-white/5"}`}
+                                        className={`px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wide transition-all ${activeSubject === subj.toLowerCase() ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/20" : "text-slate-400 hover:text-slate-200 hover:bg-white/5"}`}
                                     >
                                         {subj}
                                     </button>
@@ -407,71 +406,69 @@ export default function TestSeriesPlayer({
                                             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                                             className="space-y-8 pb-32"
                                         >
-                                            <div className="flex items-center justify-between">
-                                                <div className="flex items-center gap-3">
-                                                    <span className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center font-black text-indigo-400">
-                                                        {currentQuestionIndex + 1}
-                                                    </span>
-                                                    <div>
-                                                        <span className="text-[10px] uppercase font-black tracking-widest text-slate-500 block">Question Type</span>
-                                                        <span className="text-sm font-bold text-white uppercase">{currentQ.type}</span>
+                                            <div className="flex flex-col gap-4">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-3">
+                                                        <span className="px-3 py-1 bg-indigo-500/10 border border-indigo-500/20 rounded-lg text-indigo-400 text-xs font-bold uppercase tracking-wider">
+                                                            {currentQ.type}
+                                                        </span>
+                                                        {currentQ.context && (
+                                                            <span className="flex items-center gap-1 text-slate-500 text-xs font-bold uppercase tracking-wider">
+                                                                <FileText className="w-3 h-3" /> Context
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <div className="flex items-center gap-2 text-xs font-bold text-slate-400 bg-white/5 px-3 py-1 rounded-lg border border-white/5">
+                                                        <span className="text-emerald-400">+{positiveMarking}</span>
+                                                        <span className="w-px h-3 bg-white/10"></span>
+                                                        <span className="text-red-400">-{negativeMarking}</span>
                                                     </div>
                                                 </div>
-                                                <div className="flex gap-3">
-                                                    <div className="px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black tracking-wider">+{positiveMarking} CORRECT</div>
-                                                    <div className="px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-black tracking-wider">-{negativeMarking} WRONG</div>
-                                                </div>
+
+                                                {currentQ.context && (
+                                                    <div className="p-4 md:p-6 bg-slate-800/40 border border-white/5 rounded-xl">
+                                                        <p className="text-slate-300 leading-relaxed font-serif italic text-base md:text-lg">
+                                                            {currentQ.context}
+                                                        </p>
+                                                    </div>
+                                                )}
                                             </div>
 
-                                            {currentQ.context && (
-                                                <div className="p-6 bg-slate-800/50 border border-slate-700/50 rounded-2xl mb-8">
-                                                    <div className="flex items-center gap-2 text-indigo-400 mb-2 text-sm font-bold uppercase tracking-wider">
-                                                        <FileText className="w-4 h-4" /> Case Study / Context
-                                                    </div>
-                                                    <p className="text-slate-300 leading-relaxed font-serif italic text-lg">
-                                                        {currentQ.context}
-                                                    </p>
-                                                </div>
-                                            )}
-
-                                            <h2 className="text-xl md:text-3xl font-bold text-white leading-relaxed tracking-tight group">
-                                                <span className="text-indigo-500/50 group-hover:text-indigo-500 transition-colors mr-2 text-2xl font-black">?</span>
+                                            <h2 className="text-xl md:text-2xl font-semibold text-white leading-relaxed tracking-tight group mb-6">
+                                                <span className="text-indigo-500 mr-3 text-xl font-bold font-mono">Q{currentQ.id}.</span>
                                                 {currentQ.text}
                                             </h2>
 
                                             {currentQ.image && (
-                                                <div className="relative w-full aspect-video bg-white rounded-3xl overflow-hidden border border-white/10 group/img">
+                                                <div className="relative w-full aspect-video bg-white/5 rounded-2xl overflow-hidden border border-white/10 group/img mb-8">
                                                     <Image
                                                         src={currentQ.image}
                                                         alt="Question illustration"
                                                         fill
-                                                        className="object-contain p-4 transition-transform duration-700 group-hover/img:scale-105"
+                                                        className="object-contain p-2"
                                                     />
                                                 </div>
                                             )}
 
-                                            <div className="grid gap-4">
+                                            <div className="grid gap-3 md:gap-4">
                                                 {currentQ.options.map((option, idx) => {
                                                     const isSelected = answers[currentQ.id] === idx;
                                                     return (
                                                         <button
                                                             key={idx}
                                                             onClick={() => handleAnswer(idx)}
-                                                            className={`text-left p-6 md:p-8 rounded-3xl border-2 transition-all duration-300 flex items-center gap-6 group relative overflow-hidden ${isSelected
-                                                                ? 'border-indigo-500 bg-indigo-500/10 shadow-2xl shadow-indigo-500/20'
-                                                                : 'border-white/5 bg-white/5 hover:border-white/20 hover:bg-white/10'
+                                                            className={`text-left p-4 md:p-5 rounded-2xl border transition-all duration-200 flex items-start md:items-center gap-4 group relative overflow-hidden ${isSelected
+                                                                ? 'border-indigo-500 bg-indigo-500/20 shadow-lg shadow-indigo-500/10'
+                                                                : 'border-white/5 bg-slate-800/30 hover:border-white/20 hover:bg-slate-800/60'
                                                                 }`}
                                                         >
-                                                            <div className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center font-black border-2 transition-all duration-500 ${isSelected ? 'bg-indigo-500 border-indigo-400 text-white rotate-12' : 'border-white/10 text-slate-500 group-hover:border-white/20 group-hover:scale-110'
+                                                            <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm border transition-all duration-200 ${isSelected ? 'bg-indigo-500 border-indigo-400 text-white' : 'border-white/10 text-slate-400 group-hover:border-white/30 group-hover:text-slate-200'
                                                                 }`}>
                                                                 {String.fromCharCode(65 + idx)}
                                                             </div>
-                                                            <span className={`text-lg md:text-xl font-bold leading-snug ${isSelected ? 'text-white' : 'text-slate-300 group-hover:text-white'}`}>
+                                                            <span className={`text-base md:text-lg font-medium leading-snug ${isSelected ? 'text-white' : 'text-slate-300 group-hover:text-slate-100'}`}>
                                                                 {option}
                                                             </span>
-                                                            {isSelected && (
-                                                                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl -mr-16 -mt-16 animate-pulse"></div>
-                                                            )}
                                                         </button>
                                                     );
                                                 })}
@@ -480,24 +477,24 @@ export default function TestSeriesPlayer({
                                     </AnimatePresence>
 
                                     {/* Glass Navigation Bar */}
-                                    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 max-w-4xl w-[90%] md:w-full z-40">
-                                        <div className="bg-slate-900/80 backdrop-blur-2xl border border-white/10 p-4 rounded-[2.5rem] shadow-2xl shadow-black/50 flex flex-wrap items-center justify-between gap-4">
+                                    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 max-w-3xl w-[95%] md:w-full z-40">
+                                        <div className="bg-slate-900/90 backdrop-blur-xl border border-white/10 p-3 rounded-full shadow-2xl shadow-black/50 flex items-center justify-between gap-3">
                                             <div className="flex gap-3">
                                                 <button
                                                     onClick={goPrev}
                                                     disabled={!canGoPrev}
-                                                    className="w-14 h-14 rounded-3xl border border-white/10 text-white flex items-center justify-center hover:bg-white/10 disabled:opacity-20 transition-all active:scale-90"
+                                                    className="w-12 h-12 rounded-full border border-white/10 text-white flex items-center justify-center hover:bg-white/10 disabled:opacity-20 transition-all active:scale-90"
                                                 >
-                                                    <ChevronLeft className="w-6 h-6" />
+                                                    <ChevronLeft className="w-5 h-5" />
                                                 </button>
                                                 <button
                                                     onClick={toggleMarkForReview}
-                                                    className={`w-14 h-14 rounded-3xl border flex items-center justify-center transition-all active:scale-90 ${markedForReview.has(currentQ.id)
-                                                        ? 'bg-indigo-600 border-indigo-400 text-white shadow-lg shadow-indigo-500/30'
+                                                    className={`w-12 h-12 rounded-full border flex items-center justify-center transition-all active:scale-90 ${markedForReview.has(currentQ.id)
+                                                        ? 'bg-purple-600 border-purple-400 text-white shadow-lg shadow-purple-500/30'
                                                         : 'border-white/10 text-slate-400 hover:bg-white/10'
                                                         }`}
                                                 >
-                                                    <Flag className="w-6 h-6" />
+                                                    <Flag className="w-5 h-5" />
                                                 </button>
                                             </div>
 
@@ -516,9 +513,9 @@ export default function TestSeriesPlayer({
                                             <button
                                                 onClick={goNext}
                                                 disabled={!canGoNext}
-                                                className="flex-1 md:flex-none h-14 px-10 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-3xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-indigo-600/30 active:scale-95 group disabled:opacity-20"
+                                                className="flex-1 md:flex-none h-12 px-8 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-full flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-600/30 active:scale-95 group disabled:opacity-20 text-sm"
                                             >
-                                                SAVE & NEXT <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                                Save & Next <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                             </button>
                                         </div>
                                     </div>
