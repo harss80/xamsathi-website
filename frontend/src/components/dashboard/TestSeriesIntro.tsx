@@ -101,94 +101,121 @@ export default function TestSeriesIntro({
         <div className="min-h-screen bg-[#0B1120] text-white p-6 md:p-12">
             <div className="max-w-6xl mx-auto">
                 {/* Back Button */}
-                <Link href="/dashboard/test-series" className="inline-flex items-center text-slate-400 hover:text-white mb-8 transition-colors group">
+                <Link href="/dashboard" className="inline-flex items-center text-slate-400 hover:text-white mb-8 transition-colors group px-4 py-2 rounded-full hover:bg-white/5 border border-transparent hover:border-white/10">
                     <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
-                    Back to Test Series
+                    Back to Dashboard
                 </Link>
 
                 <div className="grid lg:grid-cols-12 gap-12">
                     {/* Left Column: Leaderboard */}
                     <div className="lg:col-span-5 space-y-8 order-2 lg:order-1">
-                        <section>
-                            <div className="flex items-center gap-3 mb-6">
-                                <div className="p-2 bg-yellow-500/10 rounded-lg">
-                                    <Trophy className="w-6 h-6 text-yellow-500" />
+                        <section className="bg-slate-900/40 border border-slate-800/50 rounded-[2rem] p-6 lg:p-8 backdrop-blur-md relative overflow-hidden">
+                            {/* Header */}
+                            <div className="flex items-center justify-between mb-8">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center">
+                                        <Trophy className="w-6 h-6 text-yellow-500" />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-xl md:text-2xl font-black text-white tracking-tight">Hall of Fame</h2>
+                                        <p className="text-slate-400 text-xs md:text-sm font-medium">Top performers this week</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h2 className="text-2xl font-bold">Hall of Fame</h2>
-                                    <p className="text-slate-400 text-sm">Top performers for this series</p>
+                                <div className="hidden md:flex items-center gap-2 text-xs font-bold text-indigo-400 bg-indigo-500/10 px-3 py-1.5 rounded-full border border-indigo-500/20">
+                                    <Users className="w-3.5 h-3.5" />
+                                    <span>{leaderboard.length} Students</span>
                                 </div>
                             </div>
 
                             {isLoading ? (
-                                <div className="space-y-4 animate-pulse">
-                                    {[1, 2, 3, 4, 5].map((i) => (
-                                        <div key={i} className="h-16 bg-slate-800/50 rounded-2xl" />
+                                <div className="space-y-4">
+                                    {[1, 2, 3].map((i) => (
+                                        <div key={i} className="h-20 bg-slate-800/50 rounded-2xl animate-pulse border border-white/5" />
                                     ))}
                                 </div>
                             ) : leaderboard.length > 0 ? (
-                                <div className="space-y-4">
-                                    {leaderboard.map((student, idx) => (
-                                        <motion.div
-                                            key={student.rank}
-                                            initial={{ opacity: 0, x: -20 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            transition={{ delay: idx * 0.1 }}
-                                            className={`relative group flex items-center gap-4 p-4 rounded-2xl border transition-all ${idx === 0
-                                                ? 'bg-gradient-to-r from-yellow-500/10 to-orange-500/5 border-yellow-500/30'
-                                                : 'bg-slate-900/50 border-slate-800 hover:border-slate-700'
-                                                }`}
-                                        >
-                                            <div className="relative shrink-0">
-                                                <div className={`w-12 h-12 rounded-full overflow-hidden border-2 ${idx === 0 ? 'border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.3)]' :
-                                                    idx === 1 ? 'border-slate-300' :
-                                                        idx === 2 ? 'border-orange-600' :
-                                                            'border-slate-700'
-                                                    }`}>
-                                                    <Image
-                                                        src={student.avatar || "/default-avatar.png"}
-                                                        alt={student.name}
-                                                        width={48}
-                                                        height={48}
-                                                        className="object-cover w-full h-full"
-                                                    />
-                                                </div>
-                                                {idx === 0 && (
-                                                    <Crown className="w-5 h-5 text-yellow-500 absolute -top-3 -right-1 rotate-12 drop-shadow-lg" />
-                                                )}
-                                                <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold border ${idx === 0 ? 'bg-yellow-500 text-black border-yellow-400' :
-                                                    idx === 1 ? 'bg-slate-300 text-black border-slate-200' :
-                                                        idx === 2 ? 'bg-orange-600 text-white border-orange-500' :
-                                                            'bg-slate-800 text-slate-400 border-slate-700'
-                                                    }`}>
-                                                    #{student.rank}
-                                                </div>
-                                            </div>
+                                <div className="space-y-3">
+                                    {leaderboard.map((student, idx) => {
+                                        const isTop1 = idx === 0;
+                                        const isTop2 = idx === 1;
+                                        const isTop3 = idx === 2;
 
-                                            <div className="flex-1 min-w-0">
-                                                <h4 className="font-bold text-white truncate">{student.name}</h4>
-                                                <div className="flex items-center gap-2 text-xs text-slate-400">
-                                                    <div className="flex items-center gap-1">
-                                                        <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
-                                                        <span>{student.accuracy}% Accuracy</span>
+                                        return (
+                                            <motion.div
+                                                key={student.rank}
+                                                initial={{ opacity: 0, x: -20 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                transition={{ delay: idx * 0.1 }}
+                                                className={`relative group p-4 rounded-2xl border transition-all duration-300 ${isTop1
+                                                    ? 'bg-gradient-to-r from-yellow-500/10 via-yellow-900/5 to-slate-900/40 border-yellow-500/30 shadow-lg shadow-yellow-900/20'
+                                                    : isTop2
+                                                        ? 'bg-slate-800/40 border-slate-700 hover:border-slate-500 hover:bg-slate-800/60'
+                                                        : isTop3
+                                                            ? 'bg-slate-800/40 border-slate-700 hover:border-orange-700/50 hover:bg-slate-800/60'
+                                                            : 'bg-slate-900/30 border-slate-800 hover:border-slate-700 hover:bg-slate-800/40'
+                                                    }`}
+                                            >
+                                                <div className="flex items-center gap-4">
+                                                    {/* Rank Avatar */}
+                                                    <div className="relative shrink-0">
+                                                        <div className={`w-14 h-14 rounded-full p-1 ${isTop1 ? 'bg-gradient-to-b from-yellow-300 to-yellow-600' : isTop2 ? 'bg-gradient-to-b from-slate-300 to-slate-500' : isTop3 ? 'bg-gradient-to-b from-orange-300 to-orange-600' : 'bg-slate-700'}`}>
+                                                            <div className="w-full h-full rounded-full overflow-hidden border-2 border-slate-900 relative bg-slate-800">
+                                                                <Image
+                                                                    src={student.avatar || "/default-avatar.png"}
+                                                                    alt={student.name}
+                                                                    fill
+                                                                    className="object-cover"
+                                                                />
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Rank Badge */}
+                                                        <div className={`absolute -bottom-2 -right-1 px-2 py-0.5 rounded-full text-[10px] font-black border shadow-sm ${isTop1
+                                                            ? 'bg-yellow-400 text-yellow-900 border-yellow-200'
+                                                            : isTop2
+                                                                ? 'bg-slate-200 text-slate-800 border-white'
+                                                                : isTop3
+                                                                    ? 'bg-orange-400 text-orange-900 border-orange-200'
+                                                                    : 'bg-slate-700 text-slate-300 border-slate-600'
+                                                            }`}>
+                                                            #{student.rank}
+                                                        </div>
+
+                                                        {isTop1 && <Crown className="absolute -top-4 -left-2 w-6 h-6 text-yellow-400 -rotate-12 drop-shadow-md animate-bounce-slow" />}
+                                                    </div>
+
+                                                    {/* Student Info */}
+                                                    <div className="flex-1 min-w-0">
+                                                        <h4 className={`font-bold text-base truncate ${isTop1 ? 'text-yellow-100' : 'text-slate-100'}`}>
+                                                            {student.name}
+                                                        </h4>
+                                                        <div className="flex items-center gap-3 mt-1">
+                                                            <div className="flex items-center gap-1 bg-black/20 px-2 py-0.5 rounded-md border border-white/5">
+                                                                <Target className="w-3 h-3 text-emerald-400" />
+                                                                <span className="text-[10px] font-bold text-slate-400">{student.accuracy}% Acc</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Score */}
+                                                    <div className="flex flex-col items-end">
+                                                        <span className={`text-xl md:text-2xl font-black ${isTop1 ? 'text-yellow-400' : 'text-slate-200'}`}>
+                                                            {student.score}
+                                                        </span>
+                                                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Marks</span>
                                                     </div>
                                                 </div>
-                                            </div>
-
-                                            <div className="text-right">
-                                                <div className={`text-xl font-black ${idx === 0 ? 'text-yellow-400' : 'text-white'}`}>
-                                                    {student.score}
-                                                </div>
-                                                <div className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Marks</div>
-                                            </div>
-                                        </motion.div>
-                                    ))}
+                                            </motion.div>
+                                        );
+                                    })}
                                 </div>
                             ) : (
-                                <div className="text-center py-12 px-6 bg-slate-900/50 border border-dashed border-slate-800 rounded-3xl">
-                                    <Users className="w-12 h-12 text-slate-700 mx-auto mb-4" />
-                                    <h3 className="font-bold text-slate-300">No Top Students Yet</h3>
-                                    <p className="text-slate-500 text-sm mt-2">Be the first one to appear on the leaderboard!</p>
+                                <div className="text-center py-16 px-6 relative">
+                                    <div className="w-20 h-20 rounded-full bg-slate-800/50 mx-auto mb-4 flex items-center justify-center border border-dashed border-slate-700">
+                                        <Trophy className="w-8 h-8 text-slate-600" />
+                                    </div>
+                                    <h3 className="font-bold text-slate-300 text-lg">Be the First Champion!</h3>
+                                    <p className="text-slate-500 text-sm mt-2 max-w-[200px] mx-auto">No one has taken this test yet. Set the benchmark now!</p>
                                 </div>
                             )}
                         </section>
@@ -196,7 +223,7 @@ export default function TestSeriesIntro({
 
                     {/* Right Column: Paper Details */}
                     <div className="lg:col-span-7 space-y-8 order-1 lg:order-2">
-                        <section className="bg-slate-900/50 border border-slate-800 rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden backdrop-blur-xl">
+                        <section className="bg-slate-900/50 border border-slate-800 rounded-[2.5rem] p-6 md:p-12 relative overflow-hidden backdrop-blur-xl">
                             {/* Decorative Background */}
                             <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600/10 blur-[100px] rounded-full -mr-20 -mt-20" />
                             <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-600/10 blur-[100px] rounded-full -ml-20 -mb-20" />
@@ -206,56 +233,71 @@ export default function TestSeriesIntro({
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                 >
-                                    <span className="px-4 py-1 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-full text-xs font-bold uppercase tracking-[0.2em] mb-6 inline-block">
-                                        Test Series Details
-                                    </span>
-                                    <h1 className="text-4xl md:text-6xl font-black mb-6 bg-gradient-to-r from-white via-white to-slate-500 bg-clip-text text-transparent leading-tight">
+                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                                        <span className="px-4 py-1.5 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] w-fit">
+                                            Test Series Details
+                                        </span>
+                                        <div className="flex items-center gap-3 text-slate-500">
+                                            <div className="flex items-center gap-1.5 px-3 py-1 bg-white/5 rounded-lg border border-white/5">
+                                                <GraduationCap className="w-3.5 h-3.5" />
+                                                <span className="text-[10px] font-bold uppercase tracking-wider">Certified</span>
+                                            </div>
+                                            <div className="flex items-center gap-1.5 px-3 py-1 bg-white/5 rounded-lg border border-white/5">
+                                                <Clock className="w-3.5 h-3.5" />
+                                                <span className="text-[10px] font-bold uppercase tracking-wider">Timed</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <h1 className="text-3xl md:text-5xl font-black mb-6 text-white leading-tight">
                                         {title}
                                     </h1>
-                                    <p className="text-slate-400 text-lg mb-10 leading-relaxed max-w-2xl">
+                                    <p className="text-slate-400 text-base md:text-lg mb-10 leading-relaxed">
                                         {description}
                                     </p>
                                 </motion.div>
 
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+                                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-10">
                                     {paperDetails.map((detail, idx) => (
                                         <motion.div
                                             key={detail.label}
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ delay: 0.1 * (idx + 1) }}
-                                            className="bg-slate-800/40 border border-slate-700/50 p-6 rounded-3xl hover:border-slate-600 transition-colors group"
+                                            className="bg-slate-800/40 border border-slate-700/50 p-4 md:p-5 rounded-2xl hover:bg-slate-800/60 hover:border-slate-600 transition-all group"
                                         >
-                                            <detail.icon className={`w-6 h-6 ${detail.color} mb-3 group-hover:scale-110 transition-transform`} />
-                                            <div className="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1">{detail.label}</div>
-                                            <div className="text-xl font-black text-white">{detail.value}</div>
+                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${detail.color} bg-white/5 mb-3 group-hover:scale-110 transition-transform`}>
+                                                <detail.icon className="w-4 h-4" />
+                                            </div>
+                                            <div className="text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-1">{detail.label}</div>
+                                            <div className="text-lg md:text-xl font-black text-white">{detail.value}</div>
                                         </motion.div>
                                     ))}
                                 </div>
 
-                                <div className="space-y-6 mb-12">
-                                    <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest flex items-center gap-3">
-                                        <div className="h-px w-8 bg-slate-800" />
-                                        Assessment Guidelines
+                                <div className="space-y-6 mb-8 md:mb-12">
+                                    <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-3">
+                                        <span className="w-1 h-1 rounded-full bg-slate-600"></span>
+                                        Evaluation Criteria
                                         <div className="h-px flex-1 bg-slate-800" />
                                     </h3>
-                                    <div className="grid md:grid-cols-2 gap-4">
-                                        <div className="flex items-center gap-4 bg-green-500/5 border border-green-500/10 p-4 rounded-2xl">
-                                            <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-green-500">
-                                                <CheckCircle2 className="w-6 h-6" />
+                                    <div className="grid grid-cols-2 gap-3 md:gap-4">
+                                        <div className="flex items-center gap-3 bg-emerald-500/5 border border-emerald-500/10 p-3 md:p-4 rounded-xl">
+                                            <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-500 shrink-0">
+                                                <CheckCircle2 className="w-4 h-4" />
                                             </div>
                                             <div>
-                                                <div className="text-white font-bold">+4 Marks</div>
-                                                <div className="text-xs text-slate-400">Correct Response</div>
+                                                <div className="text-emerald-400 font-bold text-sm md:text-base">+{4} Marks</div>
+                                                <div className="text-[10px] text-slate-500 font-medium uppercase tracking-wide">For Correct Answer</div>
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-4 bg-red-500/5 border border-red-500/10 p-4 rounded-2xl">
-                                            <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center text-red-500">
-                                                <XCircle className="w-6 h-6" />
+                                        <div className="flex items-center gap-3 bg-red-500/5 border border-red-500/10 p-3 md:p-4 rounded-xl">
+                                            <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center text-red-500 shrink-0">
+                                                <XCircle className="w-4 h-4" />
                                             </div>
                                             <div>
-                                                <div className="text-white font-bold">-1 Mark</div>
-                                                <div className="text-xs text-slate-400">Incorrect Response</div>
+                                                <div className="text-red-400 font-bold text-sm md:text-base">-1 Mark</div>
+                                                <div className="text-[10px] text-slate-500 font-medium uppercase tracking-wide">Negative Marking</div>
                                             </div>
                                         </div>
                                     </div>
@@ -263,25 +305,24 @@ export default function TestSeriesIntro({
 
                                 <button
                                     onClick={onStart}
-                                    className="w-full py-6 bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-3xl font-black text-xl hover:shadow-[0_0_40px_rgba(79,70,229,0.3)] transition-all active:scale-[0.98] flex items-center justify-center gap-3 hover:-translate-y-1"
+                                    className="hidden md:flex w-full py-5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-2xl font-black text-lg hover:shadow-xl hover:shadow-indigo-600/20 transition-all active:scale-[0.98] items-center justify-center gap-3 hover:-translate-y-1"
                                 >
                                     Start Final Assessment
-                                    <ChevronRight className="w-6 h-6" />
+                                    <ChevronRight className="w-5 h-5" />
                                 </button>
-
-                                <div className="mt-8 flex items-center justify-center gap-8 text-slate-500">
-                                    <div className="flex items-center gap-2">
-                                        <GraduationCap className="w-4 h-4" />
-                                        <span className="text-xs font-bold uppercase tracking-widest">Educator Certified</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <Clock className="w-4 h-4" />
-                                        <span className="text-xs font-bold uppercase tracking-widest">Time Restricted</span>
-                                    </div>
-                                </div>
                             </div>
                         </section>
                     </div>
+                </div>
+                {/* Mobile Sticky Start Button */}
+                <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-[#0B1120]/95 backdrop-blur-lg border-t border-white/10 z-50">
+                    <button
+                        onClick={onStart}
+                        className="w-full py-4 bg-indigo-600 text-white rounded-xl font-black text-base shadow-lg shadow-indigo-600/20 active:scale-[0.98] flex items-center justify-center gap-2"
+                    >
+                        Start Assessment
+                        <ChevronRight className="w-5 h-5" />
+                    </button>
                 </div>
             </div>
         </div>
