@@ -15,7 +15,8 @@ export default function AppFrame({ children }: { children: React.ReactNode }) {
     return <>
       {children}
       <DashboardUtilities />
-      <ThemeToggle />
+      {children}
+      <DashboardUtilities />
       <ShortcutHelp />
     </>;
   }
@@ -25,7 +26,7 @@ export default function AppFrame({ children }: { children: React.ReactNode }) {
       <Navbar />
       {children}
       <Footer />
-      <ThemeToggle />
+      <Footer />
       <ShortcutHelp />
     </>
   );

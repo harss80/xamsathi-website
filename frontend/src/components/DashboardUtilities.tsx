@@ -32,7 +32,7 @@ export default function DashboardUtilities() {
         const parsed = JSON.parse(raw) as { id: string; text: string; done: boolean }[];
         if (Array.isArray(parsed)) setTodos(parsed);
       }
-    } catch {}
+    } catch { }
 
     try {
       let raw = localStorage.getItem("xamsathi_profile");
@@ -41,7 +41,7 @@ export default function DashboardUtilities() {
         const parsed = JSON.parse(raw) as { photo: boolean; bio: boolean; goals: boolean; subjects: boolean };
         if (parsed && typeof parsed === 'object') setProfile(parsed);
       }
-    } catch {}
+    } catch { }
     // run once
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -50,7 +50,7 @@ export default function DashboardUtilities() {
       const val = JSON.stringify(profile);
       localStorage.setItem("xamsathi_profile", val);
       localStorage.setItem("eduman_profile", val);
-    } catch {}
+    } catch { }
   }, [profile]);
 
   const completedCount = (profile.photo ? 1 : 0) + (profile.bio ? 1 : 0) + (profile.goals ? 1 : 0) + (profile.subjects ? 1 : 0);
@@ -93,7 +93,7 @@ export default function DashboardUtilities() {
       const val = JSON.stringify(todos);
       localStorage.setItem("xamsathi_todos", val);
       localStorage.setItem("eduman_todos", val);
-    } catch {}
+    } catch { }
   }, [todos]);
 
   useEffect(() => {
@@ -152,13 +152,13 @@ export default function DashboardUtilities() {
               const mapped = (r.subjects as { name: string; value: number }[]).map((s: { name: string; value: number }, i: number) => ({
                 name: s.name,
                 value: s.value,
-                color: ["bg-emerald-500","bg-blue-500","bg-violet-500","bg-amber-500"][i % 4]
+                color: ["bg-emerald-500", "bg-blue-500", "bg-violet-500", "bg-amber-500"][i % 4]
               }));
               setReportSubjects(mapped);
             }
           }
         }
-      } catch {}
+      } catch { }
     };
     run();
     return () => { cancelled = true; };
@@ -190,13 +190,7 @@ export default function DashboardUtilities() {
 
   return (
     <>
-      <button
-        onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-6 z-50 rounded-full px-4 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold shadow-xl shadow-blue-900/30"
-        aria-label="Open dashboard utilities"
-      >
-        <Rocket className="w-5 h-5" />
-      </button>
+
 
       {open && (
         <div className="fixed inset-0 z-50">
@@ -265,7 +259,7 @@ export default function DashboardUtilities() {
                 <button onClick={() => router.push('/news')} className="text-xs text-blue-400 hover:text-blue-300">View All</button>
               </div>
               <div className="space-y-3">
-                {announcements.slice(0,3).map(item => (
+                {announcements.slice(0, 3).map(item => (
                   <div key={item.id} className="flex items-start gap-3 p-3 rounded-xl bg-slate-900 border border-slate-800">
                     <div className="mt-1 w-2 h-2 rounded-full bg-blue-500" />
                     <div className="flex-1">
@@ -322,7 +316,7 @@ export default function DashboardUtilities() {
                         <div className="text-xs text-slate-500">{cls.topic} — {cls.instructor}</div>
                       </div>
                     </div>
-                    <button onClick={() => router.push('/live-classes')} className={"px-3 py-1.5 rounded-lg text-xs font-bold transition " + (cls.live ? "bg-red-500 hover:bg-red-600 text-white" : "bg-slate-900 text-slate-300 hover:bg-white hover:text-slate-950 border border-slate-800") }>
+                    <button onClick={() => router.push('/live-classes')} className={"px-3 py-1.5 rounded-lg text-xs font-bold transition " + (cls.live ? "bg-red-500 hover:bg-red-600 text-white" : "bg-slate-900 text-slate-300 hover:bg-white hover:text-slate-950 border border-slate-800")}>
                       {cls.live ? 'Join' : 'Remind Me'}
                     </button>
                   </div>

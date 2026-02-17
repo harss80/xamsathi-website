@@ -319,7 +319,7 @@ export default function TestSeriesPlayer({
     };
 
     return (
-        <div className="h-[100dvh] bg-[#0B1120] text-slate-100 selection:bg-indigo-500/30 overflow-hidden flex flex-col">
+        <div className={`h-[100dvh] bg-[#0B1120] text-slate-100 selection:bg-indigo-500/30 flex flex-col ${status === 'active' ? 'overflow-hidden' : 'overflow-y-auto'}`}>
             <AnimatePresence mode="wait">
                 {/* --- Intro View --- */}
                 {status === "intro" && (
