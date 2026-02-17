@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import TestSeriesPlayer, { Question } from "@/components/dashboard/TestSeriesPlayer";
 
 // --- Custom Questions (Hard Physics Q1-Q45) ---
@@ -1102,7 +1102,7 @@ const HARD_BIOLOGY_QUESTIONS: Partial<Question>[] = [
 
 
 // --- Mock Data Generator (180 Questions) ---
-const generateQuestions = (): any[] => {
+const generateQuestions = (): Question[] => {
     const subjects = [
         { type: "physics", count: 45, startIdx: 1 },
         { type: "chemistry", count: 45, startIdx: 46 },
@@ -1110,7 +1110,7 @@ const generateQuestions = (): any[] => {
         { type: "zoology", count: 45, startIdx: 136 },
     ];
 
-    const questions: any[] = [];
+    const questions: Question[] = [];
 
     subjects.forEach((subj) => {
         for (let i = 0; i < subj.count; i++) {
@@ -1118,40 +1118,40 @@ const generateQuestions = (): any[] => {
 
             // Physics (1-45)
             if (subj.type === "physics" && i < HARD_PHYSICS_QUESTIONS.length) {
-                const base = HARD_PHYSICS_QUESTIONS[i] as any;
+                const base = HARD_PHYSICS_QUESTIONS[i] as Partial<Question>;
                 questions.push({
                     id: qId,
                     type: "physics",
-                    ...base,
-                });
+                    ...(base as Omit<Question, "id" | "type">),
+                } as Question);
             }
             // Chemistry (46-90)
             else if (subj.type === "chemistry" && i < HARD_CHEMISTRY_QUESTIONS.length) {
-                const base = HARD_CHEMISTRY_QUESTIONS[i] as any;
+                const base = HARD_CHEMISTRY_QUESTIONS[i] as Partial<Question>;
                 questions.push({
                     id: qId,
                     type: "chemistry",
-                    ...base,
-                });
+                    ...(base as Omit<Question, "id" | "type">),
+                } as Question);
             }
             // Biology (Botany/Zoology)
             else if ((subj.type === "botany" || subj.type === "zoology")) {
                 const bioIndex = qId - 91;
 
                 if (bioIndex < HARD_BIOLOGY_QUESTIONS.length) {
-                    const base = HARD_BIOLOGY_QUESTIONS[bioIndex] as any;
+                    const base = HARD_BIOLOGY_QUESTIONS[bioIndex] as Partial<Question>;
                     questions.push({
                         id: qId,
                         type: subj.type,
-                        ...base,
-                    });
+                        ...(base as Omit<Question, "id" | "type">),
+                    } as Question);
                 } else {
                     questions.push({
                         id: qId,
                         type: subj.type,
                         text: `Sample Question ${qId} for ${subj.type.toUpperCase()}: This is a representative question used for mock testing.`,
                         options: [`Option A`, `Option B`, `Option C`, `Option D`],
-                        correctAnswer: Math.floor(Math.random() * 4),
+                        correctAnswer: qId % 4,
                         explanation: `Detailed explanation for question ${qId}.`,
                     });
                 }
@@ -1162,15 +1162,15 @@ const generateQuestions = (): any[] => {
     return questions;
 };
 
-const QUESTIONS = generateQuestions();
-
 export default function NEETTestSeriesPage() {
+    const questions = useMemo(() => generateQuestions(), []);
+
     return (
         <TestSeriesPlayer
             title="NEET Guard Mock-1"
             description="Complete NEET pattern mock test covering Physics, Chemistry, and Biology. Experience real exam-like conditions."
             testSeriesId="neet-ug-mock-180"
-            questions={QUESTIONS}
+            questions={questions}
             durationMins={200} // 3h 20m
             totalMarks={720}
             subjects={["Physics", "Chemistry", "Botany", "Zoology"]}
