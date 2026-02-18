@@ -501,40 +501,6 @@ function DashboardContent() {
                                     </Link>
                                 )}
 
-                                {/* Class 12 Board Booster */}
-                                {(classGrade === 12) && (
-                                    <Link
-                                        href="/dashboard/test-series/698f8a866fadfeda52b1916a"
-                                        className="group relative p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-indigo-500/50 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden col-span-1 md:col-span-2 lg:col-span-3"
-                                    >
-                                        <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                        <div className="absolute top-0 right-0 p-20 opacity-10 group-hover:opacity-20 transition-opacity bg-indigo-600 blur-[80px] rounded-full" />
-
-                                        <div className="relative flex flex-col md:flex-row items-center gap-6">
-                                            <div className="flex-1">
-                                                <div className="flex items-center gap-3 mb-4">
-                                                    <span className="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 text-xs font-bold border border-indigo-500/20 flex items-center gap-1">
-                                                        <Zap className="w-3 h-3" /> BOARD EXAM SPECIAL
-                                                    </span>
-                                                    <span className="px-3 py-1 rounded-full bg-red-500/10 text-red-400 text-xs font-bold border border-red-500/20 animate-pulse">
-                                                        1 MONTH CRASH COURSE
-                                                    </span>
-                                                </div>
-                                                <h3 className="text-3xl font-bold text-white mb-2">Class 12 - Board Mastery</h3>
-                                                <p className="text-slate-400 text-base mb-4 max-w-xl">
-                                                    Target 95%+ in Boards. Physics, Chemistry, Maths, English.
-                                                    Includes Case Studies & Full Pattern Mocks.
-                                                </p>
-                                            </div>
-                                            <div className="flex-shrink-0">
-                                                <div className="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-all shadow-lg shadow-indigo-600/20 group-hover:scale-105 flex items-center gap-2">
-                                                    Start Prep <ArrowRight className="w-4 h-4" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </Link>
-                                )}
-
                                 {/* Class 11 Final Prep */}
                                 {(classGrade === 11) && (
                                     <Link

@@ -9,6 +9,7 @@ const BOARD_COURSES = [
         class_grade: 10,
         title: "Class 10 - Ultimate Board Booster (1 Month)",
         description: "Intensive 4-Week Crash Course. Maths, Science, SST, English. Target 95%+",
+        active: true,
         tests: [
             { title: 'Maths - Real Numbers & Polynomials (MCQ Special)', difficulty: 'Medium', duration: 45 },
             { title: 'Science - Light: Reflection & Refraction', difficulty: 'Medium', duration: 45 },
@@ -32,6 +33,7 @@ const BOARD_COURSES = [
         class_grade: 12,
         title: "Class 12 - Board Exam Mastery (1 Month)",
         description: "Ace your Boards with Case Studies & MCQs. Physics, Chemistry, Maths/Bio, English.",
+        active: false,
         tests: [
             { title: 'Physics - Electric Charges, Fields & Potential', difficulty: 'Medium', duration: 50 },
             { title: 'Chemistry - Solutions & Electrochemistry', difficulty: 'Hard', duration: 50 },
@@ -64,7 +66,7 @@ export async function ensureBootstrapCourses() {
                         _id: new mongoose.Types.ObjectId(data._id),
                         title: data.title,
                         class_grade: data.class_grade,
-                        active: true,
+                        active: data.active !== false,
                         description: data.description,
                         price: 499
                     });
@@ -74,6 +76,16 @@ export async function ensureBootstrapCourses() {
                     // For simplicity, if title matches but ID is different, we'll just keep it.
                     // But in this specific case, the user says "course not found" for data._id,
                     // so we definitely need a course with data._id.
+                }
+            }
+
+            if (course) {
+                const desiredActive = data.active !== false;
+                if (course.title !== data.title || course.description !== data.description || course.active !== desiredActive) {
+                    await Course.updateOne(
+                        { _id: course._id },
+                        { $set: { title: data.title, description: data.description, active: desiredActive } }
+                    );
                 }
             }
 
@@ -87,7 +99,7 @@ export async function ensureBootstrapCourses() {
                         _id: new mongoose.Types.ObjectId(data._id),
                         title: data.title,
                         class_grade: data.class_grade,
-                        active: true,
+                        active: data.active !== false,
                         description: data.description,
                         price: 499
                     });

@@ -217,14 +217,6 @@ export default function CourseSeriesPage() {
 
     // Roadmap data for specified courses
     const roadmap = useMemo(() => {
-        if (courseId === "698f8a866fadfeda52b1916a") { // 12th Board
-            return [
-                { week: 1, title: "Electromagnetism & Physical Chem", goals: ["Electric Fields & Potential", "Solutions & Electrochemistry", "Relations & Functions"] },
-                { week: 2, title: "Current, Magnetism & Inorganic", goals: ["Current Electricity & Magnetism", "Chemical Kinetics", "Calculus - Continuity"] },
-                { week: 3, title: "Optics, Organic & Integrals", goals: ["Ray & Wave Optics", "Organic - Haloalkanes to Amines", "Integrals & Diff Equations"] },
-                { week: 4, title: "The Final Lap", goals: ["Full Board Pattern Mock Tests", "Final Revision", "Exam Strategy"] },
-            ];
-        }
         if (courseId === "698f8a866fadfeda52b19110") { // 10th Board
             return [
                 { week: 1, title: "Foundation & High Weightage", goals: ["Real Numbers & Polynomials", "Light - Reflection", "Nationalism in India"] },
@@ -342,7 +334,7 @@ export default function CourseSeriesPage() {
                                             <Lock className="w-5 h-5" />
                                             Unlock Series
                                         </div>
-                                        <div className="text-indigo-400 text-sm font-bold">Full Access @ ₹399 Only</div>
+                                        <div className="text-indigo-400 text-sm font-bold">Full Access @ ₹9 Only</div>
                                     </div>
                                 </button>
                             </motion.div>

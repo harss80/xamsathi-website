@@ -4,7 +4,6 @@ import Razorpay from 'razorpay';
 import crypto from 'crypto';
 import User from '../models/User';
 import Course from '../models/Course';
-import { verifyToken } from '../lib/auth';
 
 const router = Router();
 
@@ -17,21 +16,19 @@ const WEBHOOK_SECRET = process.env.RAZORPAY_WEBHOOK_SECRET;
 // For MVP, we'll map courseId -> price in INR
 const COURSE_PRICES: Record<string, number> = {
     // Class 9
-    '698f874c217f7f278986466d': 399,
+    '698f874c217f7f278986466d': 9,
     // Class 8
-    '698f89db6aaedcf04fa55612': 399,
+    '698f89db6aaedcf04fa55612': 9,
     // Class 7
-    '698f89db6aaedcf04fa555f1': 399,
+    '698f89db6aaedcf04fa555f1': 9,
     // Class 6
-    '698f89db6aaedcf04fa555d0': 399,
+    '698f89db6aaedcf04fa555d0': 9,
     // Class 5
-    '698f89db6aaedcf04fa5559d': 399,
+    '698f89db6aaedcf04fa5559d': 9,
     // Class 10 Board
-    '698f8a866fadfeda52b19110': 499,
+    '698f8a866fadfeda52b19110': 9,
     // Class 11 Science
-    '698f8a866fadfeda52b19140': 499,
-    // Class 12 Board Mastery
-    '698f8a866fadfeda52b1916a': 499
+    '698f8a866fadfeda52b19140': 9
 };
 
 router.post('/create-order', async (req: Request, res: Response) => {
@@ -51,7 +48,7 @@ router.post('/create-order', async (req: Request, res: Response) => {
         if (!course) return res.status(404).json({ error: 'Course not found' });
 
         // Get Price
-        const price = COURSE_PRICES[courseId] || 399; // Default fallback if not in map
+        const price = COURSE_PRICES[courseId] || 9; // Default fallback if not in map
 
         const razorpay = new Razorpay({
             key_id: KEY_ID,
