@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
-    ArrowLeft, Clock, AlertCircle, CheckCircle2, XCircle,
-    HelpCircle, ChevronRight, ChevronLeft, Flag, Award,
-    BarChart2, Timer, RotateCcw, BookOpen, Brain, Zap, GraduationCap,
+    ArrowLeft, AlertCircle, CheckCircle2, XCircle,
+    HelpCircle, ChevronRight, ChevronLeft, Flag,
+    BarChart2, Timer, RotateCcw, BookOpen, GraduationCap,
     Menu, X, Trophy, FileText
 } from "lucide-react";
 import Link from "next/link";
@@ -45,7 +46,7 @@ interface TestSeriesPlayerProps {
     negativeMarking?: number;
     positiveMarking?: number;
     subjects: string[];
-    onFinish?: (results: any) => void;
+    onFinish?: (results: { score: number; accuracy: number; subjectStats: Record<string, SubjectStat> }) => void;
 }
 
 interface QuestionPaletteProps {
@@ -125,6 +126,8 @@ export default function TestSeriesPlayer({
     subjects,
     onFinish
 }: TestSeriesPlayerProps) {
+    const router = useRouter();
+
     // --- State ---
     const [status, setStatus] = useState<"intro" | "active" | "result">("intro");
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -169,11 +172,13 @@ export default function TestSeriesPlayer({
         setActiveSubject(questions[0]?.type.toLowerCase() || "general");
     };
 
-    const visibleQuestionIndices = useMemo(() => {
-        // If it's a multi-subject test, we might want to filter, but usually we show all and highlight
-        // For now, let's keep all questions accessible but track subject view
-        return questions.map((_, i) => i);
-    }, [questions]);
+    const handleCancelExam = () => {
+        const ok = window.confirm("Close this exam? Your progress will not be submitted.");
+        if (!ok) return;
+        setIsSubmitModalOpen(false);
+        setStatus("intro");
+        router.push("/dashboard");
+    };
 
     const canGoPrev = currentQuestionIndex > 0;
     const canGoNext = currentQuestionIndex < questions.length - 1;
@@ -356,7 +361,12 @@ export default function TestSeriesPlayer({
                             <div className="h-full px-4 md:px-8 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     <div className="lg:hidden">
-                                        <button onClick={() => setShowPalette(!showPalette)} className="p-2 -ml-2 rounded-full hover:bg-white/5 text-slate-300">
+                                        <button
+                                            onClick={() => setShowPalette(!showPalette)}
+                                            title="Open question palette"
+                                            aria-label="Open question palette"
+                                            className="p-2 -ml-2 rounded-full hover:bg-white/5 text-slate-300"
+                                        >
                                             <Menu className="w-6 h-6" />
                                         </button>
                                     </div>
@@ -368,6 +378,15 @@ export default function TestSeriesPlayer({
                                         <Timer className="w-4 h-4" />
                                         <span className="font-mono text-sm md:text-base font-bold tabular-nums">{formatTime(timeLeft)}</span>
                                     </div>
+
+                                    <button
+                                        onClick={handleCancelExam}
+                                        title="Close exam"
+                                        aria-label="Close exam"
+                                        className="w-9 h-9 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 border border-white/5 text-slate-300"
+                                    >
+                                        <X className="w-5 h-5" />
+                                    </button>
                                     <button
                                         onClick={() => setIsSubmitModalOpen(true)}
                                         className="hidden md:flex bg-white/5 hover:bg-white/10 border border-white/5 text-white px-5 py-2 rounded-xl font-bold text-sm transition-all"
@@ -377,6 +396,8 @@ export default function TestSeriesPlayer({
                                     {/* Mobile Submit Icon */}
                                     <button
                                         onClick={() => setIsSubmitModalOpen(true)}
+                                        title="Submit test"
+                                        aria-label="Submit test"
                                         className="md:hidden w-9 h-9 flex items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg shadow-indigo-600/20"
                                     >
                                         <CheckCircle2 className="w-5 h-5" />
@@ -506,33 +527,55 @@ export default function TestSeriesPlayer({
                                         <button
                                             onClick={goPrev}
                                             disabled={!canGoPrev}
+                                            title="Previous question"
+                                            aria-label="Previous question"
                                             className="w-11 h-11 rounded-full bg-slate-800/50 border border-white/5 text-slate-400 flex items-center justify-center hover:bg-slate-800 disabled:opacity-30 transition-all active:scale-95"
                                         >
                                             <ChevronLeft className="w-5 h-5" />
                                         </button>
                                         <button
                                             onClick={toggleMarkForReview}
+                                            title="Mark for review"
+                                            aria-label="Mark for review"
                                             className={`w-11 h-11 rounded-full border flex items-center justify-center transition-all active:scale-95 ${markedForReview.has(currentQ.id)
                                                 ? 'bg-purple-500/10 border-purple-500/50 text-purple-400'
                                                 : 'bg-slate-800/50 border-white/5 text-slate-400'
                                                 }`}
                                         >
-                                            <Flag className="w-4 h-4" />
+                                            <Flag className="w-5 h-5" />
+                                        </button>
+                                        <button
+                                            onClick={goNext}
+                                            disabled={!canGoNext}
+                                            title="Next question"
+                                            aria-label="Next question"
+                                            className="w-11 h-11 rounded-full bg-slate-800/50 border border-white/5 text-slate-400 flex items-center justify-center hover:bg-slate-800 disabled:opacity-30 transition-all active:scale-95"
+                                        >
+                                            <ChevronRight className="w-5 h-5" />
                                         </button>
                                     </div>
 
-                                    <button
-                                        onClick={goNext}
-                                        disabled={!canGoNext}
-                                        className="flex-1 max-w-sm h-11 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-full flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-600/20 active:scale-[0.98]"
-                                        style={{ boxShadow: '0 4px 20px -5px rgba(79, 70, 229, 0.4)' }}
-                                    >
-                                        Save & Next
-                                        <ChevronRight className="w-4 h-4" />
-                                    </button>
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            onClick={handleCancelExam}
+                                            title="Cancel exam"
+                                            aria-label="Cancel exam"
+                                            className="w-11 h-11 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center hover:bg-red-500/20 transition-all active:scale-95"
+                                        >
+                                            <X className="w-5 h-5" />
+                                        </button>
+                                        <button
+                                            onClick={goNext}
+                                            disabled={!canGoNext}
+                                            className="h-11 px-6 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-full flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-600/20 active:scale-[0.98]"
+                                            style={{ boxShadow: '0 4px 20px -5px rgba(79, 70, 229, 0.4)' }}
+                                        >
+                                            Save & Next
+                                            <ChevronRight className="w-4 h-4" />
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-
                             {/* Desktop Sidebar Palette */}
                             <aside className="w-[350px] hidden xl:block h-full overflow-hidden">
                                 <QuestionPalette
@@ -573,6 +616,8 @@ export default function TestSeriesPlayer({
                                             />
                                             <button
                                                 onClick={() => setShowPalette(false)}
+                                                title="Close question palette"
+                                                aria-label="Close question palette"
                                                 className="absolute top-6 right-6 w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white"
                                             >
                                                 <X className="w-6 h-6" />
@@ -863,9 +908,9 @@ export default function TestSeriesPlayer({
                                                             </div>
                                                         </div>
                                                         <div>
-                                                            <h5 className="text-indigo-400 font-black text-xs uppercase tracking-[0.2em] mb-4">TEACHER'S EXPLANATION</h5>
+                                                            <h5 className="text-indigo-400 font-black text-xs uppercase tracking-[0.2em] mb-4">TEACHER&apos;S EXPLANATION</h5>
                                                             <p className="text-slate-300 leading-relaxed text-lg font-medium italic">
-                                                                "{q.explanation}"
+                                                                &quot;{q.explanation}&quot;
                                                             </p>
                                                         </div>
                                                         <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-indigo-500/10 rounded-full blur-3xl"></div>

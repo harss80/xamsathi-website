@@ -1,8 +1,9 @@
 
 "use client";
 
-import { Bell, Search, Menu, User } from "lucide-react";
+import { Bell, Search, Menu, User, Home } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import GamificationHeader from './GamificationHeader';
 
 interface HeaderProps {
@@ -20,6 +21,8 @@ export default function Header({ onMenuClick, user }: HeaderProps) {
             <div className="flex items-center gap-4">
                 <button
                     onClick={onMenuClick}
+                    aria-label="Open menu"
+                    title="Menu"
                     className="p-2 rounded-lg hover:bg-slate-800 text-slate-400 lg:hidden"
                 >
                     <Menu className="w-6 h-6" />
@@ -41,7 +44,20 @@ export default function Header({ onMenuClick, user }: HeaderProps) {
                     <GamificationHeader />
                 </div>
 
-                <button className="relative p-2 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition-colors">
+                <Link
+                    href="/"
+                    aria-label="Go to Home"
+                    title="Home"
+                    className="p-2 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+                >
+                    <Home className="w-5 h-5" />
+                </Link>
+
+                <button
+                    aria-label="Notifications"
+                    title="Notifications"
+                    className="relative p-2 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+                >
                     <Bell className="w-5 h-5" />
                     <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-slate-900"></span>
                 </button>
