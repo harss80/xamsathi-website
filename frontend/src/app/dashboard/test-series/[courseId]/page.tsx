@@ -43,6 +43,8 @@ export default function CourseSeriesPage() {
     const [coins, setCoins] = useState(0);
     const [unlockingId, setUnlockingId] = useState<string | null>(null);
 
+    const isPremiumNeet = courseId === "699f9a1b2c3d4e5f6a7b8c9d";
+
     // Fetch Tests & User Status
     useEffect(() => {
         if (!courseId) return;
@@ -295,7 +297,7 @@ export default function CourseSeriesPage() {
                                 <div className="p-2 rounded-lg bg-indigo-600/20 text-indigo-400">
                                     <GraduationCap className="w-5 h-5" />
                                 </div>
-                                <span className="text-xs font-black uppercase tracking-[0.2em] text-indigo-400">Premium Board Prep</span>
+                                <span className="text-xs font-black uppercase tracking-[0.2em] text-indigo-400">{isPremiumNeet ? "Premium NEET Series" : "Premium Board Prep"}</span>
                             </motion.div>
 
                             <motion.h1
@@ -313,7 +315,9 @@ export default function CourseSeriesPage() {
                                 transition={{ delay: 0.2 }}
                                 className="text-slate-400 text-lg md:text-xl max-w-2xl leading-relaxed"
                             >
-                                Master your board exams with our curated 1-month intensive plan. Subject-wise mocks, case studies, and full patterns.
+                                {isPremiumNeet
+                                    ? "Attempt full-length NEET mocks in 180 minutes with a premium, pro-level experience."
+                                    : "Master your board exams with our curated 1-month intensive plan. Subject-wise mocks, case studies, and full patterns."}
                             </motion.p>
                         </div>
 
@@ -334,7 +338,7 @@ export default function CourseSeriesPage() {
                                             <Lock className="w-5 h-5" />
                                             Unlock Series
                                         </div>
-                                        <div className="text-indigo-400 text-sm font-bold">Full Access @ ₹9 Only</div>
+                                        <div className="text-indigo-400 text-sm font-bold">Full Access @ ₹{isPremiumNeet ? "499" : "9"} Only</div>
                                     </div>
                                 </button>
                             </motion.div>

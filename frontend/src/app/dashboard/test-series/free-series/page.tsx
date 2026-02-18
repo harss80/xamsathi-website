@@ -100,6 +100,37 @@ export default function FreeSeriesPage() {
                         </div>
                     </Link>
 
+                    {(classGrade === 12) && (
+                        <Link
+                            href="/dashboard/test-series/699f9a1b2c3d4e5f6a7b8c9d"
+                            className="group relative p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-yellow-500/50 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden"
+                        >
+                            <div className="absolute top-0 right-0 p-20 opacity-10 group-hover:opacity-20 transition-opacity bg-yellow-500 blur-[60px] rounded-full" />
+                            <div className="flex items-start justify-between mb-6">
+                                <div className="p-4 rounded-2xl bg-yellow-500/10 text-yellow-300 group-hover:bg-yellow-500 group-hover:text-black transition-colors">
+                                    <Sparkles className="w-8 h-8" />
+                                </div>
+                                <div className="px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-300 text-xs font-bold border border-yellow-500/20">
+                                    ₹499
+                                </div>
+                            </div>
+                            <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-yellow-200 transition-colors">
+                                NEET Advanced Mock Pro
+                            </h3>
+                            <p className="text-slate-400 text-sm mb-6 line-clamp-2">
+                                Premium full-length NEET mocks (180 minutes) with pro-level experience.
+                            </p>
+                            <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-800">
+                                <div className="flex items-center gap-2 text-xs text-slate-500">
+                                    <Timer className="w-4 h-4" /> 180 mins
+                                </div>
+                                <div className="flex items-center gap-2 text-sm font-bold text-yellow-300 group-hover:translate-x-1 transition-transform">
+                                    View Series <ArrowRight className="w-4 h-4" />
+                                </div>
+                            </div>
+                        </Link>
+                    )}
+
                     {(typeof classGrade === "number" && classGrade >= 11) && (
                         <Link
                             href="/dashboard/test-series/neet"

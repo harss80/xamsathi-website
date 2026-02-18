@@ -28,7 +28,9 @@ const COURSE_PRICES: Record<string, number> = {
     // Class 10 Board
     '698f8a866fadfeda52b19110': 9,
     // Class 11 Science
-    '698f8a866fadfeda52b19140': 9
+    '698f8a866fadfeda52b19140': 9,
+    // Premium NEET (Class 12)
+    '699f9a1b2c3d4e5f6a7b8c9d': 499
 };
 
 router.post('/create-order', async (req: Request, res: Response) => {
