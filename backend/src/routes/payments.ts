@@ -33,34 +33,78 @@ const COURSE_PRICES: Record<string, number> = {
     '699f9a1b2c3d4e5f6a7b8c9d': 499
 };
 
+// Debug endpoint to check keys (non-critical)
+router.get('/debug', (req: Request, res: Response) => {
+    const kId = process.env.RAZORPAY_KEY_ID;
+    const kSec = process.env.RAZORPAY_KEY_SECRET;
+    res.json({
+        keyIdExists: !!kId,
+        keyIdPrefix: kId ? kId.substring(0, 4) + '...' : null,
+        keySecretExists: !!kSec,
+    });
+});
+
 router.post('/create-order', async (req: Request, res: Response) => {
     try {
+        console.log('[Payment] create-order called');
+
         const _KEY_ID = process.env.RAZORPAY_KEY_ID;
         const _KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
 
+        // 1. Check Env Vars
         if (!_KEY_ID || !_KEY_SECRET) {
-            console.error('Razorpay keys missing in env');
-            return res.status(500).json({ error: 'Razorpay keys not configured' });
+            console.error('[Payment] Razorpay keys missing in env');
+            return res.status(500).json({
+                error: 'Server Config Error: Razorpay keys not set',
+                detail: 'Check .env file for RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET'
+            });
         }
 
         const userId = req.header('x-user-id');
-        if (!userId) return res.status(401).json({ error: 'User ID required' });
+        if (!userId) {
+            console.warn('[Payment] User ID missing in headers');
+            return res.status(401).json({ error: 'User ID required' });
+        }
 
         const { courseId } = req.body;
-        if (!courseId) return res.status(400).json({ error: 'courseId required' });
+        if (!courseId) {
+            console.warn('[Payment] courseId missing in body');
+            return res.status(400).json({ error: 'courseId required' });
+        }
 
-        // Check if course exists
-        const course = await Course.findById(courseId);
-        if (!course) return res.status(404).json({ error: 'Course not found' });
+        console.log(`[Payment] Processing for User: ${userId}, Course: ${courseId}`);
 
-        // Get Price
+        // 2. Database Check
+        let courseTitle: string = "Course";
+        try {
+            const course = await Course.findById(courseId);
+            if (!course) {
+                console.warn(`[Payment] Course ${courseId} not found in DB`);
+                return res.status(404).json({ error: 'Course not found in database' });
+            }
+            courseTitle = course.title;
+        } catch (dbErr: any) {
+            console.error('[Payment] DB Error:', dbErr);
+            return res.status(500).json({ error: 'Database Error', details: dbErr.message });
+        }
+
+        // 3. Price Resolution
         const price = COURSE_PRICES[courseId] || 9; // Default fallback if not in map
+        console.log(`[Payment] Price resolved: ${price}`);
 
-        const razorpay = new Razorpay({
-            key_id: _KEY_ID,
-            key_secret: _KEY_SECRET,
-        });
+        // 4. Razorpay Initialization
+        let razorpay;
+        try {
+            razorpay = new Razorpay({
+                key_id: _KEY_ID,
+                key_secret: _KEY_SECRET,
+            });
+        } catch (rzpInitErr: any) {
+            console.error('[Payment] Razorpay Init Failed:', rzpInitErr);
+            return res.status(500).json({ error: 'Razorpay Client Init Failed', details: rzpInitErr.message });
+        }
 
+        // 5. Order Creation
         const options = {
             amount: price * 100, // Amount in paise
             currency: 'INR',
@@ -68,24 +112,32 @@ router.post('/create-order', async (req: Request, res: Response) => {
             notes: {
                 userId,
                 courseId,
-                courseTitle: course.title
+                courseTitle
             }
         };
 
-        const order = await razorpay.orders.create(options);
-        return res.json({
-            orderId: order.id,
-            amount: order.amount,
-            currency: order.currency,
-            keyId: _KEY_ID
-        });
+        try {
+            const order = await razorpay.orders.create(options);
+            console.log('[Payment] Order created:', order.id);
+            return res.json({
+                orderId: order.id,
+                amount: order.amount,
+                currency: order.currency,
+                keyId: _KEY_ID
+            });
+        } catch (rzpOrderErr: any) {
+            console.error('[Payment] Razorpay Order Create Failed:', rzpOrderErr);
+            return res.status(500).json({
+                error: 'Razorpay API Error',
+                details: rzpOrderErr.error || rzpOrderErr.message || rzpOrderErr
+            });
+        }
 
     } catch (error: any) {
-        console.error('Create Order Error:', error);
-        // Return actual error for debugging
+        console.error('[Payment] Critical Unhandled Error:', error);
         return res.status(500).json({
-            error: error.message || 'Internal Server Error',
-            details: error
+            error: error.message || 'Critical Internal Server Error',
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
         });
     }
 });
