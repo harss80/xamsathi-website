@@ -174,7 +174,8 @@ export default function CourseSeriesPage() {
                 window.location.reload();
             },
             (err) => {
-                alert("Payment Failed or Cancelled. Try again.");
+                const msg = err instanceof Error ? err.message : "Payment Failed or Cancelled";
+                alert(`Payment Error: ${msg}. Try again.`);
                 console.error(err);
             }
         );

@@ -1,6 +1,8 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import { connectMongo } from './lib/mongo';
 import adminRouter from './routes/admin';
 import testsRouter from './routes/tests';
@@ -16,8 +18,6 @@ import { ensureBootstrapAdmin } from './lib/bootstrap-admin';
 import { ensureBootstrapCourses } from './lib/bootstrap-courses';
 import paymentsRouter from './routes/payments';
 import gamificationRouter from './routes/gamification';
-
-dotenv.config();
 
 const app = express();
 

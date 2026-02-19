@@ -35,7 +35,11 @@ const COURSE_PRICES: Record<string, number> = {
 
 router.post('/create-order', async (req: Request, res: Response) => {
     try {
-        if (!KEY_ID || !KEY_SECRET) {
+        const _KEY_ID = process.env.RAZORPAY_KEY_ID;
+        const _KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
+
+        if (!_KEY_ID || !_KEY_SECRET) {
+            console.error('Razorpay keys missing in env');
             return res.status(500).json({ error: 'Razorpay keys not configured' });
         }
 
@@ -53,8 +57,8 @@ router.post('/create-order', async (req: Request, res: Response) => {
         const price = COURSE_PRICES[courseId] || 9; // Default fallback if not in map
 
         const razorpay = new Razorpay({
-            key_id: KEY_ID,
-            key_secret: KEY_SECRET,
+            key_id: _KEY_ID,
+            key_secret: _KEY_SECRET,
         });
 
         const options = {
@@ -73,26 +77,31 @@ router.post('/create-order', async (req: Request, res: Response) => {
             orderId: order.id,
             amount: order.amount,
             currency: order.currency,
-            keyId: KEY_ID
+            keyId: _KEY_ID
         });
 
-    } catch (error) {
+    } catch (error: any) {
         console.error('Create Order Error:', error);
-        return res.status(500).json({ error: 'Internal Server Error' });
+        // Return actual error for debugging
+        return res.status(500).json({
+            error: error.message || 'Internal Server Error',
+            details: error
+        });
     }
 });
 
 router.post('/verify', async (req: Request, res: Response) => {
     try {
+        const _KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
+        if (!_KEY_SECRET) return res.status(500).json({ error: 'Server config error: Missing Secret' });
+
         const { razorpay_order_id, razorpay_payment_id, razorpay_signature, courseId } = req.body;
         const userId = req.header('x-user-id');
-
-        if (!KEY_SECRET) return res.status(500).json({ error: 'Server config error' });
 
         // Verify Signature
         const body = razorpay_order_id + "|" + razorpay_payment_id;
         const expectedSignature = crypto
-            .createHmac("sha256", KEY_SECRET)
+            .createHmac("sha256", _KEY_SECRET)
             .update(body.toString())
             .digest("hex");
 
@@ -111,9 +120,9 @@ router.post('/verify', async (req: Request, res: Response) => {
         } else {
             return res.status(400).json({ success: false, error: "Invalid Signature" });
         }
-    } catch (error) {
+    } catch (error: any) {
         console.error("Verification Error:", error);
-        return res.status(500).json({ error: "Verification Failed" });
+        return res.status(500).json({ error: error.message || "Verification Failed" });
     }
 });
 
