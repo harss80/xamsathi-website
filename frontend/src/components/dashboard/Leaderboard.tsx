@@ -8,6 +8,7 @@ import {
     TrendingUp,
     Users,
     Search,
+    Trash2,
     ChevronUp
 } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -15,6 +16,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 type LeaderboardEntry = {
+    _id?: string;
     rank: number;
     name: string;
     score: number;
@@ -23,17 +25,22 @@ type LeaderboardEntry = {
     change: string;
 };
 
-const TEST_SERIES_ID = "neet-ug-mock-180";
+type TestSeries = {
+    _id: string;
+    title: string;
+};
 
-export default function Leaderboard() {
+export default function Leaderboard({ isAdmin = false }: { isAdmin?: boolean }) {
     const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [userName, setUserName] = useState<string>("");
 
+    const [tests, setTests] = useState<TestSeries[]>([]);
+    const [selectedTestId, setSelectedTestId] = useState<string>("neet-ug-mock-180"); // fallback default
+
     const getBackendBase = () => {
         const envBase = (process.env.NEXT_PUBLIC_BACKEND_URL || "").trim();
         if (envBase) return envBase;
-        // Fallback for local dev if env not set
         if (typeof window !== "undefined") {
             const host = window.location.hostname;
             if (host === "localhost" || host === "127.0.0.1") return "http://localhost:3001";
@@ -41,39 +48,97 @@ export default function Leaderboard() {
         return "http://localhost:3001";
     };
 
+    // Fetch tests
     useEffect(() => {
-        const fetchLeaderboard = async () => {
+        const fetchTests = async () => {
             try {
                 const base = getBackendBase();
-                const userStr = localStorage.getItem("xamsathi_user");
-                let userId = "";
-                if (userStr) {
-                    try {
-                        const parsed = JSON.parse(userStr) as Record<string, any>;
-                        userId = parsed.id || parsed._id || parsed.user_id || "";
-                        if (parsed.name) setUserName(parsed.name);
-                    } catch { }
-                }
-
-                // We fetch even if userId is empty to show the global leaderboard
-                const res = await fetch(`${base}/api/leaderboard/${TEST_SERIES_ID}`, {
-                    headers: {
-                        "x-user-id": userId
-                    }
-                });
+                const res = await fetch(`${base}/api/leaderboard/tests`);
                 if (res.ok) {
                     const data = await res.json();
-                    setLeaderboardData(data);
+                    if (data && data.length > 0) {
+                        setTests(data);
+                        // Only change selected test if current one isn't in the list
+                        if (!data.find((t: TestSeries) => t._id === selectedTestId)) {
+                            // Let's just keep the neet default unless we want to reset it
+                            // setSelectedTestId(data[0]._id);
+                        }
+                    }
                 }
             } catch (error) {
-                console.error("Failed to fetch leaderboard", error);
-            } finally {
-                setIsLoading(false);
+                console.error("Failed to fetch tests", error);
             }
         };
-
-        fetchLeaderboard();
+        fetchTests();
     }, []);
+
+    const fetchLeaderboard = async () => {
+        setIsLoading(true);
+        try {
+            const base = getBackendBase();
+            const userStr = localStorage.getItem("xamsathi_user");
+            let userId = "";
+            let token = "";
+            if (userStr) {
+                try {
+                    const parsed = JSON.parse(userStr) as Record<string, any>;
+                    userId = parsed.id || parsed._id || parsed.user_id || "";
+                    if (parsed.name) setUserName(parsed.name);
+                    token = parsed.token || "";
+                } catch { }
+            }
+            if (isAdmin) {
+                // If admin, we might need to grab token from somewhere else, e.g. cookie
+                // but let's assume it's sent in authorization if needed, though leaderboard get is public
+            }
+
+            const res = await fetch(`${base}/api/leaderboard/${selectedTestId}`, {
+                headers: {
+                    "x-user-id": userId || "anonymous"
+                }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setLeaderboardData(data);
+            } else {
+                setLeaderboardData([]);
+            }
+        } catch (error) {
+            console.error("Failed to fetch leaderboard", error);
+            setLeaderboardData([]);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (selectedTestId) {
+            fetchLeaderboard();
+        }
+    }, [selectedTestId]);
+
+    const removeEntry = async (entryId: string) => {
+        if (!confirm("Are you sure you want to remove this student from the leaderboard?")) return;
+        try {
+            const base = getBackendBase();
+            const token = localStorage.getItem('admin_token') || ""; // basic check for token
+            const res = await fetch(`${base}/api/admin/leaderboard/${entryId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (res.ok) {
+                // refresh leaderboard
+                fetchLeaderboard();
+            } else {
+                alert("Failed to delete entry");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Error deleting entry");
+        }
+    };
 
     const rest = leaderboardData.slice(3);
 
@@ -84,7 +149,6 @@ export default function Leaderboard() {
             </div>
         );
     }
-
 
     return (
         <div className="space-y-8">
@@ -97,18 +161,31 @@ export default function Leaderboard() {
                     <p className="text-slate-400 text-sm">See where you stand among the best.</p>
                 </div>
 
-                <div className="relative group w-full md:w-auto">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Search className="h-4 w-4 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+                <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
+                    {tests.length > 0 && (
+                        <select
+                            className="bg-slate-900 border border-slate-700 text-slate-200 text-sm rounded-xl focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition-all w-full sm:w-auto"
+                            value={selectedTestId}
+                            onChange={(e) => setSelectedTestId(e.target.value)}
+                        >
+                            <option value="neet-ug-mock-180">NEET UG Mock (Default)</option>
+                            {tests.map(t => (
+                                <option key={t._id} value={t._id}>{t.title}</option>
+                            ))}
+                        </select>
+                    )}
+                    <div className="relative group w-full sm:w-auto">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Search className="h-4 w-4 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="Search student..."
+                            className="bg-slate-900 border border-slate-700 text-slate-200 text-sm rounded-xl focus:ring-indigo-500 focus:border-indigo-500 block w-full md:w-[280px] pl-10 p-2.5 placeholder-slate-500 transition-all hover:bg-slate-800 focus:bg-slate-900"
+                        />
                     </div>
-                    <input
-                        type="text"
-                        placeholder="Search student..."
-                        className="bg-slate-900 border border-slate-700 text-slate-200 text-sm rounded-xl focus:ring-indigo-500 focus:border-indigo-500 block w-full md:w-[280px] pl-10 p-2.5 placeholder-slate-500 transition-all hover:bg-slate-800 focus:bg-slate-900"
-                    />
                 </div>
             </div>
-
             {leaderboardData.length > 0 && (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 min-h-[300px] mb-12">
                     <div className="order-2 md:order-1 flex flex-col justify-end">
@@ -279,6 +356,15 @@ export default function Leaderboard() {
                                             <td className="p-4 text-center text-slate-400 hidden sm:table-cell">{student.accuracy}%</td>
                                             <td className="p-4 text-right">
                                                 <div className="inline-flex items-center gap-2 text-sm text-slate-400">
+                                                    {isAdmin && student._id && (
+                                                        <button
+                                                            onClick={() => removeEntry(student._id!)}
+                                                            className="text-red-400 hover:text-red-300 p-1 hover:bg-red-500/10 rounded mr-2 transition-colors"
+                                                            title="Remove from Leaderboard"
+                                                        >
+                                                            <Trash2 className="w-4 h-4" />
+                                                        </button>
+                                                    )}
                                                     <ChevronUp className="w-4 h-4 text-green-400" />
                                                     {student.change || "0"}
                                                 </div>

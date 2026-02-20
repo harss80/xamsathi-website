@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import LeaderboardEntry from '../models/LeaderboardEntry';
 import User from '../models/User';
+import Test from '../models/Test';
 
 const router = Router();
 
@@ -39,6 +40,17 @@ router.post('/submit', async (req: Request, res: Response) => {
     } catch (error) {
         console.error('Leaderboard submit error:', error);
         res.status(500).json({ error: 'Failed to submit score' });
+    }
+});
+
+// Get all tests for leaderboard dropdown
+router.get('/tests', async (req: Request, res: Response) => {
+    try {
+        const tests = await Test.find({ active: true }).select('_id title').lean();
+        res.json(tests);
+    } catch (error) {
+        console.error('Leaderboard tests fetch error:', error);
+        res.status(500).json({ error: 'Failed to fetch tests' });
     }
 });
 
@@ -86,6 +98,8 @@ router.get('/:testSeriesId', async (req: Request, res: Response) => {
             const user = userMap.get(entry.user_id) as any;
             const photo = (user?.student_photo || user?.avatar || '/default-avatar.png') as string;
             return {
+                _id: entry._id,
+                user_id: entry.user_id,
                 rank: index + 1,
                 name: user ? user.name : 'Unknown Student',
                 avatar: photo,

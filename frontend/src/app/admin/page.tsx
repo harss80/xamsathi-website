@@ -1090,7 +1090,7 @@ export default function AdminPanel() {
                         </h3>
                       </div>
                       <div className="overflow-y-auto max-h-[300px] custom-scrollbar">
-                        <Leaderboard />
+                        <Leaderboard isAdmin={true} />
                       </div>
                     </div>
                   </motion.div>
@@ -1101,7 +1101,7 @@ export default function AdminPanel() {
             {/* Leaderboard Tab */}
             {activeTab === "leaderboard" && (
               <motion.div variants={fadeIn} className="space-y-6">
-                <Leaderboard />
+                <Leaderboard isAdmin={true} />
               </motion.div>
             )}
 

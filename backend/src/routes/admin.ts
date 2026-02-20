@@ -8,6 +8,7 @@ import Visit from '../models/Visit';
 import { verifyToken } from '../lib/auth';
 import User from '../models/User';
 import FreeAccessEmail from '../models/FreeAccessEmail';
+import LeaderboardEntry from '../models/LeaderboardEntry';
 
 const router = Router();
 
@@ -262,6 +263,17 @@ router.get('/users/:id/attempts', requireAdmin, async (req: Request, res: Respon
 router.get('/jobs', requireAdmin, async (req: Request, res: Response) => {
   // Placeholder: return empty jobs array for now
   return res.json({ items: [] });
+});
+
+router.delete('/leaderboard/:id', requireAdmin, async (req: Request, res: Response) => {
+  const id = req.params.id;
+  try {
+    const result = await LeaderboardEntry.findByIdAndDelete(id);
+    if (!result) return res.status(404).json({ error: 'entry not found' });
+    return res.json({ ok: true });
+  } catch (error) {
+    return res.status(500).json({ error: 'failed to delete leaderboard entry' });
+  }
 });
 
 // Analytics endpoint
