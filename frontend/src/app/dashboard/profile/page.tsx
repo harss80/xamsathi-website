@@ -347,28 +347,26 @@ export default function ProfilePage() {
                             <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-indigo-600/10 to-transparent" />
 
                             <div className="relative flex flex-col items-center">
-                                <div className="relative mb-6">
-                                    <div className="w-36 h-36 rounded-full border-[6px] border-slate-900/50 shadow-2xl overflow-hidden bg-slate-800 relative ring-1 ring-white/10">
+                                <div className="relative mb-6 group/avatar">
+                                    <div
+                                        {...getRootProps()}
+                                        className="w-36 h-36 rounded-full border-[6px] border-slate-900/50 shadow-2xl overflow-hidden bg-slate-800 relative ring-1 ring-white/10 cursor-pointer"
+                                    >
                                         <img
                                             src={preview || user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name || 'Xamsathi'}`}
                                             alt={user.name}
-                                            className="w-full h-full object-cover"
+                                            className="absolute inset-0 w-full h-full object-cover z-10"
                                         />
                                         <div
-                                            className="absolute inset-0 z-20"
+                                            className={`absolute inset-0 z-20 flex flex-col items-center justify-center transition-colors ${isEditing ? 'bg-black/60' : 'bg-transparent group-hover/avatar:bg-black/60'}`}
                                         >
-                                            <div
-                                                {...getRootProps()}
-                                                className={`w-full h-full backdrop-blur-[2px] flex flex-col items-center justify-center cursor-pointer group/upload transition-colors ${isEditing ? 'bg-black/60' : 'bg-transparent hover:bg-black/60'}`}
-                                            >
-                                                <input {...getInputProps()} ref={fileInputRef} />
-                                                <Camera className={`w-8 h-8 text-white mb-2 transition-all ${isEditing ? 'opacity-100 group-hover/upload:scale-110' : 'opacity-0 group-hover/upload:opacity-100 scale-95 group-hover/upload:scale-110'}`} />
-                                                <span className={`text-[10px] font-black uppercase tracking-tighter text-white/70 transition-opacity ${isEditing ? 'opacity-100' : 'opacity-0 group-hover/upload:opacity-100'}`}>Change Photo</span>
-                                            </div>
+                                            <input {...getInputProps()} ref={fileInputRef} />
+                                            <Camera className={`w-8 h-8 text-white mb-2 transition-all ${isEditing ? 'opacity-100 scale-110' : 'opacity-0 group-hover/avatar:opacity-100 scale-95 group-hover/avatar:scale-110'}`} />
+                                            <span className={`text-[10px] font-black uppercase tracking-tighter text-white/70 transition-opacity ${isEditing ? 'opacity-100' : 'opacity-0 group-hover/avatar:opacity-100'}`}>Change Photo</span>
                                         </div>
                                     </div>
                                     {!isEditing && (
-                                        <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center border-4 border-slate-900 shadow-xl">
+                                        <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center border-4 border-slate-900 shadow-xl pointer-events-none z-30">
                                             <Shield className="w-4 h-4 text-white" />
                                         </div>
                                     )}
