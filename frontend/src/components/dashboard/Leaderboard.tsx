@@ -56,9 +56,16 @@ export default function Leaderboard({ isAdmin = false }: { isAdmin?: boolean }) 
                 const res = await fetch(`${base}/api/leaderboard/tests`);
                 if (res.ok) {
                     const data = await res.json();
-                    if (data && data.length > 0) {
-                        setTests(data);
-                        setSelectedTestId(prev => prev ? prev : data[0]._id);
+                    let testList = Array.isArray(data) ? data : [];
+
+                    // Add the default 180 mock if it doesn't exist
+                    if (!testList.find((t: TestSeries) => t._id === "neet-ug-mock-180")) {
+                        testList = [{ _id: "neet-ug-mock-180", title: "NEET UG Mock (180 Questions)" }, ...testList];
+                    }
+
+                    if (testList.length > 0) {
+                        setTests(testList);
+                        setSelectedTestId(prev => prev ? prev : "neet-ug-mock-180");
                     }
                 }
             } catch (error) {
