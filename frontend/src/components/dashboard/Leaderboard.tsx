@@ -134,12 +134,9 @@ export default function Leaderboard({ isAdmin = false }: { isAdmin?: boolean }) 
         if (!confirm("Are you sure you want to remove this student from the leaderboard?")) return;
         try {
             const base = getBackendBase();
-            const token = localStorage.getItem('admin_token') || ""; // basic check for token
             const res = await fetch(`${base}/api/admin/leaderboard/${entryId}`, {
                 method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                credentials: 'include'
             });
             if (res.ok) {
                 // refresh leaderboard
