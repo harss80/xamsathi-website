@@ -676,76 +676,95 @@ export default function AdminPanel() {
 
   if (!admin) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-200 flex items-center justify-center p-4">
-        <div className="w-full max-w-md bg-slate-900/40 border border-white/10 rounded-3xl p-6 backdrop-blur-xl">
-          <h1 className="text-2xl font-black text-white mb-2">Admin</h1>
-          <p className="text-sm text-slate-400 mb-6">
-            {authMode === 'login' && 'Sign in with your admin account'}
-            {authMode === 'forgot' && 'Request a password reset link'}
-            {authMode === 'reset' && 'Set a new password'}
-          </p>
+      <div className="min-h-screen bg-slate-950 text-slate-200 flex items-center justify-center p-4 relative overflow-hidden">
+        {/* Decorative Background */}
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/20 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/20 rounded-full blur-[120px] animate-pulse delay-1000" />
+
+        <div className="w-full max-w-md bg-slate-900/60 border border-white/10 rounded-3xl p-8 backdrop-blur-2xl shadow-2xl relative z-10">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400 mb-2">XamSathi Admin</h1>
+            <p className="text-sm text-slate-400 font-medium">
+              {authMode === 'login' && 'Sign in to access your dashboard'}
+              {authMode === 'forgot' && 'Request a password reset link'}
+              {authMode === 'reset' && 'Set a new password'}
+            </p>
+          </div>
 
           {authError && (
-            <div className="mb-4 text-sm text-red-300 bg-red-500/10 border border-red-500/20 rounded-xl p-3">
+            <div className="mb-6 text-sm text-red-300 bg-red-500/10 border border-red-500/20 rounded-xl p-4 flex items-center gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
               {authError}
             </div>
           )}
 
           {authInfo && (
-            <div className="mb-4 text-sm text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3">
+            <div className="mb-6 text-sm text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 flex items-center gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-emerald-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
               {authInfo}
             </div>
           )}
 
           {authMode === 'login' && (
-            <div className="space-y-3">
-              <input
-                value={adminEmail}
-                onChange={(e) => setAdminEmail(e.target.value)}
-                placeholder="Email"
-                className="w-full bg-slate-950/50 border border-slate-700 text-slate-200 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40"
-              />
-              <input
-                value={adminPassword}
-                onChange={(e) => setAdminPassword(e.target.value)}
-                placeholder="Password"
-                type="password"
-                className="w-full bg-slate-950/50 border border-slate-700 text-slate-200 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40"
-              />
+            <div className="flex flex-col gap-4">
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-400 ml-1">Email Address</label>
+                <input
+                  value={adminEmail}
+                  onChange={(e) => setAdminEmail(e.target.value)}
+                  placeholder="admin@xamsathi.in"
+                  className="w-full bg-slate-950/50 border border-slate-800 text-slate-200 px-4 py-3.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all placeholder:text-slate-600 block"
+                />
+              </div>
+              <div className="space-y-1">
+                <div className="flex justify-between items-center ml-1">
+                  <label className="text-xs font-semibold text-slate-400">Password</label>
+                  <button
+                    onClick={() => {
+                      setForgotEmail(adminEmail);
+                      setAuthMode('forgot');
+                      setAuthError('');
+                      setAuthInfo('');
+                    }}
+                    className="text-blue-400 hover:text-blue-300 text-xs font-semibold transition"
+                  >
+                    Forgot?
+                  </button>
+                </div>
+                <input
+                  value={adminPassword}
+                  onChange={(e) => setAdminPassword(e.target.value)}
+                  placeholder="••••••••"
+                  type="password"
+                  onKeyDown={(e) => { if (e.key === 'Enter') adminLogin(); }}
+                  className="w-full bg-slate-950/50 border border-slate-800 text-slate-200 px-4 py-3.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all placeholder:text-slate-600 block"
+                />
+              </div>
               <button
                 onClick={adminLogin}
-                className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition"
+                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-600/20 transform hover:-translate-y-0.5 transition-all mt-2"
               >
-                Sign in
-              </button>
-
-              <button
-                onClick={() => {
-                  setForgotEmail(adminEmail);
-                  setAuthMode('forgot');
-                  setAuthError('');
-                  setAuthInfo('');
-                }}
-                className="w-full text-slate-300 hover:text-white text-sm font-semibold py-2"
-              >
-                Forgot password?
+                Sign In
               </button>
             </div>
           )}
 
           {authMode === 'forgot' && (
-            <div className="space-y-3">
-              <input
-                value={forgotEmail}
-                onChange={(e) => setForgotEmail(e.target.value)}
-                placeholder="Admin email"
-                className="w-full bg-slate-950/50 border border-slate-700 text-slate-200 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40"
-              />
+            <div className="flex flex-col gap-4">
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-400 ml-1">Admin Email</label>
+                <input
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  placeholder="admin@xamsathi.in"
+                  className="w-full bg-slate-950/50 border border-slate-800 text-slate-200 px-4 py-3.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all placeholder:text-slate-600 block"
+                />
+              </div>
               <button
                 onClick={adminForgotPassword}
-                className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition"
+                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-600/20 transform hover:-translate-y-0.5 transition-all mt-2"
               >
-                Send reset link
+                Send Reset Link
               </button>
               <button
                 onClick={() => {
@@ -753,33 +772,39 @@ export default function AdminPanel() {
                   setAuthError('');
                   setAuthInfo('');
                 }}
-                className="w-full text-slate-300 hover:text-white text-sm font-semibold py-2"
+                className="w-full text-slate-400 hover:text-white text-sm font-semibold py-2 transition"
               >
-                Back to login
+                Back to Sign In
               </button>
             </div>
           )}
 
           {authMode === 'reset' && (
-            <div className="space-y-3">
-              <input
-                value={resetToken}
-                onChange={(e) => setResetToken(e.target.value)}
-                placeholder="Reset token"
-                className="w-full bg-slate-950/50 border border-slate-700 text-slate-200 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40"
-              />
-              <input
-                value={resetNewPassword}
-                onChange={(e) => setResetNewPassword(e.target.value)}
-                placeholder="New password"
-                type="password"
-                className="w-full bg-slate-950/50 border border-slate-700 text-slate-200 px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40"
-              />
+            <div className="flex flex-col gap-4">
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-400 ml-1">Reset Token</label>
+                <input
+                  value={resetToken}
+                  onChange={(e) => setResetToken(e.target.value)}
+                  placeholder="Paste your reset token..."
+                  className="w-full bg-slate-950/50 border border-slate-800 text-slate-200 px-4 py-3.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all placeholder:text-slate-600 block"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-400 ml-1">New Password</label>
+                <input
+                  value={resetNewPassword}
+                  onChange={(e) => setResetNewPassword(e.target.value)}
+                  placeholder="••••••••"
+                  type="password"
+                  className="w-full bg-slate-950/50 border border-slate-800 text-slate-200 px-4 py-3.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all placeholder:text-slate-600 block"
+                />
+              </div>
               <button
                 onClick={adminResetPassword}
-                className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition"
+                className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-emerald-600/20 transform hover:-translate-y-0.5 transition-all mt-2"
               >
-                Update password
+                Update Password
               </button>
               <button
                 onClick={() => {
@@ -787,9 +812,9 @@ export default function AdminPanel() {
                   setAuthError('');
                   setAuthInfo('');
                 }}
-                className="w-full text-slate-300 hover:text-white text-sm font-semibold py-2"
+                className="w-full text-slate-400 hover:text-white text-sm font-semibold py-2 transition"
               >
-                Back to login
+                Back to Sign In
               </button>
             </div>
           )}
@@ -809,41 +834,40 @@ export default function AdminPanel() {
 
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} onLogout={adminLogout} />
 
-      <main className="flex-1 w-full lg:w-auto p-4 lg:p-8 h-screen overflow-y-auto relative z-10 custom-scrollbar transition-all duration-300">
+      <main className="flex-1 w-full lg:w-auto p-4 md:p-8 h-screen overflow-y-auto relative z-10 custom-scrollbar transition-all duration-300">
         {/* Header */}
-        <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 bg-slate-900/40 backdrop-blur-xl border border-white/5 p-4 rounded-3xl sticky top-0 z-40 shadow-xl gap-4">
-          <div className="flex items-center gap-4 w-full md:w-auto">
+        <header className="flex flex-wrap md:flex-row justify-between items-center mb-8 bg-slate-900/60 backdrop-blur-xl border border-white/5 p-4 rounded-3xl sticky top-0 z-40 shadow-xl gap-4">
+          <div className="flex items-center gap-3 flex-1 min-w-[250px]">
             <button
               onClick={() => setIsSidebarOpen(true)}
-              className="p-2 bg-slate-800/50 rounded-xl text-slate-400 hover:text-white lg:hidden transition-colors"
+              className="p-2.5 bg-slate-800/80 hover:bg-slate-700/80 rounded-xl text-slate-300 hover:text-white lg:hidden transition-colors"
               aria-label="Open sidebar"
             >
               <Menu size={20} />
             </button>
-            <div className="flex items-center gap-4 flex-1">
-              <div className="p-2 bg-blue-500/10 rounded-xl text-blue-400">
-                <Search size={20} />
-              </div>
+            <div className="flex items-center gap-3 flex-1 bg-slate-950/50 border border-slate-800 rounded-xl px-3 py-2 w-full max-w-md focus-within:ring-2 focus-within:ring-blue-500/50 transition-all">
+              <Search size={18} className="text-slate-500" />
               <input
                 type="text"
                 placeholder="Search anything..."
-                className="bg-transparent border-none text-sm w-full md:w-64 text-slate-300 placeholder:text-slate-500 focus:outline-none"
+                className="bg-transparent border-none text-sm w-full text-slate-200 placeholder:text-slate-500 focus:outline-none"
               />
             </div>
           </div>
 
-          <div className="flex items-center gap-6">
-            <button className="relative p-2 text-slate-400 hover:text-white transition-colors" aria-label="Notifications">
-              <Bell size={20} />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-slate-900" />
+          <div className="flex items-center gap-3 md:gap-5 justify-end">
+            <button className="relative p-2.5 text-slate-400 hover:text-white bg-slate-950/30 rounded-xl border border-white/5 transition-all hover:bg-slate-800/50" aria-label="Notifications">
+              <Bell size={18} />
+              <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-slate-900" />
             </button>
 
             <button
               onClick={adminLogout}
-              className="h-10 px-4 bg-slate-800/50 hover:bg-slate-800 border border-white/5 rounded-xl text-sm font-bold text-slate-200 transition"
+              className="h-10 px-4 md:px-5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 rounded-xl text-sm font-bold text-red-400 transition-all"
               aria-label="Logout"
             >
-              Logout
+              <span className="hidden sm:inline">Logout</span>
+              <span className="sm:hidden text-xs">Exit</span>
             </button>
           </div>
         </header>
@@ -1281,24 +1305,24 @@ export default function AdminPanel() {
                   <h3 className="text-xl font-bold mb-6 text-white">Create New Test</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
                     <div className="lg:col-span-2">
-                      <label className="input-label">Select Course</label>
-                      <select className="input-field" value={selectedCourse} onChange={(e) => setSelectedCourse(e.target.value)}>
+                      <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase">Select Course</label>
+                      <select className="w-full bg-slate-950/50 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors text-white" value={selectedCourse} onChange={(e) => setSelectedCourse(e.target.value)}>
                         <option value="">Select Course...</option>
                         {courses.map((c) => <option key={c.id} value={c.id}>{c.title} (Class {c.class_grade})</option>)}
                       </select>
                     </div>
                     <div className="lg:col-span-2">
-                      <label className="input-label">Test Title</label>
-                      <input className="input-field" placeholder="Weekly Test 1" value={testTitle} onChange={(e) => setTestTitle(e.target.value)} />
+                      <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase">Test Title</label>
+                      <input className="w-full bg-slate-950/50 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors text-white" placeholder="Weekly Test 1" value={testTitle} onChange={(e) => setTestTitle(e.target.value)} />
                     </div>
                     <div className="lg:col-span-1">
-                      <label className="input-label">Difficulty</label>
-                      <input className="input-field" placeholder="Easy/Hard" value={testDifficulty} onChange={(e) => setTestDifficulty(e.target.value)} />
+                      <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase">Difficulty</label>
+                      <input className="w-full bg-slate-950/50 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors text-white" placeholder="Easy/Hard" value={testDifficulty} onChange={(e) => setTestDifficulty(e.target.value)} />
                     </div>
                     <div className="lg:col-span-1">
-                      <label className="input-label">Duration</label>
+                      <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase">Duration</label>
                       <div className="flex gap-2">
-                        <input type="number" className="input-field" placeholder="60" value={testDuration} onChange={(e) => setTestDuration(Number(e.target.value))} />
+                        <input type="number" className="w-full bg-slate-950/50 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors text-white" placeholder="60" value={testDuration} onChange={(e) => setTestDuration(Number(e.target.value))} />
                         <button onClick={createTest} className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl px-3 font-bold flex items-center justify-center shadow-lg shadow-blue-600/20"><Plus size={20} /></button>
                       </div>
                     </div>

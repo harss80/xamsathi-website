@@ -59,11 +59,10 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, onClose, onLo
                 animate={{
                     x: isOpen ? 0 : "-100%",
                 }}
+                transition={{ type: "spring", bounce: 0, duration: 0.3 }}
                 className={cn(
-                    "fixed top-0 left-0 z-50 h-screen w-72 bg-slate-950/90 backdrop-blur-xl border-r border-white/5 shadow-2xl lg:translate-x-0 lg:static lg:h-auto lg:shadow-none flex flex-col transition-transform duration-300 ease-in-out lg:!transform-none"
+                    "fixed top-0 left-0 z-50 h-screen w-72 bg-slate-950/90 backdrop-blur-xl border-r border-white/5 shadow-2xl flex flex-col lg:translate-x-0 lg:static lg:h-auto lg:shadow-none lg:!transform-none"
                 )}
-                // Force reset transform on desktop to ensure it's visible
-                style={{}}
             >
                 {/* Logo Section */}
                 <div className="p-6 pb-6 relative overflow-hidden flex items-center justify-between">

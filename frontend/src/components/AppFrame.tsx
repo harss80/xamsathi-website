@@ -11,11 +11,12 @@ export default function AppFrame({ children }: { children: React.ReactNode }) {
   const hideLayout = pathname?.startsWith("/dashboard") || pathname?.startsWith("/admin") || pathname?.startsWith("/login") || pathname?.startsWith("/signup") || pathname?.startsWith("/register");
 
   if (hideLayout) {
+    const isAdmin = pathname?.startsWith("/admin");
     return (
       <>
         {children}
-        <DashboardUtilities />
-        <ShortcutHelp />
+        {!isAdmin && <DashboardUtilities />}
+        {!isAdmin && <ShortcutHelp />}
       </>
     );
   }
