@@ -69,11 +69,9 @@ export default function Header({ onMenuClick, user }: HeaderProps) {
                     </div>
                     <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 p-0.5 cursor-pointer">
                         {user.avatar ? (
-                            <Image
+                            <img
                                 src={user.avatar}
                                 alt="Profile"
-                                width={36}
-                                height={36}
                                 className="w-full h-full rounded-full bg-slate-900 object-cover"
                             />
                         ) : (

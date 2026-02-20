@@ -347,11 +347,10 @@ export default function ProfilePage() {
                             <div className="relative flex flex-col items-center">
                                 <div className="relative mb-6">
                                     <div className="w-36 h-36 rounded-full border-[6px] border-slate-900/50 shadow-2xl overflow-hidden bg-slate-800 relative ring-1 ring-white/10">
-                                        <Image
+                                        <img
                                             src={preview || user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name || 'Xamsathi'}`}
                                             alt={user.name}
-                                            fill
-                                            className="object-cover"
+                                            className="w-full h-full object-cover"
                                         />
                                         <AnimatePresence>
                                             {isEditing && (
@@ -582,11 +581,10 @@ export default function ProfilePage() {
 
                                                     <div className="shrink-0">
                                                         <div className="relative w-40 h-40 rounded-[2rem] overflow-hidden bg-slate-950 border border-white/10 shadow-2xl">
-                                                            <Image
+                                                            <img
                                                                 src={studentPhotoPreview || user.student_photo || "https://api.dicebear.com/7.x/pixel-art/svg?seed=Formal"}
                                                                 alt="Student photo preview"
-                                                                fill
-                                                                className="object-cover"
+                                                                className="w-full h-full object-cover"
                                                             />
                                                             {studentPhotoPreview && (
                                                                 <div className="absolute inset-0 bg-indigo-600/20 mix-blend-overlay" />
