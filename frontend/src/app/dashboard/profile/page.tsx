@@ -192,6 +192,7 @@ export default function ProfilePage() {
                 return;
             }
             setStudentPhotoPreview(base64String);
+            setIsEditing(true);
         };
         reader.readAsDataURL(file);
     };
@@ -540,57 +541,50 @@ export default function ProfilePage() {
                                 </div>
 
                                 {/* Official Student Photo Card (Special Upload) */}
-                                <AnimatePresence>
-                                    {isEditing && (
-                                        <motion.div
-                                            initial={{ opacity: 0, height: 0 }}
-                                            animate={{ opacity: 1, height: 'auto' }}
-                                            exit={{ opacity: 0, height: 0 }}
-                                            className="md:col-span-2 mt-8 overflow-hidden"
-                                        >
-                                            <div className="p-8 bg-indigo-600/5 border border-indigo-500/20 rounded-[2.5rem] relative">
-                                                <div className="flex flex-col md:flex-row gap-8 items-start">
-                                                    <div className="space-y-4 flex-1">
-                                                        <div className="flex items-center gap-3">
-                                                            <div className="w-10 h-10 rounded-2xl bg-indigo-500/20 flex items-center justify-center text-indigo-400">
-                                                                <Upload className="w-5 h-5" />
-                                                            </div>
-                                                            <div>
-                                                                <h4 className="text-white font-black text-lg">Official Student Photo</h4>
-                                                                <p className="text-slate-400 text-xs font-medium">This photo will represent you on global leaderboards.</p>
-                                                            </div>
-                                                        </div>
-
-                                                        <div
-                                                            {...getStudentPhotoRootProps()}
-                                                            className="border-2 border-dashed border-white/10 rounded-3xl p-10 text-center cursor-pointer hover:border-indigo-500/50 hover:bg-white/5 transition-all group/official"
-                                                        >
-                                                            <input {...getStudentPhotoInputProps()} ref={studentPhotoInputRef} />
-                                                            <div className="flex flex-col items-center gap-2">
-                                                                <Camera className="w-10 h-10 text-slate-600 group-hover/official:text-indigo-400 transition-colors" />
-                                                                <span className="text-slate-400 text-sm font-bold">Drop your formal photo here or browse</span>
-                                                            </div>
-                                                        </div>
+                                <div
+                                    className="md:col-span-2 mt-8 overflow-hidden"
+                                >
+                                    <div className="p-8 bg-indigo-600/5 border border-indigo-500/20 rounded-[2.5rem] relative">
+                                        <div className="flex flex-col md:flex-row gap-8 items-start">
+                                            <div className="space-y-4 flex-1">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-10 h-10 rounded-2xl bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+                                                        <Upload className="w-5 h-5" />
                                                     </div>
+                                                    <div>
+                                                        <h4 className="text-white font-black text-lg">Official Student Photo</h4>
+                                                        <p className="text-slate-400 text-xs font-medium">This photo will represent you on global leaderboards.</p>
+                                                    </div>
+                                                </div>
 
-                                                    <div className="shrink-0">
-                                                        <div className="relative w-40 h-40 rounded-[2rem] overflow-hidden bg-slate-950 border border-white/10 shadow-2xl">
-                                                            <img
-                                                                src={studentPhotoPreview || user.student_photo || "https://api.dicebear.com/7.x/pixel-art/svg?seed=Formal"}
-                                                                alt="Student photo preview"
-                                                                className="w-full h-full object-cover"
-                                                            />
-                                                            {studentPhotoPreview && (
-                                                                <div className="absolute inset-0 bg-indigo-600/20 mix-blend-overlay" />
-                                                            )}
-                                                        </div>
-                                                        <p className="text-[10px] text-center mt-3 font-black uppercase text-indigo-400 tracking-widest">Preview</p>
+                                                <div
+                                                    {...getStudentPhotoRootProps()}
+                                                    className="border-2 border-dashed border-white/10 rounded-3xl p-10 text-center cursor-pointer hover:border-indigo-500/50 hover:bg-white/5 transition-all group/official"
+                                                >
+                                                    <input {...getStudentPhotoInputProps()} ref={studentPhotoInputRef} />
+                                                    <div className="flex flex-col items-center gap-2">
+                                                        <Camera className="w-10 h-10 text-slate-600 group-hover/official:text-indigo-400 transition-colors" />
+                                                        <span className="text-slate-400 text-sm font-bold">Drop your formal photo here or browse</span>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
+
+                                            <div className="shrink-0">
+                                                <div className="relative w-40 h-40 rounded-[2rem] overflow-hidden bg-slate-950 border border-white/10 shadow-2xl">
+                                                    <img
+                                                        src={studentPhotoPreview || user.student_photo || "https://api.dicebear.com/7.x/pixel-art/svg?seed=Formal"}
+                                                        alt="Student photo preview"
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                    {studentPhotoPreview && (
+                                                        <div className="absolute inset-0 bg-indigo-600/20 mix-blend-overlay" />
+                                                    )}
+                                                </div>
+                                                <p className="text-[10px] text-center mt-3 font-black uppercase text-indigo-400 tracking-widest">Preview</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </motion.div>
