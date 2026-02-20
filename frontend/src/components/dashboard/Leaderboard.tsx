@@ -57,12 +57,22 @@ export default function Leaderboard({ isAdmin = false }: { isAdmin?: boolean }) 
                 if (res.ok) {
                     const data = await res.json();
                     let testList = Array.isArray(data) ? data : [];
+                    const hardcodedSeries: TestSeries[] = [
+                        { _id: "neet-ug-mock-180", title: "NEET UG Full Mock (180 Qs)" },
+                        { _id: "neet-mock-1", title: "NEET Full Mock Test 1" },
+                        { _id: "ultra-hard-set", title: "ULTRA HARD SPECIAL SET" },
+                        { _id: "ecology-case-study-series", title: "ECOLOGY CASE STUDIES" },
+                        { _id: "ecology-graphs", title: "ECOLOGY GRAPH ANALYSIS" },
+                        { _id: "intensive-ecology-series", title: "INTENSIVE ECOLOGY" },
+                        { _id: "prakriti-series", title: "PRAKRITI SERIES" }
+                    ];
 
-                    // Add the default 180 mock if it doesn't exist
-                    if (!testList.find((t: TestSeries) => t._id === "neet-ug-mock-180")) {
-                        testList = [{ _id: "neet-ug-mock-180", title: "NEET UG Mock (180 Questions)" }, ...testList];
+                    // Prepend hardcoded ones that aren't inherently in the DB
+                    for (const hc of hardcodedSeries.reverse()) {
+                        if (!testList.find((t: TestSeries) => t._id === hc._id)) {
+                            testList = [hc, ...testList];
+                        }
                     }
-
                     if (testList.length > 0) {
                         setTests(testList);
                         setSelectedTestId(prev => prev ? prev : "neet-ug-mock-180");
