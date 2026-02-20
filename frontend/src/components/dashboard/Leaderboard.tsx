@@ -36,7 +36,7 @@ export default function Leaderboard({ isAdmin = false }: { isAdmin?: boolean }) 
     const [userName, setUserName] = useState<string>("");
 
     const [tests, setTests] = useState<TestSeries[]>([]);
-    const [selectedTestId, setSelectedTestId] = useState<string>("neet-ug-mock-180"); // fallback default
+    const [selectedTestId, setSelectedTestId] = useState<string>("");
 
     const getBackendBase = () => {
         const envBase = (process.env.NEXT_PUBLIC_BACKEND_URL || "").trim();
@@ -58,11 +58,7 @@ export default function Leaderboard({ isAdmin = false }: { isAdmin?: boolean }) 
                     const data = await res.json();
                     if (data && data.length > 0) {
                         setTests(data);
-                        // Only change selected test if current one isn't in the list
-                        if (!data.find((t: TestSeries) => t._id === selectedTestId)) {
-                            // Let's just keep the neet default unless we want to reset it
-                            // setSelectedTestId(data[0]._id);
-                        }
+                        setSelectedTestId(prev => prev ? prev : data[0]._id);
                     }
                 }
             } catch (error) {
@@ -168,7 +164,6 @@ export default function Leaderboard({ isAdmin = false }: { isAdmin?: boolean }) 
                             value={selectedTestId}
                             onChange={(e) => setSelectedTestId(e.target.value)}
                         >
-                            <option value="neet-ug-mock-180">NEET UG Mock (Default)</option>
                             {tests.map(t => (
                                 <option key={t._id} value={t._id}>{t.title}</option>
                             ))}
@@ -196,6 +191,14 @@ export default function Leaderboard({ isAdmin = false }: { isAdmin?: boolean }) 
                                 transition={{ delay: 0.2 }}
                                 className="bg-slate-900/50 border border-slate-800 rounded-3xl p-6 flex flex-col items-center relative overflow-hidden group hover:border-slate-600 transition-all"
                             >
+                                {isAdmin && leaderboardData[1]?._id && (
+                                    <button
+                                        onClick={() => removeEntry(leaderboardData[1]._id!)}
+                                        className="absolute top-4 right-4 z-20 text-red-500 hover:text-red-400 p-2 hover:bg-red-500/10 rounded-full transition-colors"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
+                                )}
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-slate-500/10 blur-[50px] rounded-full" />
                                 <div className="relative mb-4">
                                     <div className="w-20 h-20 rounded-full border-4 border-slate-300 p-1 bg-slate-800 overflow-hidden relative">
@@ -226,6 +229,14 @@ export default function Leaderboard({ isAdmin = false }: { isAdmin?: boolean }) 
                                 animate={{ opacity: 1, scale: 1 }}
                                 className="flex-1 bg-gradient-to-b from-yellow-900/20 to-slate-900 border border-yellow-500/30 rounded-3xl p-8 flex flex-col items-center relative overflow-hidden shadow-2xl shadow-yellow-900/10 z-10"
                             >
+                                {isAdmin && leaderboardData[0]?._id && (
+                                    <button
+                                        onClick={() => removeEntry(leaderboardData[0]._id!)}
+                                        className="absolute top-4 right-4 z-20 text-red-500 hover:text-red-400 p-2 hover:bg-red-500/10 rounded-full transition-colors"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
+                                )}
                                 <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent opacity-50" />
                                 <div className="relative mb-6">
                                     <Crown className="w-8 h-8 text-yellow-400 absolute -top-10 left-1/2 -translate-x-1/2 animate-bounce" />
@@ -271,6 +282,14 @@ export default function Leaderboard({ isAdmin = false }: { isAdmin?: boolean }) 
                                 transition={{ delay: 0.3 }}
                                 className="bg-slate-900/50 border border-slate-800 rounded-3xl p-6 flex flex-col items-center relative overflow-hidden group hover:border-orange-700/50 transition-all"
                             >
+                                {isAdmin && leaderboardData[2]?._id && (
+                                    <button
+                                        onClick={() => removeEntry(leaderboardData[2]._id!)}
+                                        className="absolute top-4 right-4 z-20 text-red-500 hover:text-red-400 p-2 hover:bg-red-500/10 rounded-full transition-colors"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
+                                )}
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 blur-[50px] rounded-full" />
                                 <div className="relative mb-4">
                                     <div className="w-20 h-20 rounded-full border-4 border-orange-700 p-1 bg-slate-800 overflow-hidden relative">
