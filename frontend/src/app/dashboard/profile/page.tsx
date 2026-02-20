@@ -174,6 +174,7 @@ export default function ProfilePage() {
                     return;
                 }
                 setPreview(base64String);
+                setIsEditing(true);
             };
             reader.readAsDataURL(file);
         }
@@ -352,25 +353,18 @@ export default function ProfilePage() {
                                             alt={user.name}
                                             className="w-full h-full object-cover"
                                         />
-                                        <AnimatePresence>
-                                            {isEditing && (
-                                                <motion.div
-                                                    initial={{ opacity: 0 }}
-                                                    animate={{ opacity: 1 }}
-                                                    exit={{ opacity: 0 }}
-                                                    className="absolute inset-0 z-20"
-                                                >
-                                                    <div
-                                                        {...getRootProps()}
-                                                        className="w-full h-full bg-black/60 backdrop-blur-[2px] flex flex-col items-center justify-center cursor-pointer group/upload"
-                                                    >
-                                                        <input {...getInputProps()} ref={fileInputRef} />
-                                                        <Camera className="w-8 h-8 text-white mb-2 group-hover/upload:scale-110 transition-transform" />
-                                                        <span className="text-[10px] font-black uppercase tracking-tighter text-white/70">Change Photo</span>
-                                                    </div>
-                                                </motion.div>
-                                            )}
-                                        </AnimatePresence>
+                                        <div
+                                            className="absolute inset-0 z-20"
+                                        >
+                                            <div
+                                                {...getRootProps()}
+                                                className={`w-full h-full backdrop-blur-[2px] flex flex-col items-center justify-center cursor-pointer group/upload transition-colors ${isEditing ? 'bg-black/60' : 'bg-transparent hover:bg-black/60'}`}
+                                            >
+                                                <input {...getInputProps()} ref={fileInputRef} />
+                                                <Camera className={`w-8 h-8 text-white mb-2 transition-all ${isEditing ? 'opacity-100 group-hover/upload:scale-110' : 'opacity-0 group-hover/upload:opacity-100 scale-95 group-hover/upload:scale-110'}`} />
+                                                <span className={`text-[10px] font-black uppercase tracking-tighter text-white/70 transition-opacity ${isEditing ? 'opacity-100' : 'opacity-0 group-hover/upload:opacity-100'}`}>Change Photo</span>
+                                            </div>
+                                        </div>
                                     </div>
                                     {!isEditing && (
                                         <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center border-4 border-slate-900 shadow-xl">
