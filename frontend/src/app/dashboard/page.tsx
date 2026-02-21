@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Sidebar from "@/components/dashboard/Sidebar";
@@ -19,6 +19,29 @@ const ALLOWED_TABS = ["overview", "courses", "tests", "schedule", "reports", "le
 function DashboardContent() {
     const [isLoading, setIsLoading] = useState(true);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [classGrade] = useState<number | null>(() => {
+        try {
+            if (typeof window === "undefined") return null;
+            const savedUser = localStorage.getItem("xamsathi_user");
+            if (!savedUser) return null;
+
+            const parsed = JSON.parse(savedUser) as Record<string, unknown>;
+            const cg = parsed.class_grade;
+
+            if (typeof cg === "number" && cg >= 1 && cg <= 12) {
+                return cg;
+            }
+
+            if (typeof cg === "string") {
+                const n = Number(String(cg).replace(/[^0-9]/g, ""));
+                if (!Number.isNaN(n) && n >= 1 && n <= 12) return n;
+            }
+
+            return null;
+        } catch {
+            return null;
+        }
+    });
     const [user, setUser] = useState({
         name: "Harsh Budhauliya",
         course: "JEE Advanced 2026",
@@ -61,7 +84,7 @@ function DashboardContent() {
         }
     };
 
-    const syncUser = () => {
+    const syncUser = useCallback(() => {
         const savedUser = localStorage.getItem("xamsathi_user");
         if (savedUser) {
             try {
@@ -78,7 +101,7 @@ function DashboardContent() {
                 }
             } catch { }
         }
-    };
+    }, [router]);
 
     useEffect(() => {
         const checkAuth = () => {
@@ -102,7 +125,7 @@ function DashboardContent() {
 
         window.addEventListener("storage", syncUser);
         return () => window.removeEventListener("storage", syncUser);
-    }, [router]);
+    }, [router, syncUser]);
 
     if (isLoading) {
         return (
@@ -144,20 +167,68 @@ function DashboardContent() {
                         {activeTab === "overview" && <Overview user={user} />}
 
                         {activeTab === "courses" && (
-                            <div className="flex flex-col items-center justify-center py-20 text-center bg-slate-900/50 rounded-3xl border border-slate-800">
-                                <div className="p-6 bg-slate-900 rounded-full mb-6">
-                                    <BookOpen className="w-12 h-12 text-slate-600" />
+                            <div className="space-y-8">
+                                <div className="flex items-center justify-between gap-4">
+                                    <div>
+                                        <h3 className="text-2xl font-bold text-white">Browse Courses</h3>
+                                        <p className="text-slate-400 text-sm">Premium & paid series will appear here.</p>
+                                    </div>
+                                    <button
+                                        onClick={() => {
+                                            trackLead({ action: "dashboard_browse_library", entity_type: "dashboard" });
+                                        }}
+                                        className="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition-colors"
+                                    >
+                                        Browse Library
+                                    </button>
                                 </div>
-                                <h3 className="text-2xl font-bold text-white mb-2">My Courses</h3>
-                                <p className="text-slate-400 mb-6 max-w-md">Access your enrolled courses and continue learning from where you left off.</p>
-                                <button
-                                    onClick={() => {
-                                        trackLead({ action: "dashboard_browse_library", entity_type: "dashboard" });
-                                    }}
-                                    className="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition-colors"
-                                >
-                                    Browse Library
-                                </button>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {classGrade === 12 && (
+                                        <Link
+                                            href="/dashboard/test-series/699f9a1b2c3d4e5f6a7b8c9d"
+                                            onClick={() => {
+                                                trackLead({ action: "dashboard_open_paid_series", entity_type: "test_series", entity_id: "699f9a1b2c3d4e5f6a7b8c9d" });
+                                            }}
+                                            className="group relative bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden hover:border-yellow-500/50 hover:shadow-2xl transition-all hover:-translate-y-1"
+                                        >
+                                            <div className="h-40 relative overflow-hidden">
+                                                <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/25 via-slate-950 to-slate-950" />
+                                                <div className="absolute -top-12 -right-12 w-60 h-60 bg-yellow-500/20 blur-[60px] rounded-full" />
+                                                <div className="absolute top-5 left-5 flex items-center gap-3">
+                                                    <div className="w-12 h-12 rounded-2xl bg-yellow-500/15 border border-yellow-500/20 flex items-center justify-center text-yellow-300">
+                                                        <Sparkles className="w-6 h-6" />
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-xs font-black uppercase tracking-[0.25em] text-yellow-300">Premium</div>
+                                                        <div className="text-[11px] text-slate-400 font-bold">NEET | Class 12</div>
+                                                    </div>
+                                                </div>
+                                                <div className="absolute top-5 right-5 px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-300 text-xs font-black border border-yellow-500/20">
+                                                    ₹499
+                                                </div>
+                                            </div>
+
+                                            <div className="p-6">
+                                                <h4 className="text-xl font-black text-white group-hover:text-yellow-200 transition-colors">
+                                                    NEET Advanced Mock Pro
+                                                </h4>
+                                                <p className="text-slate-400 text-sm mt-2 line-clamp-2">
+                                                    20 Full-Length NEET mocks • 180 minutes • premium experience.
+                                                </p>
+
+                                                <div className="flex items-center justify-between mt-6 pt-4 border-t border-slate-800">
+                                                    <div className="flex items-center gap-2 text-xs text-slate-500 font-bold">
+                                                        <BookOpen className="w-4 h-4" /> Full Mocks
+                                                    </div>
+                                                    <div className="flex items-center gap-2 text-sm font-black text-yellow-300 group-hover:translate-x-1 transition-transform">
+                                                        View <ArrowRight className="w-4 h-4" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Link>
+                                    )}
+                                </div>
                             </div>
                         )}
 
