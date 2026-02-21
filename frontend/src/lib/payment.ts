@@ -41,12 +41,15 @@ export const initiatePayment = async (
             })
         });
 
+        const orderData = await orderRes.json().catch(() => ({} as any));
         if (!orderRes.ok) {
-            const data = await orderRes.json();
-            throw new Error(data.error || "Failed to create order");
+            const msg =
+                (orderData?.detail && String(orderData.detail)) ||
+                (orderData?.details && (typeof orderData.details === "string" ? orderData.details : JSON.stringify(orderData.details))) ||
+                (orderData?.error && String(orderData.error)) ||
+                "Failed to create order";
+            throw new Error(msg);
         }
-
-        const orderData = await orderRes.json();
 
         // 2. Open Razorpay Options
         const options = {
@@ -73,11 +76,15 @@ export const initiatePayment = async (
                         })
                     });
 
-                    const verifyData = await verifyRes.json();
+                    const verifyData = await verifyRes.json().catch(() => ({} as any));
                     if (verifyRes.ok && verifyData.success) {
                         onSuccess(response.razorpay_payment_id);
                     } else {
-                        onError(verifyData.error || "Signature verification failed");
+                        const msg =
+                            (verifyData?.error && String(verifyData.error)) ||
+                            (verifyData?.details && (typeof verifyData.details === "string" ? verifyData.details : JSON.stringify(verifyData.details))) ||
+                            "Signature verification failed";
+                        onError(msg);
                     }
                 } catch (verifyParamsErr) {
                     onError(verifyParamsErr);

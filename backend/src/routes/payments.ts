@@ -127,9 +127,16 @@ router.post('/create-order', async (req: Request, res: Response) => {
             });
         } catch (rzpOrderErr: any) {
             console.error('[Payment] Razorpay Order Create Failed:', rzpOrderErr);
+
+            const details =
+                (rzpOrderErr?.error?.description && String(rzpOrderErr.error.description)) ||
+                (rzpOrderErr?.error?.message && String(rzpOrderErr.error.message)) ||
+                (rzpOrderErr?.message && String(rzpOrderErr.message)) ||
+                JSON.stringify(rzpOrderErr);
+
             return res.status(500).json({
                 error: 'Razorpay API Error',
-                details: rzpOrderErr.error || rzpOrderErr.message || rzpOrderErr
+                details
             });
         }
 
