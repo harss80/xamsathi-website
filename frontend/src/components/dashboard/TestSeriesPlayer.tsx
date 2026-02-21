@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
     ArrowLeft, AlertCircle, CheckCircle2, XCircle,
     HelpCircle, ChevronRight, ChevronLeft, Flag,
     BarChart2, Timer, RotateCcw, BookOpen, GraduationCap,
-    Menu, X, Trophy, FileText
+    Menu, X, Trophy, FileText, MessageCircle, ThumbsUp, Send, Reply
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -34,6 +34,17 @@ export type SubjectStat = {
     correct: number;
     wrong: number;
     score: number;
+};
+
+type DiscussionComment = {
+    _id: string;
+    question_id: string;
+    user_id: string;
+    user_name: string;
+    body: string;
+    parent_id?: string | null;
+    upvotes: number;
+    created_at?: string;
 };
 
 interface TestSeriesPlayerProps {
@@ -128,6 +139,19 @@ export default function TestSeriesPlayer({
 }: TestSeriesPlayerProps) {
     const router = useRouter();
 
+    const getErrorMessage = (err: unknown): string => {
+        if (err instanceof Error) return err.message;
+        if (typeof err === "string") return err;
+        if (!err || typeof err !== "object") return String(err);
+        const maybe = err as { message?: unknown };
+        if (maybe.message) return String(maybe.message);
+        try {
+            return JSON.stringify(err);
+        } catch {
+            return String(err);
+        }
+    };
+
     // --- State ---
     const [status, setStatus] = useState<"intro" | "active" | "result">("intro");
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -137,6 +161,16 @@ export default function TestSeriesPlayer({
     const [timeLeft, setTimeLeft] = useState(durationMins * 60);
     const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
     const [showPalette, setShowPalette] = useState(false);
+
+    const handleSubmitRef = useRef<() => void>(() => { });
+
+    const [bottomTab, setBottomTab] = useState<"discussion" | "solution">("discussion");
+    const [discussionItems, setDiscussionItems] = useState<DiscussionComment[]>([]);
+    const [discussionLoading, setDiscussionLoading] = useState(false);
+    const [discussionError, setDiscussionError] = useState<string | null>(null);
+    const [commentText, setCommentText] = useState("");
+    const [replyToId, setReplyToId] = useState<string | null>(null);
+    const [posting, setPosting] = useState(false);
 
     // Results State
     const [resultData, setResultData] = useState<{
@@ -152,7 +186,7 @@ export default function TestSeriesPlayer({
             timer = setInterval(() => {
                 setTimeLeft((prev) => {
                     if (prev <= 1) {
-                        handleSubmit();
+                        handleSubmitRef.current();
                         return 0;
                     }
                     return prev - 1;
@@ -194,6 +228,129 @@ export default function TestSeriesPlayer({
     };
 
     const currentQ = questions[currentQuestionIndex];
+
+    const getBackendBase = () => {
+        const envBase = (process.env.NEXT_PUBLIC_BACKEND_URL || "").trim();
+        if (envBase) return envBase;
+        if (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) {
+            return "http://localhost:3001";
+        }
+        return "http://localhost:3001";
+    };
+
+    const getLocalUserId = () => {
+        try {
+            const userStr = localStorage.getItem("xamsathi_user");
+            if (!userStr) return "";
+            const parsed = JSON.parse(userStr);
+            return parsed._id || parsed.id || parsed.user_id || "";
+        } catch {
+            return "";
+        }
+    };
+
+    const questionKey = `${testSeriesId}:${currentQ?.id ?? ""}`;
+
+    useEffect(() => {
+        if (status !== "active" && status !== "result") return;
+        if (!currentQ) return;
+
+        let cancelled = false;
+        const load = async () => {
+            setDiscussionLoading(true);
+            setDiscussionError(null);
+            try {
+                const base = getBackendBase();
+                const res = await fetch(`${base}/api/discussions/question/${encodeURIComponent(questionKey)}`);
+                if (!res.ok) {
+                    const data = await res.json().catch(() => ({}));
+                    throw new Error(data.error || `Failed to load discussions (Code: ${res.status})`);
+                }
+                const data = await res.json();
+                if (cancelled) return;
+                setDiscussionItems(Array.isArray(data.items) ? data.items : []);
+            } catch (e: unknown) {
+                if (cancelled) return;
+                setDiscussionError(getErrorMessage(e) || "Could not load discussions");
+            } finally {
+                if (!cancelled) setDiscussionLoading(false);
+            }
+        };
+
+        load();
+        return () => {
+            cancelled = true;
+        };
+    }, [questionKey, status, currentQ]);
+
+    const postComment = async () => {
+        const text = commentText.trim();
+        if (!text) return;
+
+        const userId = getLocalUserId();
+        if (!userId) {
+            alert("Please login again to post a comment.");
+            return;
+        }
+
+        setPosting(true);
+        try {
+            const base = getBackendBase();
+            const res = await fetch(`${base}/api/discussions/question/${encodeURIComponent(questionKey)}`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-user-id": userId,
+                    },
+                    body: JSON.stringify({ body: text, parentId: replyToId || undefined }),
+                }
+            );
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                throw new Error(data.details || data.detail || data.error || `Failed to post (Code: ${res.status})`);
+            }
+            setCommentText("");
+            setReplyToId(null);
+
+            const refresh = await fetch(`${base}/api/discussions/question/${encodeURIComponent(questionKey)}`);
+            if (refresh.ok) {
+                const data = await refresh.json();
+                setDiscussionItems(Array.isArray(data.items) ? data.items : []);
+            }
+        } catch (e: unknown) {
+            alert(getErrorMessage(e) || "Failed to post comment");
+        } finally {
+            setPosting(false);
+        }
+    };
+
+    const toggleUpvote = async (commentId: string) => {
+        const userId = getLocalUserId();
+        if (!userId) {
+            alert("Please login again to upvote.");
+            return;
+        }
+
+        try {
+            const base = getBackendBase();
+            const res = await fetch(`${base}/api/discussions/comment/${commentId}/upvote`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-user-id": userId,
+                },
+            });
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                throw new Error(data.details || data.detail || data.error || `Failed to upvote (Code: ${res.status})`);
+            }
+            const data = await res.json();
+            setDiscussionItems((prev) => prev.map((c) => c._id === commentId ? { ...c, upvotes: typeof data.upvotes === "number" ? data.upvotes : c.upvotes } : c));
+        } catch (e: unknown) {
+            alert(getErrorMessage(e) || "Failed to upvote");
+        }
+    };
 
     // Update active subject when question changes
     useEffect(() => {
@@ -312,6 +469,10 @@ export default function TestSeriesPlayer({
         }
 
         if (onFinish) onFinish({ score: calculatedScore, accuracy: calcAccuracy, subjectStats });
+    };
+
+    handleSubmitRef.current = () => {
+        void handleSubmit();
     };
 
     const formatTime = (seconds: number) => {
@@ -514,6 +675,134 @@ export default function TestSeriesPlayer({
                                                         </button>
                                                     );
                                                 })}
+                                            </div>
+
+                                            <div className="mt-8 rounded-2xl border border-white/10 bg-slate-950/40 overflow-hidden">
+                                                <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
+                                                    <div className="flex items-center gap-2">
+                                                        <button
+                                                            onClick={() => setBottomTab("discussion")}
+                                                            className={`px-3 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-colors ${bottomTab === "discussion" ? "bg-indigo-600 text-white border-indigo-500/40" : "bg-white/5 text-slate-300 border-white/10 hover:bg-white/10"}`}
+                                                        >
+                                                            <span className="inline-flex items-center gap-2">
+                                                                <MessageCircle className="w-4 h-4" /> Discussion
+                                                            </span>
+                                                        </button>
+                                                        <button
+                                                            onClick={() => setBottomTab("solution")}
+                                                            className={`px-3 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-colors ${bottomTab === "solution" ? "bg-emerald-600 text-white border-emerald-500/40" : "bg-white/5 text-slate-300 border-white/10 hover:bg-white/10"}`}
+                                                        >
+                                                            <span className="inline-flex items-center gap-2">
+                                                                <BookOpen className="w-4 h-4" /> Solution
+                                                            </span>
+                                                        </button>
+                                                    </div>
+
+                                                    {replyToId && (
+                                                        <button
+                                                            onClick={() => setReplyToId(null)}
+                                                            className="text-xs font-bold text-slate-300 hover:text-white"
+                                                        >
+                                                            Cancel Reply
+                                                        </button>
+                                                    )}
+                                                </div>
+
+                                                {bottomTab === "solution" ? (
+                                                    <div className="p-4">
+                                                        <div className="p-4 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-300 text-sm font-semibold">
+                                                            Submit test to unlock solutions.
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="p-4">
+                                                        {discussionLoading ? (
+                                                            <div className="text-slate-400 text-sm font-semibold">Loading discussion...</div>
+                                                        ) : discussionError ? (
+                                                            <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-300 text-sm font-semibold">
+                                                                {discussionError}
+                                                            </div>
+                                                        ) : (
+                                                            <div className="space-y-3">
+                                                                {(discussionItems.length === 0) && (
+                                                                    <div className="text-slate-400 text-sm font-semibold">Be the first to ask a doubt on this question.</div>
+                                                                )}
+
+                                                                {discussionItems
+                                                                    .filter((c) => !c.parent_id)
+                                                                    .map((c) => (
+                                                                        <div key={c._id} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                                                                            <div className="flex items-start justify-between gap-3">
+                                                                                <div className="min-w-0">
+                                                                                    <div className="text-xs font-black uppercase tracking-wider text-slate-400">{c.user_name || "Student"}</div>
+                                                                                    <div className="text-sm text-slate-200 mt-1 whitespace-pre-wrap break-words">{c.body}</div>
+                                                                                </div>
+                                                                                <button
+                                                                                    onClick={() => toggleUpvote(c._id)}
+                                                                                    className="shrink-0 inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-900/60 border border-white/10 text-slate-200 hover:bg-slate-900"
+                                                                                    title="Upvote"
+                                                                                >
+                                                                                    <ThumbsUp className="w-4 h-4" />
+                                                                                    <span className="text-xs font-black tabular-nums">{c.upvotes || 0}</span>
+                                                                                </button>
+                                                                            </div>
+
+                                                                            <div className="mt-3 flex items-center gap-2">
+                                                                                <button
+                                                                                    onClick={() => setReplyToId(c._id)}
+                                                                                    className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-indigo-300 hover:text-indigo-200"
+                                                                                >
+                                                                                    <Reply className="w-4 h-4" /> Reply
+                                                                                </button>
+                                                                            </div>
+
+                                                                            <div className="mt-3 space-y-2">
+                                                                                {discussionItems
+                                                                                    .filter((r) => r.parent_id === c._id)
+                                                                                    .map((r) => (
+                                                                                        <div key={r._id} className="ml-4 rounded-2xl border border-white/10 bg-slate-950/30 p-3">
+                                                                                            <div className="flex items-start justify-between gap-3">
+                                                                                                <div className="min-w-0">
+                                                                                                    <div className="text-[10px] font-black uppercase tracking-wider text-slate-500">{r.user_name || "Student"}</div>
+                                                                                                    <div className="text-sm text-slate-200 mt-1 whitespace-pre-wrap break-words">{r.body}</div>
+                                                                                                </div>
+                                                                                                <button
+                                                                                                    onClick={() => toggleUpvote(r._id)}
+                                                                                                    className="shrink-0 inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-900/60 border border-white/10 text-slate-200 hover:bg-slate-900"
+                                                                                                    title="Upvote"
+                                                                                                >
+                                                                                                    <ThumbsUp className="w-4 h-4" />
+                                                                                                    <span className="text-xs font-black tabular-nums">{r.upvotes || 0}</span>
+                                                                                                </button>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    ))}
+                                                                            </div>
+                                                                        </div>
+                                                                    ))}
+
+                                                                <div className="pt-2">
+                                                                    <div className="flex items-start gap-3">
+                                                                        <textarea
+                                                                            value={commentText}
+                                                                            onChange={(e) => setCommentText(e.target.value)}
+                                                                            placeholder={replyToId ? "Write a reply..." : "Ask a doubt or share your approach..."}
+                                                                            className="flex-1 min-h-[44px] max-h-40 resize-y rounded-2xl bg-slate-950/50 border border-white/10 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 outline-none focus:border-indigo-500/60"
+                                                                        />
+                                                                        <button
+                                                                            onClick={postComment}
+                                                                            disabled={posting || !commentText.trim()}
+                                                                            className="h-11 px-5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-black text-sm inline-flex items-center gap-2"
+                                                                        >
+                                                                            <Send className="w-4 h-4" />
+                                                                            {posting ? "Posting" : "Post"}
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
                                             </div>
                                         </motion.div>
                                     </AnimatePresence>

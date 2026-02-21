@@ -18,6 +18,7 @@ import { ensureBootstrapAdmin } from './lib/bootstrap-admin';
 import { ensureBootstrapCourses } from './lib/bootstrap-courses';
 import paymentsRouter from './routes/payments';
 import gamificationRouter from './routes/gamification';
+import discussionsRouter from './routes/discussions';
 
 const app = express();
 
@@ -78,6 +79,7 @@ app.use('/api/leaderboard', leaderboardRouter);
 app.use('/api/auth', authGoogleRouter);
 app.use('/api/payments', paymentsRouter);
 app.use('/api/gamification', gamificationRouter);
+app.use('/api/discussions', discussionsRouter);
 
 const port = process.env.PORT || 3001;
 connectMongo()
