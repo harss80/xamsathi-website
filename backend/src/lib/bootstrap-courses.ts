@@ -69,6 +69,28 @@ const PREMIUM_NEET_ADVANCED = {
     partTestQuestions: 45,
 };
 
+const PREMIUM_NEET_RANK_BOOSTER = {
+    _id: "79bf9a1b2c3d4e5f6a7b8c9d",
+    class_grade: 12,
+    title: "NEET Rank Booster Pack",
+    description: "Premium NEET part tests pack designed for fast revision and score boost.",
+    active: true,
+    partTestsCount: 20,
+    partTestDurationMin: 60,
+    partTestQuestions: 45,
+};
+
+const PREMIUM_NEET_CONCEPT_MASTERY = {
+    _id: "89cf9a1b2c3d4e5f6a7b8c9d",
+    class_grade: 12,
+    title: "NEET Concept Mastery",
+    description: "Premium chapter-style tests to strengthen concepts and accuracy.",
+    active: true,
+    chapterTestsCount: 30,
+    chapterTestDurationMin: 45,
+    chapterTestQuestions: 30,
+};
+
 async function ensureDummyQuestions(testId: string, total: number) {
     const existingCount = await Question.countDocuments({ test_id: testId, active: true });
     if (existingCount >= total) return;
@@ -261,6 +283,130 @@ export async function ensureBootstrapCourses() {
             },
             { $set: { active: false } }
         );
+
+        // --- Premium NEET Rank Booster Pack (Class 12) ---
+        {
+            const courseId = PREMIUM_NEET_RANK_BOOSTER._id;
+            let course = await Course.findById(courseId);
+            if (!course) {
+                course = await Course.create({
+                    _id: new mongoose.Types.ObjectId(courseId),
+                    title: PREMIUM_NEET_RANK_BOOSTER.title,
+                    class_grade: PREMIUM_NEET_RANK_BOOSTER.class_grade,
+                    active: true,
+                    description: PREMIUM_NEET_RANK_BOOSTER.description,
+                    price: 199,
+                });
+            } else {
+                await Course.updateOne(
+                    { _id: course._id },
+                    {
+                        $set: {
+                            title: PREMIUM_NEET_RANK_BOOSTER.title,
+                            class_grade: PREMIUM_NEET_RANK_BOOSTER.class_grade,
+                            active: true,
+                            description: PREMIUM_NEET_RANK_BOOSTER.description,
+                        },
+                    }
+                );
+            }
+
+            for (let i = 1; i <= PREMIUM_NEET_RANK_BOOSTER.partTestsCount; i++) {
+                const title = `Part Test ${i}`;
+                let test = await Test.findOne({ course_id: courseId, title });
+                if (!test) {
+                    test = await Test.create({
+                        course_id: courseId,
+                        title,
+                        difficulty: "Medium",
+                        duration_min: PREMIUM_NEET_RANK_BOOSTER.partTestDurationMin,
+                        active: true,
+                    });
+                } else {
+                    await Test.updateOne(
+                        { _id: test._id },
+                        {
+                            $set: {
+                                duration_min: PREMIUM_NEET_RANK_BOOSTER.partTestDurationMin,
+                                active: true,
+                            },
+                        }
+                    );
+                }
+
+                await ensureDummyQuestions(String(test._id), PREMIUM_NEET_RANK_BOOSTER.partTestQuestions);
+            }
+
+            await Test.updateMany(
+                {
+                    course_id: courseId,
+                    title: { $regex: /^Part Test (2[1-9]|[3-9][0-9])$/ },
+                },
+                { $set: { active: false } }
+            );
+        }
+
+        // --- Premium NEET Concept Mastery (Class 12) ---
+        {
+            const courseId = PREMIUM_NEET_CONCEPT_MASTERY._id;
+            let course = await Course.findById(courseId);
+            if (!course) {
+                course = await Course.create({
+                    _id: new mongoose.Types.ObjectId(courseId),
+                    title: PREMIUM_NEET_CONCEPT_MASTERY.title,
+                    class_grade: PREMIUM_NEET_CONCEPT_MASTERY.class_grade,
+                    active: true,
+                    description: PREMIUM_NEET_CONCEPT_MASTERY.description,
+                    price: 299,
+                });
+            } else {
+                await Course.updateOne(
+                    { _id: course._id },
+                    {
+                        $set: {
+                            title: PREMIUM_NEET_CONCEPT_MASTERY.title,
+                            class_grade: PREMIUM_NEET_CONCEPT_MASTERY.class_grade,
+                            active: true,
+                            description: PREMIUM_NEET_CONCEPT_MASTERY.description,
+                        },
+                    }
+                );
+            }
+
+            for (let i = 1; i <= PREMIUM_NEET_CONCEPT_MASTERY.chapterTestsCount; i++) {
+                const title = `Chapter Test ${i}`;
+                let test = await Test.findOne({ course_id: courseId, title });
+                if (!test) {
+                    test = await Test.create({
+                        course_id: courseId,
+                        title,
+                        difficulty: "Medium",
+                        duration_min: PREMIUM_NEET_CONCEPT_MASTERY.chapterTestDurationMin,
+                        active: true,
+                    });
+                } else {
+                    await Test.updateOne(
+                        { _id: test._id },
+                        {
+                            $set: {
+                                duration_min: PREMIUM_NEET_CONCEPT_MASTERY.chapterTestDurationMin,
+                                active: true,
+                            },
+                        }
+                    );
+                }
+
+                await ensureDummyQuestions(String(test._id), PREMIUM_NEET_CONCEPT_MASTERY.chapterTestQuestions);
+            }
+
+            await Test.updateMany(
+                {
+                    course_id: courseId,
+                    title: { $regex: /^Chapter Test (3[1-9]|[4-9][0-9])$/ },
+                },
+                { $set: { active: false } }
+            );
+        }
     } catch (err) {
         console.error('Bootstrap courses error:', err);
     }

@@ -50,7 +50,11 @@ const COURSE_PRICES: Record<string, number> = {
     // Class 11 Science
     '698f8a866fadfeda52b19140': 9,
     // Premium NEET (Class 12)
-    '699f9a1b2c3d4e5f6a7b8c9d': 499
+    '699f9a1b2c3d4e5f6a7b8c9d': 499,
+    // Premium NEET Rank Booster (Class 12)
+    '79bf9a1b2c3d4e5f6a7b8c9d': 199,
+    // Premium NEET Concept Mastery (Class 12)
+    '89cf9a1b2c3d4e5f6a7b8c9d': 299
 };
 
 // Debug endpoint to check keys (non-critical)
