@@ -153,7 +153,7 @@ export default function TestSeriesPlayer({
     };
 
     // --- State ---
-    const [status, setStatus] = useState<"intro" | "active" | "result">("intro");
+    const [status, setStatus] = useState<"intro" | "active" | "result" | "review">("intro");
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [activeSubject, setActiveSubject] = useState<string>(subjects[0]?.toLowerCase() || "general");
     const [answers, setAnswers] = useState<Record<number, number>>({}); // qId -> optionIndex
@@ -204,6 +204,14 @@ export default function TestSeriesPlayer({
         setMarkedForReview(new Set());
         setCurrentQuestionIndex(0);
         setActiveSubject(questions[0]?.type.toLowerCase() || "general");
+        setBottomTab("discussion");
+    };
+
+    const startReview = () => {
+        setStatus("review");
+        setCurrentQuestionIndex(0);
+        setActiveSubject(questions[0]?.type.toLowerCase() || "general");
+        setBottomTab("solution");
     };
 
     const handleCancelExam = () => {
@@ -252,7 +260,7 @@ export default function TestSeriesPlayer({
     const questionKey = `${testSeriesId}:${currentQ?.id ?? ""}`;
 
     useEffect(() => {
-        if (status !== "active" && status !== "result") return;
+        if (status !== "active" && status !== "result" && status !== "review") return;
         if (!currentQ) return;
 
         let cancelled = false;
@@ -360,6 +368,7 @@ export default function TestSeriesPlayer({
     }, [currentQuestionIndex, currentQ]);
 
     const handleAnswer = (optionIdx: number) => {
+        if (status !== "active") return;
         const qId = currentQ.id;
         setAnswers((prev) => {
             if (prev[qId] === optionIdx) {
@@ -372,6 +381,7 @@ export default function TestSeriesPlayer({
     };
 
     const toggleMarkForReview = () => {
+        if (status !== "active") return;
         const qId = currentQ.id;
         setMarkedForReview((prev) => {
             const newSet = new Set(prev);
@@ -509,7 +519,7 @@ export default function TestSeriesPlayer({
                 )}
 
                 {/* --- Active Test View --- */}
-                {status === "active" && (
+                {(status === "active" || status === "review") && (
                     <motion.div
                         key="active"
                         initial={{ opacity: 0 }}
@@ -548,21 +558,24 @@ export default function TestSeriesPlayer({
                                     >
                                         <X className="w-5 h-5" />
                                     </button>
-                                    <button
-                                        onClick={() => setIsSubmitModalOpen(true)}
-                                        className="hidden md:flex bg-white/5 hover:bg-white/10 border border-white/5 text-white px-5 py-2 rounded-xl font-bold text-sm transition-all"
-                                    >
-                                        Submit Test
-                                    </button>
-                                    {/* Mobile Submit Icon */}
-                                    <button
-                                        onClick={() => setIsSubmitModalOpen(true)}
-                                        title="Submit test"
-                                        aria-label="Submit test"
-                                        className="md:hidden w-9 h-9 flex items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg shadow-indigo-600/20"
-                                    >
-                                        <CheckCircle2 className="w-5 h-5" />
-                                    </button>
+                                    {status === "active" && (
+                                        <>
+                                            <button
+                                                onClick={() => setIsSubmitModalOpen(true)}
+                                                className="hidden md:flex bg-white/5 hover:bg-white/10 border border-white/5 text-white px-5 py-2 rounded-xl font-bold text-sm transition-all"
+                                            >
+                                                Submit Test
+                                            </button>
+                                            <button
+                                                onClick={() => setIsSubmitModalOpen(true)}
+                                                title="Submit test"
+                                                aria-label="Submit test"
+                                                className="md:hidden w-9 h-9 flex items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg shadow-indigo-600/20"
+                                            >
+                                                <CheckCircle2 className="w-5 h-5" />
+                                            </button>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         </header>
@@ -710,9 +723,21 @@ export default function TestSeriesPlayer({
 
                                                 {bottomTab === "solution" ? (
                                                     <div className="p-4">
-                                                        <div className="p-4 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-300 text-sm font-semibold">
-                                                            Submit test to unlock solutions.
-                                                        </div>
+                                                        {status === "active" ? (
+                                                            <div className="p-4 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-300 text-sm font-semibold">
+                                                                Submit test to unlock solutions.
+                                                            </div>
+                                                        ) : (
+                                                            <div className="space-y-3">
+                                                                <div className="flex items-center justify-between">
+                                                                    <div className="text-sm font-black text-white">Correct Answer</div>
+                                                                    <div className="text-sm font-black text-emerald-300">{String.fromCharCode(65 + currentQ.correctAnswer)}</div>
+                                                                </div>
+                                                                <div className="text-sm text-slate-300 leading-relaxed">
+                                                                    {currentQ.explanation}
+                                                                </div>
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 ) : (
                                                     <div className="p-4">
@@ -845,23 +870,36 @@ export default function TestSeriesPlayer({
                                     </div>
 
                                     <div className="flex items-center gap-2">
-                                        <button
-                                            onClick={handleCancelExam}
-                                            title="Cancel exam"
-                                            aria-label="Cancel exam"
-                                            className="w-11 h-11 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center hover:bg-red-500/20 transition-all active:scale-95"
-                                        >
-                                            <X className="w-5 h-5" />
-                                        </button>
-                                        <button
-                                            onClick={goNext}
-                                            disabled={!canGoNext}
-                                            className="h-11 px-6 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-full flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-600/20 active:scale-[0.98]"
-                                            style={{ boxShadow: '0 4px 20px -5px rgba(79, 70, 229, 0.4)' }}
-                                        >
-                                            Save & Next
-                                            <ChevronRight className="w-4 h-4" />
-                                        </button>
+                                        {status === "active" ? (
+                                            <>
+                                                <button
+                                                    onClick={handleCancelExam}
+                                                    title="Cancel exam"
+                                                    aria-label="Cancel exam"
+                                                    className="w-11 h-11 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center hover:bg-red-500/20 transition-all active:scale-95"
+                                                >
+                                                    <X className="w-5 h-5" />
+                                                </button>
+                                                <button
+                                                    onClick={goNext}
+                                                    disabled={!canGoNext}
+                                                    className="h-11 px-6 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-full flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-600/20 active:scale-[0.98]"
+                                                    style={{ boxShadow: '0 4px 20px -5px rgba(79, 70, 229, 0.4)' }}
+                                                >
+                                                    Save & Next
+                                                    <ChevronRight className="w-4 h-4" />
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <Link
+                                                href="/dashboard"
+                                                className="h-11 px-6 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-full flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-600/20 active:scale-[0.98]"
+                                                style={{ boxShadow: '0 4px 20px -5px rgba(79, 70, 229, 0.4)' }}
+                                            >
+                                                Back to Dashboard
+                                                <ArrowLeft className="w-4 h-4" />
+                                            </Link>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -1000,6 +1038,12 @@ export default function TestSeriesPlayer({
                                     <Link href="/dashboard" className="px-8 py-4 bg-white/5 border border-white/10 rounded-2xl text-white font-black text-sm hover:bg-white/10 transition-all flex items-center gap-3 active:scale-95">
                                         <ArrowLeft className="w-5 h-5" /> DASHBOARD
                                     </Link>
+                                    <button
+                                        onClick={startReview}
+                                        className="px-8 py-4 bg-emerald-600 rounded-2xl text-white font-black text-sm hover:bg-emerald-500 transition-all shadow-xl shadow-emerald-600/20 flex items-center gap-3 active:scale-95"
+                                    >
+                                        <BookOpen className="w-5 h-5" /> REVIEW
+                                    </button>
                                     <button
                                         onClick={startTest}
                                         className="px-8 py-4 bg-indigo-600 rounded-2xl text-white font-black text-sm hover:bg-indigo-500 transition-all shadow-xl shadow-indigo-600/20 flex items-center gap-3 active:scale-95"
