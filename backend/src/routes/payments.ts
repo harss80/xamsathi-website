@@ -54,7 +54,9 @@ const COURSE_PRICES: Record<string, number> = {
     // Premium NEET Rank Booster (Class 12)
     '79bf9a1b2c3d4e5f6a7b8c9d': 199,
     // Premium NEET Concept Mastery (Class 12)
-    '89cf9a1b2c3d4e5f6a7b8c9d': 299
+    '89cf9a1b2c3d4e5f6a7b8c9d': 299,
+    // Premium NEET Intensive Papers Series (Class 12)
+    '99df9a1b2c3d4e5f6a7b8c9d': 1999
 };
 
 // Debug endpoint to check keys (non-critical)

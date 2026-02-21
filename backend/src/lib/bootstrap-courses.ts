@@ -91,6 +91,17 @@ const PREMIUM_NEET_CONCEPT_MASTERY = {
     chapterTestQuestions: 30,
 };
 
+const PREMIUM_NEET_INTENSIVE_PAPERS = {
+    _id: "99df9a1b2c3d4e5f6a7b8c9d",
+    class_grade: 12,
+    title: "NEET Intensive Papers Series",
+    description: "Intensive full-paper practice for NEET with exam-pattern papers and detailed solutions.",
+    active: true,
+    papersCount: 20,
+    paperDurationMin: 200,
+    paperQuestions: 180,
+};
+
 async function ensureDummyQuestions(testId: string, total: number) {
     const existingCount = await Question.countDocuments({ test_id: testId, active: true });
     if (existingCount >= total) return;
@@ -403,6 +414,68 @@ export async function ensureBootstrapCourses() {
                 {
                     course_id: courseId,
                     title: { $regex: /^Chapter Test (3[1-9]|[4-9][0-9])$/ },
+                },
+                { $set: { active: false } }
+            );
+        }
+
+        // --- Premium NEET Intensive Papers Series (Class 12) ---
+        {
+            const courseId = PREMIUM_NEET_INTENSIVE_PAPERS._id;
+            let course = await Course.findById(courseId);
+            if (!course) {
+                course = await Course.create({
+                    _id: new mongoose.Types.ObjectId(courseId),
+                    title: PREMIUM_NEET_INTENSIVE_PAPERS.title,
+                    class_grade: PREMIUM_NEET_INTENSIVE_PAPERS.class_grade,
+                    active: true,
+                    description: PREMIUM_NEET_INTENSIVE_PAPERS.description,
+                    price: 1999,
+                });
+            } else {
+                await Course.updateOne(
+                    { _id: course._id },
+                    {
+                        $set: {
+                            title: PREMIUM_NEET_INTENSIVE_PAPERS.title,
+                            class_grade: PREMIUM_NEET_INTENSIVE_PAPERS.class_grade,
+                            active: true,
+                            description: PREMIUM_NEET_INTENSIVE_PAPERS.description,
+                        },
+                    }
+                );
+            }
+
+            for (let i = 1; i <= PREMIUM_NEET_INTENSIVE_PAPERS.papersCount; i++) {
+                const title = `Full Paper ${i}`;
+                let test = await Test.findOne({ course_id: courseId, title });
+                if (!test) {
+                    test = await Test.create({
+                        course_id: courseId,
+                        title,
+                        difficulty: "NEET Pattern",
+                        duration_min: PREMIUM_NEET_INTENSIVE_PAPERS.paperDurationMin,
+                        active: true,
+                    });
+                } else {
+                    await Test.updateOne(
+                        { _id: test._id },
+                        {
+                            $set: {
+                                duration_min: PREMIUM_NEET_INTENSIVE_PAPERS.paperDurationMin,
+                                active: true,
+                            },
+                        }
+                    );
+                }
+
+                await ensureDummyQuestions(String(test._id), PREMIUM_NEET_INTENSIVE_PAPERS.paperQuestions);
+            }
+
+            await Test.updateMany(
+                {
+                    course_id: courseId,
+                    title: { $regex: /^Full Paper (2[1-9]|[3-9][0-9])$/ },
                 },
                 { $set: { active: false } }
             );
