@@ -61,9 +61,12 @@ const PREMIUM_NEET_ADVANCED = {
     title: "NEET Advanced Mock Pro",
     description: "Premium NEET full-length mocks (180 minutes) with detailed solutions and pro-level experience.",
     active: true,
-    fullMocksCount: 20,
-    durationMin: 180,
-    questionsPerMock: 180,
+    fullMocksCount: 15,
+    partTestsCount: 10,
+    fullMockDurationMin: 180,
+    fullMockQuestions: 180,
+    partTestDurationMin: 60,
+    partTestQuestions: 45,
 };
 
 async function ensureDummyQuestions(testId: string, total: number) {
@@ -71,7 +74,15 @@ async function ensureDummyQuestions(testId: string, total: number) {
     if (existingCount >= total) return;
 
     const toCreate = total - existingCount;
-    const batch: any[] = [];
+    const batch: Array<{
+        test_id: string;
+        body: string;
+        options: string[];
+        correct_indices: number[];
+        explanation: string;
+        tags: string[];
+        active: boolean;
+    }> = [];
     for (let i = 0; i < toCreate; i++) {
         const n = existingCount + i + 1;
         batch.push({
@@ -191,15 +202,65 @@ export async function ensureBootstrapCourses() {
                     course_id: premiumId,
                     title,
                     difficulty: "Medium-Hard",
-                    duration_min: PREMIUM_NEET_ADVANCED.durationMin,
+                    duration_min: PREMIUM_NEET_ADVANCED.fullMockDurationMin,
                     active: true,
                 });
-            } else if (test.duration_min !== PREMIUM_NEET_ADVANCED.durationMin) {
-                await Test.updateOne({ _id: test._id }, { $set: { duration_min: PREMIUM_NEET_ADVANCED.durationMin } });
+            } else {
+                await Test.updateOne(
+                    { _id: test._id },
+                    {
+                        $set: {
+                            duration_min: PREMIUM_NEET_ADVANCED.fullMockDurationMin,
+                            active: true,
+                        },
+                    }
+                );
             }
 
-            await ensureDummyQuestions(String(test._id), PREMIUM_NEET_ADVANCED.questionsPerMock);
+            await ensureDummyQuestions(String(test._id), PREMIUM_NEET_ADVANCED.fullMockQuestions);
         }
+
+        for (let i = 1; i <= PREMIUM_NEET_ADVANCED.partTestsCount; i++) {
+            const title = `Part Test ${i}`;
+            let test = await Test.findOne({ course_id: premiumId, title });
+            if (!test) {
+                test = await Test.create({
+                    course_id: premiumId,
+                    title,
+                    difficulty: "Medium",
+                    duration_min: PREMIUM_NEET_ADVANCED.partTestDurationMin,
+                    active: true,
+                });
+            } else {
+                await Test.updateOne(
+                    { _id: test._id },
+                    {
+                        $set: {
+                            duration_min: PREMIUM_NEET_ADVANCED.partTestDurationMin,
+                            active: true,
+                        },
+                    }
+                );
+            }
+
+            await ensureDummyQuestions(String(test._id), PREMIUM_NEET_ADVANCED.partTestQuestions);
+        }
+
+        await Test.updateMany(
+            {
+                course_id: premiumId,
+                title: { $regex: /^Full Mock Test (1[6-9]|20)$/ },
+            },
+            { $set: { active: false } }
+        );
+
+        await Test.updateMany(
+            {
+                course_id: premiumId,
+                title: { $regex: /^Part Test (1[1-9]|[2-9][0-9])$/ },
+            },
+            { $set: { active: false } }
+        );
     } catch (err) {
         console.error('Bootstrap courses error:', err);
     }

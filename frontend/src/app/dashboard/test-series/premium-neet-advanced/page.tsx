@@ -1,0 +1,192 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import {
+    ArrowLeft,
+    ArrowRight,
+    BadgeCheck,
+    BookOpen,
+    Clock,
+    FileText,
+    Lock,
+    Sparkles,
+} from "lucide-react";
+
+const COURSE_ID = "699f9a1b2c3d4e5f6a7b8c9d";
+
+export default function PremiumNeetAdvancedPage() {
+    const router = useRouter();
+    const [isPaying, setIsPaying] = useState(false);
+
+    const user = useMemo(() => {
+        try {
+            if (typeof window === "undefined") return null;
+            const userStr = localStorage.getItem("xamsathi_user");
+            if (!userStr) return null;
+            return JSON.parse(userStr) as Record<string, unknown>;
+        } catch {
+            return null;
+        }
+    }, []);
+
+    const userId = (user && (user._id || user.id)) ? String(user._id || user.id) : null;
+
+    const classGrade = (() => {
+        const cg = user?.class_grade;
+        if (typeof cg === "number") return cg;
+        if (typeof cg === "string") {
+            const n = Number(String(cg).replace(/[^0-9]/g, ""));
+            return Number.isNaN(n) ? null : n;
+        }
+        return null;
+    })();
+
+    const handleBuyNow = async () => {
+        if (!userId) {
+            alert("Please login first.");
+            router.push("/login?next=/dashboard?tab=courses");
+            return;
+        }
+
+        setIsPaying(true);
+        try {
+            const { initiatePayment } = await import("@/lib/payment");
+            await new Promise<void>((resolve) => {
+                initiatePayment(
+                    userId,
+                    COURSE_ID,
+                    () => {
+                        router.push(`/dashboard/test-series/${COURSE_ID}`);
+                        resolve();
+                    },
+                    (err) => {
+                        const msg = err instanceof Error ? err.message : String(err);
+                        alert(`Payment Error: ${msg}. Try again.`);
+                        resolve();
+                    }
+                );
+            });
+        } finally {
+            setIsPaying(false);
+        }
+    };
+
+    return (
+        <div className="min-h-screen bg-slate-950 text-slate-100">
+            <div className="max-w-6xl mx-auto px-4 py-8">
+                <div className="flex items-center justify-between mb-10">
+                    <Link
+                        href="/dashboard?tab=courses"
+                        className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors"
+                    >
+                        <ArrowLeft className="w-4 h-4" /> Back to Courses
+                    </Link>
+                </div>
+
+                <div className="relative overflow-hidden rounded-[2.5rem] border border-slate-800 bg-slate-900">
+                    <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/15 via-slate-950 to-slate-950" />
+                    <div className="absolute -top-24 -right-24 w-80 h-80 bg-yellow-500/20 blur-[80px] rounded-full" />
+
+                    <div className="relative p-8 md:p-12">
+                        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10">
+                            <div className="space-y-6">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-12 h-12 rounded-2xl bg-yellow-500/15 border border-yellow-500/20 flex items-center justify-center text-yellow-300">
+                                        <Sparkles className="w-6 h-6" />
+                                    </div>
+                                    <div>
+                                        <div className="text-xs font-black uppercase tracking-[0.25em] text-yellow-300">Premium Series</div>
+                                        <div className="text-[11px] text-slate-400 font-bold">NEET | Class 12</div>
+                                    </div>
+                                </div>
+
+                                <h1 className="text-3xl md:text-5xl font-black tracking-tight">NEET Advanced Mock Pro</h1>
+                                <p className="text-slate-300 max-w-2xl">
+                                    15 Full-Length Mocks + 10 Part Tests. Real exam feel, strict timer, and premium experience.
+                                </p>
+
+                                <div className="flex flex-wrap gap-3">
+                                    <div className="px-4 py-2 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-200 text-sm font-black">
+                                        ₹499
+                                    </div>
+                                    <div className="px-4 py-2 rounded-full bg-slate-950/60 border border-slate-800 text-slate-200 text-sm font-bold inline-flex items-center gap-2">
+                                        <FileText className="w-4 h-4 text-slate-400" /> 15 Full Mocks
+                                    </div>
+                                    <div className="px-4 py-2 rounded-full bg-slate-950/60 border border-slate-800 text-slate-200 text-sm font-bold inline-flex items-center gap-2">
+                                        <BookOpen className="w-4 h-4 text-slate-400" /> 10 Part Tests
+                                    </div>
+                                    <div className="px-4 py-2 rounded-full bg-slate-950/60 border border-slate-800 text-slate-200 text-sm font-bold inline-flex items-center gap-2">
+                                        <Clock className="w-4 h-4 text-slate-400" /> Full Mock: 180 mins
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex-shrink-0 w-full lg:w-[380px]">
+                                <div className="bg-slate-950/50 border border-slate-800 rounded-3xl p-6">
+                                    <div className="flex items-center justify-between">
+                                        <div className="text-sm font-black text-white">Unlock Access</div>
+                                        <div className="text-xs font-black text-yellow-300 px-3 py-1 rounded-full bg-yellow-500/10 border border-yellow-500/20">
+                                            Premium
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-4 space-y-3 text-sm text-slate-300">
+                                        <div className="flex items-center gap-2">
+                                            <BadgeCheck className="w-4 h-4 text-emerald-400" /> 25 Tests Included
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <BadgeCheck className="w-4 h-4 text-emerald-400" /> Instant Unlock after payment
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <BadgeCheck className="w-4 h-4 text-emerald-400" /> Works on mobile & desktop
+                                        </div>
+                                    </div>
+
+                                    {classGrade !== null && classGrade !== 12 && (
+                                        <div className="mt-4 p-4 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-200 text-xs font-bold">
+                                            This premium series is visible for Class 12 only. Please update your profile class/grade.
+                                        </div>
+                                    )}
+
+                                    <button
+                                        onClick={handleBuyNow}
+                                        disabled={isPaying}
+                                        className="mt-6 w-full py-4 rounded-2xl bg-yellow-500 hover:bg-yellow-400 text-black font-black transition-colors disabled:opacity-70 disabled:cursor-not-allowed inline-flex items-center justify-center gap-3"
+                                    >
+                                        <Lock className="w-5 h-5" />
+                                        {isPaying ? "Processing..." : "Buy Now @ ₹499"}
+                                        <ArrowRight className="w-5 h-5" />
+                                    </button>
+
+                                    <div className="mt-4 text-[11px] text-slate-500 font-bold">
+                                        After payment, you will be redirected to the series and all tests will appear in your account.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800">
+                        <div className="text-xs font-black uppercase tracking-[0.25em] text-slate-400">Full Mocks</div>
+                        <div className="text-2xl font-black text-white mt-2">15 Papers</div>
+                        <div className="text-sm text-slate-400 mt-2">Complete 180-minute simulation with full focus.</div>
+                    </div>
+                    <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800">
+                        <div className="text-xs font-black uppercase tracking-[0.25em] text-slate-400">Part Tests</div>
+                        <div className="text-2xl font-black text-white mt-2">10 Tests</div>
+                        <div className="text-sm text-slate-400 mt-2">Shorter tests for quick revision and practice.</div>
+                    </div>
+                    <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800">
+                        <div className="text-xs font-black uppercase tracking-[0.25em] text-slate-400">Premium Feel</div>
+                        <div className="text-2xl font-black text-white mt-2">Pro UI</div>
+                        <div className="text-sm text-slate-400 mt-2">Clean interface designed for serious mock practice.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}

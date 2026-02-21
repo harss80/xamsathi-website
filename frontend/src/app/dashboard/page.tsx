@@ -186,7 +186,7 @@ function DashboardContent() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {classGrade === 12 && (
                                         <Link
-                                            href="/dashboard/test-series/699f9a1b2c3d4e5f6a7b8c9d"
+                                            href="/dashboard/test-series/premium-neet-advanced"
                                             onClick={() => {
                                                 trackLead({ action: "dashboard_open_paid_series", entity_type: "test_series", entity_id: "699f9a1b2c3d4e5f6a7b8c9d" });
                                             }}
