@@ -184,7 +184,7 @@ function DashboardContent() {
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {classGrade === 12 && (
+                                    {(classGrade === 12) && (
                                         <>
                                             <Link
                                                 href="/dashboard/test-series/premium-neet-advanced"
@@ -358,6 +358,54 @@ function DashboardContent() {
                                                 </div>
                                             </Link>
                                         </>
+                                    )}
+
+                                    {((classGrade === 11) || (classGrade === 12)) && (
+                                        <Link
+                                            href="/dashboard/test-series/premium-jee-main-copy-mocks"
+                                            onClick={() => {
+                                                const entityId = classGrade === 11
+                                                    ? "a1ef9a1b2c3d4e5f6a7b8c9d"
+                                                    : "b1ff9a1b2c3d4e5f6a7b8c9d";
+                                                trackLead({ action: "dashboard_open_paid_series", entity_type: "test_series", entity_id: entityId });
+                                            }}
+                                            className="group relative bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden hover:border-emerald-500/50 hover:shadow-2xl transition-all hover:-translate-y-1"
+                                        >
+                                            <div className="h-40 relative overflow-hidden">
+                                                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/25 via-slate-950 to-slate-950" />
+                                                <div className="absolute -top-12 -right-12 w-60 h-60 bg-emerald-500/20 blur-[60px] rounded-full" />
+                                                <div className="absolute top-5 left-5 flex items-center gap-3">
+                                                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/20 flex items-center justify-center text-emerald-300">
+                                                        <Sparkles className="w-6 h-6" />
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-xs font-black uppercase tracking-[0.25em] text-emerald-300">Premium</div>
+                                                        <div className="text-[11px] text-slate-400 font-bold">JEE Main | Class {classGrade}</div>
+                                                    </div>
+                                                </div>
+                                                <div className="absolute top-5 right-5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 text-xs font-black border border-emerald-500/20">
+                                                    ₹1999
+                                                </div>
+                                            </div>
+
+                                            <div className="p-6">
+                                                <h4 className="text-xl font-black text-white group-hover:text-emerald-200 transition-colors">
+                                                    JEE Main Copy Mocks
+                                                </h4>
+                                                <p className="text-slate-400 text-sm mt-2 line-clamp-2">
+                                                    25 Full Mocks • 180 mins • 90 Questions.
+                                                </p>
+
+                                                <div className="flex items-center justify-between mt-6 pt-4 border-t border-slate-800">
+                                                    <div className="flex items-center gap-2 text-xs text-slate-500 font-bold">
+                                                        <BookOpen className="w-4 h-4" /> Full Papers
+                                                    </div>
+                                                    <div className="flex items-center gap-2 text-sm font-black text-emerald-300 group-hover:translate-x-1 transition-transform">
+                                                        View <ArrowRight className="w-4 h-4" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Link>
                                     )}
                                 </div>
                             </div>

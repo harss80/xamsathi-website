@@ -56,7 +56,11 @@ const COURSE_PRICES: Record<string, number> = {
     // Premium NEET Concept Mastery (Class 12)
     '89cf9a1b2c3d4e5f6a7b8c9d': 299,
     // Premium NEET Intensive Papers Series (Class 12)
-    '99df9a1b2c3d4e5f6a7b8c9d': 1999
+    '99df9a1b2c3d4e5f6a7b8c9d': 1999,
+    // Premium JEE Main Copy Mocks (Class 11)
+    'a1ef9a1b2c3d4e5f6a7b8c9d': 1999,
+    // Premium JEE Main Copy Mocks (Class 12)
+    'b1ff9a1b2c3d4e5f6a7b8c9d': 1999
 };
 
 // Debug endpoint to check keys (non-critical)

@@ -102,6 +102,28 @@ const PREMIUM_NEET_INTENSIVE_PAPERS = {
     paperQuestions: 180,
 };
 
+const PREMIUM_JEE_MAIN_COPY_MOCKS_11 = {
+    _id: "a1ef9a1b2c3d4e5f6a7b8c9d",
+    class_grade: 11,
+    title: "JEE Main Copy Mocks",
+    description: "Full-length JEE Main pattern mock papers for speed + accuracy.",
+    active: true,
+    papersCount: 25,
+    paperDurationMin: 180,
+    paperQuestions: 90,
+};
+
+const PREMIUM_JEE_MAIN_COPY_MOCKS_12 = {
+    _id: "b1ff9a1b2c3d4e5f6a7b8c9d",
+    class_grade: 12,
+    title: "JEE Main Copy Mocks",
+    description: "Full-length JEE Main pattern mock papers for speed + accuracy.",
+    active: true,
+    papersCount: 25,
+    paperDurationMin: 180,
+    paperQuestions: 90,
+};
+
 async function ensureDummyQuestions(testId: string, total: number) {
     const existingCount = await Question.countDocuments({ test_id: testId, active: true });
     if (existingCount >= total) return;
@@ -480,6 +502,81 @@ export async function ensureBootstrapCourses() {
                 { $set: { active: false } }
             );
         }
+
+        const seedJeeMainCopyMocks = async (cfg: {
+            _id: string;
+            class_grade: number;
+            title: string;
+            description: string;
+            papersCount: number;
+            paperDurationMin: number;
+            paperQuestions: number;
+        }) => {
+            const courseId = cfg._id;
+            let course = await Course.findById(courseId);
+            if (!course) {
+                course = await Course.create({
+                    _id: new mongoose.Types.ObjectId(courseId),
+                    title: cfg.title,
+                    class_grade: cfg.class_grade,
+                    active: true,
+                    description: cfg.description,
+                    price: 1999,
+                });
+            } else {
+                await Course.updateOne(
+                    { _id: course._id },
+                    {
+                        $set: {
+                            title: cfg.title,
+                            class_grade: cfg.class_grade,
+                            active: true,
+                            description: cfg.description,
+                        },
+                    }
+                );
+            }
+
+            for (let i = 1; i <= cfg.papersCount; i++) {
+                const title = `JEE Main Mock ${i}`;
+                let test = await Test.findOne({ course_id: courseId, title });
+                if (!test) {
+                    test = await Test.create({
+                        course_id: courseId,
+                        title,
+                        difficulty: "JEE Main",
+                        duration_min: cfg.paperDurationMin,
+                        active: true,
+                    });
+                } else {
+                    await Test.updateOne(
+                        { _id: test._id },
+                        {
+                            $set: {
+                                duration_min: cfg.paperDurationMin,
+                                active: true,
+                            },
+                        }
+                    );
+                }
+
+                await ensureDummyQuestions(String(test._id), cfg.paperQuestions);
+            }
+
+            await Test.updateMany(
+                {
+                    course_id: courseId,
+                    title: { $regex: /^JEE Main Mock (2[6-9]|[3-9][0-9])$/ },
+                },
+                { $set: { active: false } }
+            );
+        };
+
+        // --- Premium JEE Main Copy Mocks (Class 11) ---
+        await seedJeeMainCopyMocks(PREMIUM_JEE_MAIN_COPY_MOCKS_11);
+
+        // --- Premium JEE Main Copy Mocks (Class 12) ---
+        await seedJeeMainCopyMocks(PREMIUM_JEE_MAIN_COPY_MOCKS_12);
     } catch (err) {
         console.error('Bootstrap courses error:', err);
     }
