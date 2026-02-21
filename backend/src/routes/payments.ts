@@ -7,10 +7,30 @@ import Course from '../models/Course';
 
 const router = Router();
 
-// Retrieve keys from environment variables
-const KEY_ID = process.env.RAZORPAY_KEY_ID;
-const KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
 const WEBHOOK_SECRET = process.env.RAZORPAY_WEBHOOK_SECRET;
+
+const getRazorpayErrorDetails = (err: unknown): string => {
+    if (err instanceof Error) return err.message;
+    if (!err || typeof err !== 'object') return String(err);
+
+    const maybe = err as {
+        error?: {
+            description?: unknown;
+            message?: unknown;
+        };
+        message?: unknown;
+    };
+
+    if (maybe.error?.description) return String(maybe.error.description);
+    if (maybe.error?.message) return String(maybe.error.message);
+    if (maybe.message) return String(maybe.message);
+
+    try {
+        return JSON.stringify(err);
+    } catch {
+        return String(err);
+    }
+};
 
 // Define static prices for now (or fetch from DB if you add price to Course model)
 // For MVP, we'll map courseId -> price in INR
@@ -83,9 +103,10 @@ router.post('/create-order', async (req: Request, res: Response) => {
                 return res.status(404).json({ error: 'Course not found in database' });
             }
             courseTitle = course.title;
-        } catch (dbErr: any) {
+        } catch (dbErr: unknown) {
             console.error('[Payment] DB Error:', dbErr);
-            return res.status(500).json({ error: 'Database Error', details: dbErr.message });
+            const msg = dbErr instanceof Error ? dbErr.message : String(dbErr);
+            return res.status(500).json({ error: 'Database Error', details: msg });
         }
 
         // 3. Price Resolution
@@ -99,16 +120,31 @@ router.post('/create-order', async (req: Request, res: Response) => {
                 key_id: _KEY_ID,
                 key_secret: _KEY_SECRET,
             });
-        } catch (rzpInitErr: any) {
+        } catch (rzpInitErr: unknown) {
             console.error('[Payment] Razorpay Init Failed:', rzpInitErr);
-            return res.status(500).json({ error: 'Razorpay Client Init Failed', details: rzpInitErr.message });
+            const msg = rzpInitErr instanceof Error ? rzpInitErr.message : String(rzpInitErr);
+            return res.status(500).json({ error: 'Razorpay Client Init Failed', details: msg });
         }
 
         // 5. Order Creation
+        const receipt = (() => {
+            try {
+                const ts = Date.now().toString(36);
+                const h = crypto
+                    .createHash('sha256')
+                    .update(`${userId}:${courseId}:${Date.now()}`)
+                    .digest('hex')
+                    .slice(0, 16);
+                return `rcpt_${ts}_${h}`.slice(0, 40);
+            } catch {
+                return `rcpt_${Date.now().toString(36)}`.slice(0, 40);
+            }
+        })();
+
         const options = {
             amount: price * 100, // Amount in paise
             currency: 'INR',
-            receipt: `receipt_${userId}_${courseId}_${Date.now()}`,
+            receipt,
             notes: {
                 userId,
                 courseId,
@@ -125,14 +161,10 @@ router.post('/create-order', async (req: Request, res: Response) => {
                 currency: order.currency,
                 keyId: _KEY_ID
             });
-        } catch (rzpOrderErr: any) {
+        } catch (rzpOrderErr: unknown) {
             console.error('[Payment] Razorpay Order Create Failed:', rzpOrderErr);
 
-            const details =
-                (rzpOrderErr?.error?.description && String(rzpOrderErr.error.description)) ||
-                (rzpOrderErr?.error?.message && String(rzpOrderErr.error.message)) ||
-                (rzpOrderErr?.message && String(rzpOrderErr.message)) ||
-                JSON.stringify(rzpOrderErr);
+            const details = getRazorpayErrorDetails(rzpOrderErr);
 
             return res.status(500).json({
                 error: 'Razorpay API Error',
@@ -140,11 +172,11 @@ router.post('/create-order', async (req: Request, res: Response) => {
             });
         }
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('[Payment] Critical Unhandled Error:', error);
         return res.status(500).json({
-            error: error.message || 'Critical Internal Server Error',
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+            error: (error instanceof Error ? error.message : String(error)) || 'Critical Internal Server Error',
+            stack: (process.env.NODE_ENV === 'development' && error instanceof Error) ? error.stack : undefined
         });
     }
 });
@@ -179,9 +211,9 @@ router.post('/verify', async (req: Request, res: Response) => {
         } else {
             return res.status(400).json({ success: false, error: "Invalid Signature" });
         }
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Verification Error:", error);
-        return res.status(500).json({ error: error.message || "Verification Failed" });
+        return res.status(500).json({ error: (error instanceof Error ? error.message : String(error)) || "Verification Failed" });
     }
 });
 
@@ -213,7 +245,7 @@ router.post('/webhook', async (req: Request, res: Response) => {
         } else {
             res.status(403).send('Invalid Signature');
         }
-    } catch (err) {
+    } catch (err: unknown) {
         console.error("Webhook Error:", err);
         res.status(500).send('Webhook Error');
     }
