@@ -17,14 +17,18 @@ import confetti from "canvas-confetti";
 // --- Types ---
 export type QuestionType = "physics" | "chemistry" | "botany" | "zoology" | "math" | "biology" | "general" | string;
 
+export type QuestionFormat = "mcq" | "integer";
+
 export type Question = {
     id: number;
     type: QuestionType;
+    format?: QuestionFormat;
     text: string;
     context?: string; // For case studies
     image?: string;
     options: string[];
     correctAnswer: number; // 0-3
+    correctInteger?: number;
     explanation: string;
 };
 
@@ -63,7 +67,7 @@ interface TestSeriesPlayerProps {
 interface QuestionPaletteProps {
     questions: Question[];
     currentQuestionIndex: number;
-    answers: Record<number, number>;
+    answers: Record<number, number | string>;
     markedForReview: Set<number>;
     setCurrentQuestionIndex: (index: number) => void;
     setShowPalette: (show: boolean) => void;
@@ -98,7 +102,8 @@ const QuestionPalette = ({
         <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
             <div className="grid grid-cols-5 gap-3">
                 {questions.map((q, idx) => {
-                    const isAnswered = answers[q.id] !== undefined;
+                    const ans = answers[q.id];
+                    const isAnswered = ans !== undefined && String(ans).trim() !== "";
                     const isMarked = markedForReview.has(q.id);
                     const isCurrent = idx === currentQuestionIndex;
 
@@ -156,7 +161,7 @@ export default function TestSeriesPlayer({
     const [status, setStatus] = useState<"intro" | "active" | "result" | "review">("intro");
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [activeSubject, setActiveSubject] = useState<string>(subjects[0]?.toLowerCase() || "general");
-    const [answers, setAnswers] = useState<Record<number, number>>({}); // qId -> optionIndex
+    const [answers, setAnswers] = useState<Record<number, number | string>>({}); // qId -> optionIndex
     const [markedForReview, setMarkedForReview] = useState<Set<number>>(new Set());
     const [timeLeft, setTimeLeft] = useState(durationMins * 60);
     const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
@@ -380,6 +385,20 @@ export default function TestSeriesPlayer({
         });
     };
 
+    const handleIntegerAnswerChange = (value: string) => {
+        if (status !== "active") return;
+        const qId = currentQ.id;
+        setAnswers((prev) => {
+            const next = { ...prev };
+            const v = value.trim();
+            if (v === "") {
+                delete next[qId];
+                return next;
+            }
+            return { ...prev, [qId]: v };
+        });
+    };
+
     const toggleMarkForReview = () => {
         if (status !== "active") return;
         const qId = currentQ.id;
@@ -404,6 +423,7 @@ export default function TestSeriesPlayer({
         questions.forEach((q) => {
             const selected = answers[q.id];
             const subj = q.type.toLowerCase();
+            const format = q.format || "mcq";
 
             if (!subjectStats[subj]) {
                 subjectStats[subj] = { total: 0, attempted: 0, correct: 0, wrong: 0, score: 0 };
@@ -411,18 +431,35 @@ export default function TestSeriesPlayer({
 
             subjectStats[subj].total++;
 
-            if (selected !== undefined) {
+            if (selected !== undefined && String(selected).trim() !== "") {
                 subjectStats[subj].attempted++;
-                if (selected === q.correctAnswer) {
-                    calculatedScore += positiveMarking;
-                    correctCount++;
-                    subjectStats[subj].correct++;
-                    subjectStats[subj].score += positiveMarking;
+                if (format === "integer") {
+                    const asNum = Number(String(selected).trim());
+                    const isCorrect = Number.isFinite(asNum) && typeof q.correctInteger === "number" && asNum === q.correctInteger;
+                    if (isCorrect) {
+                        calculatedScore += positiveMarking;
+                        correctCount++;
+                        subjectStats[subj].correct++;
+                        subjectStats[subj].score += positiveMarking;
+                    } else {
+                        calculatedScore -= negativeMarking;
+                        wrongCount++;
+                        subjectStats[subj].wrong++;
+                        subjectStats[subj].score -= negativeMarking;
+                    }
                 } else {
-                    calculatedScore -= negativeMarking;
-                    wrongCount++;
-                    subjectStats[subj].wrong++;
-                    subjectStats[subj].score -= negativeMarking;
+                    const selectedIdx = typeof selected === "number" ? selected : Number.NaN;
+                    if (selectedIdx === q.correctAnswer) {
+                        calculatedScore += positiveMarking;
+                        correctCount++;
+                        subjectStats[subj].correct++;
+                        subjectStats[subj].score += positiveMarking;
+                    } else {
+                        calculatedScore -= negativeMarking;
+                        wrongCount++;
+                        subjectStats[subj].wrong++;
+                        subjectStats[subj].score -= negativeMarking;
+                    }
                 }
             }
         });
@@ -663,32 +700,52 @@ export default function TestSeriesPlayer({
                                                 </div>
                                             )}
 
-                                            {/* Options */}
-                                            <div className="grid gap-3 pt-2">
-                                                {currentQ.options.map((option, idx) => {
-                                                    const isSelected = answers[currentQ.id] === idx;
-                                                    return (
-                                                        <button
-                                                            key={idx}
-                                                            onClick={() => handleAnswer(idx)}
-                                                            className={`w-full text-left p-4 rounded-xl border transition-all duration-200 flex items-center gap-4 group active:scale-[0.99] ${isSelected
-                                                                ? 'bg-indigo-500/10 border-indigo-500 ring-1 ring-indigo-500/50'
-                                                                : 'bg-slate-800/30 border-white/5 hover:bg-slate-800/60'
-                                                                }`}
-                                                        >
-                                                            <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border transition-colors ${isSelected
-                                                                ? 'bg-indigo-500 border-indigo-500 text-white'
-                                                                : 'border-slate-600/50 text-slate-400 bg-slate-800/50 group-hover:border-slate-500'
-                                                                }`}>
-                                                                {String.fromCharCode(65 + idx)}
-                                                            </div>
-                                                            <span className={`text-sm md:text-base leading-snug ${isSelected ? 'text-white font-medium' : 'text-slate-300'}`}>
-                                                                {option}
-                                                            </span>
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
+                                            {/* Answer */}
+                                            {(currentQ.format || "mcq") === "integer" ? (
+                                                <div className="pt-2">
+                                                    <div className="rounded-2xl border border-white/10 bg-slate-900/40 p-4">
+                                                        <div className="text-xs font-black uppercase tracking-wider text-slate-400 mb-2">Integer Answer</div>
+                                                        <input
+                                                            type="number"
+                                                            inputMode="numeric"
+                                                            value={typeof answers[currentQ.id] === "string" ? String(answers[currentQ.id]) : ""}
+                                                            onChange={(e) => handleIntegerAnswerChange(e.target.value)}
+                                                            disabled={status !== "active"}
+                                                            className="w-full px-4 py-3 rounded-xl bg-slate-950/40 border border-white/10 text-white font-bold outline-none focus:ring-2 focus:ring-emerald-500/40"
+                                                            placeholder="Enter integer answer"
+                                                        />
+                                                        <div className="mt-3 text-xs text-slate-500 font-semibold">
+                                                            Enter a whole number. Leave blank to skip.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="grid gap-3 pt-2">
+                                                    {currentQ.options.map((option, idx) => {
+                                                        const isSelected = answers[currentQ.id] === idx;
+                                                        return (
+                                                            <button
+                                                                key={idx}
+                                                                onClick={() => handleAnswer(idx)}
+                                                                className={`w-full text-left p-4 rounded-xl border transition-all duration-200 flex items-center gap-4 group active:scale-[0.99] ${isSelected
+                                                                    ? 'bg-indigo-500/10 border-indigo-500 ring-1 ring-indigo-500/50'
+                                                                    : 'bg-slate-800/30 border-white/5 hover:bg-slate-800/60'
+                                                                    }`}
+                                                            >
+                                                                <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border transition-colors ${isSelected
+                                                                    ? 'bg-indigo-500 border-indigo-500 text-white'
+                                                                    : 'border-slate-600/50 text-slate-400 bg-slate-800/50 group-hover:border-slate-500'
+                                                                    }`}>
+                                                                    {String.fromCharCode(65 + idx)}
+                                                                </div>
+                                                                <span className={`text-sm md:text-base leading-snug ${isSelected ? 'text-white font-medium' : 'text-slate-300'}`}>
+                                                                    {option}
+                                                                </span>
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
+                                            )}
 
                                             <div className="mt-8 rounded-2xl border border-white/10 bg-slate-950/40 overflow-hidden">
                                                 <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
@@ -731,7 +788,11 @@ export default function TestSeriesPlayer({
                                                             <div className="space-y-3">
                                                                 <div className="flex items-center justify-between">
                                                                     <div className="text-sm font-black text-white">Correct Answer</div>
-                                                                    <div className="text-sm font-black text-emerald-300">{String.fromCharCode(65 + currentQ.correctAnswer)}</div>
+                                                                    <div className="text-sm font-black text-emerald-300">
+                                                                        {(currentQ.format || "mcq") === "integer"
+                                                                            ? String(currentQ.correctInteger ?? "-")
+                                                                            : String.fromCharCode(65 + currentQ.correctAnswer)}
+                                                                    </div>
                                                                 </div>
                                                                 <div className="text-sm text-slate-300 leading-relaxed">
                                                                     {currentQ.explanation}
@@ -1147,9 +1208,12 @@ export default function TestSeriesPlayer({
 
                             <div className="space-y-12">
                                 {questions.map((q, idx) => {
-                                    const userAnsIdx = answers[q.id];
-                                    const isCorrect = userAnsIdx === q.correctAnswer;
-                                    const isSkipped = userAnsIdx === undefined;
+                                    const userAns = answers[q.id];
+                                    const format = q.format || "mcq";
+                                    const isSkipped = userAns === undefined || String(userAns).trim() === "";
+                                    const isCorrect = format === "integer"
+                                        ? (!isSkipped && Number(String(userAns).trim()) === q.correctInteger)
+                                        : (userAns === q.correctAnswer);
                                     const statusColor = isCorrect ? 'text-emerald-400' : isSkipped ? 'text-yellow-400' : 'text-red-400';
                                     const StatusIcon = isCorrect ? CheckCircle2 : isSkipped ? HelpCircle : XCircle;
 
@@ -1197,39 +1261,57 @@ export default function TestSeriesPlayer({
                                                     </div>
                                                 </div>
 
-                                                <div className="grid md:grid-cols-2 gap-4 mb-10">
-                                                    {q.options.map((option, optIdx) => {
-                                                        const isSelected = userAnsIdx === optIdx;
-                                                        const isAnswer = q.correctAnswer === optIdx;
-
-                                                        let borderClass = 'border-white/5 bg-white/5';
-                                                        let textClass = 'text-slate-500';
-
-                                                        if (isAnswer) {
-                                                            borderClass = 'border-emerald-500/50 bg-emerald-500/10 ring-1 ring-emerald-500/30';
-                                                            textClass = 'text-white font-black';
-                                                        } else if (isSelected) {
-                                                            borderClass = 'border-red-500/50 bg-red-500/10 ring-1 ring-red-500/30';
-                                                            textClass = 'text-white font-black';
-                                                        }
-
-                                                        return (
-                                                            <div
-                                                                key={optIdx}
-                                                                className={`p-6 rounded-[2rem] border-2 ${borderClass} flex items-center gap-4 transition-all group/opt`}
-                                                            >
-                                                                <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black shrink-0 ${isAnswer ? 'bg-emerald-500 text-white' :
-                                                                    isSelected ? 'bg-red-500 text-white' :
-                                                                        'bg-white/10 text-slate-500 group-hover/opt:text-white'
-                                                                    }`}>
-                                                                    {String.fromCharCode(65 + optIdx)}
+                                                {format === "integer" ? (
+                                                    <div className="rounded-[2.5rem] border border-white/10 bg-white/5 p-8 mb-10">
+                                                        <div className="grid md:grid-cols-2 gap-6">
+                                                            <div>
+                                                                <div className="text-xs font-black tracking-widest uppercase text-slate-500 mb-2">Your Answer</div>
+                                                                <div className={`text-2xl font-black ${isSkipped ? 'text-yellow-300' : isCorrect ? 'text-emerald-300' : 'text-red-300'}`}>
+                                                                    {isSkipped ? "Skipped" : String(userAns)}
                                                                 </div>
-                                                                <span className={`text-lg transition-colors ${textClass}`}>{option}</span>
-                                                                {isAnswer && <div className="ml-auto w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center"><CheckCircle2 className="w-5 h-5 text-emerald-500" /></div>}
                                                             </div>
-                                                        )
-                                                    })}
-                                                </div>
+                                                            <div>
+                                                                <div className="text-xs font-black tracking-widest uppercase text-slate-500 mb-2">Correct Answer</div>
+                                                                <div className="text-2xl font-black text-emerald-300">{String(q.correctInteger ?? "-")}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="grid md:grid-cols-2 gap-4 mb-10">
+                                                        {q.options.map((option, optIdx) => {
+                                                            const userAnsIdx = typeof userAns === "number" ? userAns : undefined;
+                                                            const isSelected = userAnsIdx === optIdx;
+                                                            const isAnswer = q.correctAnswer === optIdx;
+
+                                                            let borderClass = 'border-white/5 bg-white/5';
+                                                            let textClass = 'text-slate-500';
+
+                                                            if (isAnswer) {
+                                                                borderClass = 'border-emerald-500/50 bg-emerald-500/10 ring-1 ring-emerald-500/30';
+                                                                textClass = 'text-white font-black';
+                                                            } else if (isSelected) {
+                                                                borderClass = 'border-red-500/50 bg-red-500/10 ring-1 ring-red-500/30';
+                                                                textClass = 'text-white font-black';
+                                                            }
+
+                                                            return (
+                                                                <div
+                                                                    key={optIdx}
+                                                                    className={`p-6 rounded-[2rem] border-2 ${borderClass} flex items-center gap-4 transition-all group/opt`}
+                                                                >
+                                                                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black shrink-0 ${isAnswer ? 'bg-emerald-500 text-white' :
+                                                                        isSelected ? 'bg-red-500 text-white' :
+                                                                            'bg-white/10 text-slate-500 group-hover/opt:text-white'
+                                                                        }`}>
+                                                                        {String.fromCharCode(65 + optIdx)}
+                                                                    </div>
+                                                                    <span className={`text-lg transition-colors ${textClass}`}>{option}</span>
+                                                                    {isAnswer && <div className="ml-auto w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center"><CheckCircle2 className="w-5 h-5 text-emerald-500" /></div>}
+                                                                </div>
+                                                            )
+                                                        })}
+                                                    </div>
+                                                )}
 
                                                 {/* Explanation Card */}
                                                 <div className="group/exp relative overflow-hidden">
