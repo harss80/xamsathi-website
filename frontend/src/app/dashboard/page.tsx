@@ -11,7 +11,7 @@ import EarnSection from "@/components/dashboard/EarnSection";
 
 import ProfilePage from "@/app/dashboard/profile/page";
 
-import { BookOpen, Calendar, BarChart3, ArrowRight, Sparkles } from "lucide-react";
+import { BookOpen, Calendar, BarChart3, ArrowRight, Sparkles, FileText } from "lucide-react";
 import { trackLead } from "@/lib/trackLead";
 
 const ALLOWED_TABS = ["overview", "courses", "tests", "schedule", "reports", "leaderboard", "profile", "earn"] as const;
@@ -19,6 +19,8 @@ const ALLOWED_TABS = ["overview", "courses", "tests", "schedule", "reports", "le
 function DashboardContent() {
     const [isLoading, setIsLoading] = useState(true);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [purchasedCourseIds, setPurchasedCourseIds] = useState<Set<string>>(() => new Set());
+    const [hasFreeAccess, setHasFreeAccess] = useState(false);
     const [classGrade] = useState<number | null>(() => {
         try {
             if (typeof window === "undefined") return null;
@@ -144,6 +146,119 @@ function DashboardContent() {
         return () => window.removeEventListener("storage", syncUser);
     }, [router, syncUser]);
 
+    useEffect(() => {
+        const fetchPurchaseState = async () => {
+            try {
+                const getBackendBase = () => {
+                    const envBase = (process.env.NEXT_PUBLIC_BACKEND_URL || "").trim();
+                    if (envBase) return envBase;
+                    if (typeof window !== "undefined") {
+                        const host = window.location.hostname;
+                        if (host === "localhost" || host === "127.0.0.1") return "http://localhost:3001";
+                    }
+                    return "http://localhost:3001";
+                };
+
+                const base = getBackendBase();
+                const userStr = localStorage.getItem("xamsathi_user");
+                if (!userStr) return;
+                const parsed = JSON.parse(userStr) as unknown;
+                const maybe = (parsed && typeof parsed === "object") ? (parsed as Record<string, unknown>) : null;
+                const userIdRaw = maybe ? (maybe["_id"] ?? maybe["id"] ?? maybe["user_id"]) : null;
+                const userId = (typeof userIdRaw === "string" || typeof userIdRaw === "number") ? String(userIdRaw) : null;
+                if (!userId) return;
+
+                const resMe = await fetch(`${base}/api/me`, {
+                    headers: { "x-user-id": String(userId) },
+                });
+                if (!resMe.ok) return;
+                const meData = await resMe.json();
+                const u = meData?.user;
+                const purchased = Array.isArray(u?.purchased_courses) ? (u.purchased_courses as string[]) : [];
+                setPurchasedCourseIds(new Set(purchased));
+                setHasFreeAccess(u?.free_access === true);
+            } catch {
+                // ignore
+            }
+        };
+
+        fetchPurchaseState();
+    }, []);
+
+    const isPurchased = (courseId: string) => hasFreeAccess || purchasedCourseIds.has(courseId);
+
+    const TEST_SERIES_CARDS = (() => {
+        const items: Array<{
+            id: string;
+            title: string;
+            subtitle: string;
+            priceTag: string;
+            href: string;
+            entityId: string;
+            hidden: boolean;
+            visibleInCoursesTab: boolean;
+        }> = [];
+
+        if ((classGrade === 12) && !hideNeet) {
+            items.push({
+                id: "699f9a1b2c3d4e5f6a7b8c9d",
+                title: "NEET Advanced Mock Pro",
+                subtitle: "15 Full Mocks + 10 Part Tests • premium experience.",
+                priceTag: "₹499",
+                href: "/dashboard/test-series/premium-neet-advanced",
+                entityId: "699f9a1b2c3d4e5f6a7b8c9d",
+                hidden: false,
+                visibleInCoursesTab: true,
+            });
+            items.push({
+                id: "79bf9a1b2c3d4e5f6a7b8c9d",
+                title: "NEET Rank Booster Pack",
+                subtitle: "20 Part Tests • speed & accuracy focused.",
+                priceTag: "₹199",
+                href: "/dashboard/test-series/premium-neet-rank-booster",
+                entityId: "79bf9a1b2c3d4e5f6a7b8c9d",
+                hidden: false,
+                visibleInCoursesTab: true,
+            });
+            items.push({
+                id: "89cf9a1b2c3d4e5f6a7b8c9d",
+                title: "NEET Concept Mastery",
+                subtitle: "30 Chapter Tests • concept strength.",
+                priceTag: "₹299",
+                href: "/dashboard/test-series/premium-neet-concept-mastery",
+                entityId: "89cf9a1b2c3d4e5f6a7b8c9d",
+                hidden: false,
+                visibleInCoursesTab: true,
+            });
+            items.push({
+                id: "99df9a1b2c3d4e5f6a7b8c9d",
+                title: "NEET Intensive Papers Series",
+                subtitle: "20 Full Papers • exam pattern practice.",
+                priceTag: "₹1999",
+                href: "/dashboard/test-series/premium-neet-intensive-papers",
+                entityId: "99df9a1b2c3d4e5f6a7b8c9d",
+                hidden: false,
+                visibleInCoursesTab: true,
+            });
+        }
+
+        if (((classGrade === 11) || (classGrade === 12)) && !hideJee) {
+            const cid = classGrade === 11 ? "a1ef9a1b2c3d4e5f6a7b8c9d" : "b1ff9a1b2c3d4e5f6a7b8c9d";
+            items.push({
+                id: cid,
+                title: "JEE Main Copy Mocks",
+                subtitle: "25 Full Mocks • 180 mins • 90 Questions.",
+                priceTag: "₹1999",
+                href: "/dashboard/test-series/premium-jee-main-copy-mocks",
+                entityId: cid,
+                hidden: false,
+                visibleInCoursesTab: true,
+            });
+        }
+
+        return items;
+    })();
+
     if (isLoading) {
         return (
             <div className="min-h-screen bg-slate-950 flex items-center justify-center">
@@ -203,7 +318,8 @@ function DashboardContent() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {(classGrade === 12) && !hideNeet && (
                                         <>
-                                            <Link
+                                            {!isPurchased("699f9a1b2c3d4e5f6a7b8c9d") && (
+                                                <Link
                                                 href="/dashboard/test-series/premium-neet-advanced"
                                                 onClick={() => {
                                                     trackLead({ action: "dashboard_open_paid_series", entity_type: "test_series", entity_id: "699f9a1b2c3d4e5f6a7b8c9d" });
@@ -244,9 +360,11 @@ function DashboardContent() {
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </Link>
+                                                </Link>
+                                            )}
 
-                                            <Link
+                                            {!isPurchased("79bf9a1b2c3d4e5f6a7b8c9d") && (
+                                                <Link
                                                 href="/dashboard/test-series/premium-neet-rank-booster"
                                                 onClick={() => {
                                                     trackLead({ action: "dashboard_open_paid_series", entity_type: "test_series", entity_id: "79bf9a1b2c3d4e5f6a7b8c9d" });
@@ -287,9 +405,11 @@ function DashboardContent() {
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </Link>
+                                                </Link>
+                                            )}
 
-                                            <Link
+                                            {!isPurchased("89cf9a1b2c3d4e5f6a7b8c9d") && (
+                                                <Link
                                                 href="/dashboard/test-series/premium-neet-concept-mastery"
                                                 onClick={() => {
                                                     trackLead({ action: "dashboard_open_paid_series", entity_type: "test_series", entity_id: "89cf9a1b2c3d4e5f6a7b8c9d" });
@@ -330,9 +450,11 @@ function DashboardContent() {
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </Link>
+                                                </Link>
+                                            )}
 
-                                            <Link
+                                            {!isPurchased("99df9a1b2c3d4e5f6a7b8c9d") && (
+                                                <Link
                                                 href="/dashboard/test-series/premium-neet-intensive-papers"
                                                 onClick={() => {
                                                     trackLead({ action: "dashboard_open_paid_series", entity_type: "test_series", entity_id: "99df9a1b2c3d4e5f6a7b8c9d" });
@@ -373,11 +495,13 @@ function DashboardContent() {
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </Link>
+                                                </Link>
+                                            )}
                                         </>
                                     )}
 
                                     {((classGrade === 11) || (classGrade === 12)) && !hideJee && (
+                                        !isPurchased(classGrade === 11 ? "a1ef9a1b2c3d4e5f6a7b8c9d" : "b1ff9a1b2c3d4e5f6a7b8c9d") && (
                                         <Link
                                             href="/dashboard/test-series/premium-jee-main-copy-mocks"
                                             onClick={() => {
@@ -423,6 +547,7 @@ function DashboardContent() {
                                                 </div>
                                             </div>
                                         </Link>
+                                        )
                                     )}
                                 </div>
                             </div>
@@ -430,6 +555,43 @@ function DashboardContent() {
 
                         {activeTab === "tests" && (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {TEST_SERIES_CARDS.filter((c) => isPurchased(c.id) && !c.hidden).map((c) => (
+                                    <Link
+                                        key={c.id}
+                                        href={`/dashboard/test-series/${c.id}`}
+                                        onClick={() => {
+                                            trackLead({ action: "dashboard_open_purchased_series", entity_type: "test_series", entity_id: c.id });
+                                        }}
+                                        className="group relative p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-emerald-500/50 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden"
+                                    >
+                                        <div className="absolute top-0 right-0 p-20 opacity-10 group-hover:opacity-20 transition-opacity bg-emerald-600 blur-[60px] rounded-full" />
+
+                                        <div className="flex items-start justify-between mb-6">
+                                            <div className="p-4 rounded-2xl bg-emerald-500/10 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
+                                                <FileText className="w-8 h-8" />
+                                            </div>
+                                            <div className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 text-xs font-bold border border-emerald-500/20">
+                                                PURCHASED
+                                            </div>
+                                        </div>
+
+                                        <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-emerald-300 transition-colors">
+                                            {c.title}
+                                        </h3>
+                                        <p className="text-slate-400 text-sm mb-6 line-clamp-2">
+                                            {c.subtitle}
+                                        </p>
+
+                                        <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-800">
+                                            <div className="flex items-center gap-2 text-xs text-slate-500">
+                                                <BookOpen className="w-4 h-4" /> Your Series
+                                            </div>
+                                            <div className="flex items-center gap-2 text-sm font-bold text-emerald-400 group-hover:translate-x-1 transition-transform">
+                                                Open <ArrowRight className="w-4 h-4" />
+                                            </div>
+                                        </div>
+                                    </Link>
+                                ))}
                                 <Link
                                     href="/dashboard/test-series/free-series"
                                     onClick={() => {
