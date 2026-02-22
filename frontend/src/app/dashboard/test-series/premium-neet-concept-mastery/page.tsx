@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -19,6 +19,7 @@ const COURSE_ID = "89cf9a1b2c3d4e5f6a7b8c9d";
 export default function PremiumNeetConceptMasteryPage() {
     const router = useRouter();
     const [isPaying, setIsPaying] = useState(false);
+    const [hasAccess, setHasAccess] = useState(false);
 
     const user = useMemo(() => {
         try {
@@ -32,6 +33,39 @@ export default function PremiumNeetConceptMasteryPage() {
     }, []);
 
     const userId = (user && (user._id || user.id)) ? String(user._id || user.id) : null;
+
+    useEffect(() => {
+        const checkAccess = async () => {
+            try {
+                if (!userId) return;
+
+                const getBackendBase = () => {
+                    const envBase = (process.env.NEXT_PUBLIC_BACKEND_URL || "").trim();
+                    if (envBase) return envBase;
+                    if (typeof window !== "undefined") {
+                        const host = window.location.hostname;
+                        if (host === "localhost" || host === "127.0.0.1") return "http://localhost:3001";
+                    }
+                    return "http://localhost:3001";
+                };
+
+                const base = getBackendBase();
+                const resMe = await fetch(`${base}/api/me`, {
+                    headers: { "x-user-id": String(userId) },
+                });
+                if (!resMe.ok) return;
+                const meData = await resMe.json();
+                const u = meData?.user;
+                const purchased = Array.isArray(u?.purchased_courses) ? (u.purchased_courses as string[]) : [];
+                const ok = u?.free_access === true || purchased.includes(COURSE_ID);
+                setHasAccess(ok);
+            } catch {
+                // ignore
+            }
+        };
+
+        checkAccess();
+    }, [userId]);
 
     const classGrade = (() => {
         const cg = user?.class_grade;
@@ -151,7 +185,13 @@ export default function PremiumNeetConceptMasteryPage() {
                                     )}
 
                                     <button
-                                        onClick={handleBuyNow}
+                                        onClick={() => {
+                                            if (hasAccess) {
+                                                router.push(`/dashboard/test-series/${COURSE_ID}`);
+                                                return;
+                                            }
+                                            handleBuyNow();
+                                        }}
                                         onMouseEnter={async () => {
                                             const { preloadRazorpay } = await import("@/lib/payment");
                                             preloadRazorpay();
@@ -163,8 +203,8 @@ export default function PremiumNeetConceptMasteryPage() {
                                         disabled={isPaying}
                                         className="mt-6 w-full py-4 rounded-2xl bg-indigo-500 hover:bg-indigo-400 text-black font-black transition-colors disabled:opacity-70 disabled:cursor-not-allowed inline-flex items-center justify-center gap-3"
                                     >
-                                        <Lock className="w-5 h-5" />
-                                        {isPaying ? "Processing..." : "Buy Now @ ₹299"}
+                                        {hasAccess ? <BookOpen className="w-5 h-5" /> : <Lock className="w-5 h-5" />}
+                                        {hasAccess ? "Open Series" : (isPaying ? "Processing..." : "Buy Now @ ₹299")}
                                         <ArrowRight className="w-5 h-5" />
                                     </button>
 

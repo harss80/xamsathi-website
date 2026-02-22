@@ -558,7 +558,7 @@ function DashboardContent() {
                                 {TEST_SERIES_CARDS.filter((c) => isPurchased(c.id) && !c.hidden).map((c) => (
                                     <Link
                                         key={c.id}
-                                        href={`/dashboard/test-series/${c.id}`}
+                                        href={c.href}
                                         onClick={() => {
                                             trackLead({ action: "dashboard_open_purchased_series", entity_type: "test_series", entity_id: c.id });
                                         }}
