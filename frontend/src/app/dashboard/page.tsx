@@ -42,11 +42,28 @@ function DashboardContent() {
             return null;
         }
     });
+    const [targetExam] = useState<string | null>(() => {
+        try {
+            if (typeof window === "undefined") return null;
+            const savedUser = localStorage.getItem("xamsathi_user");
+            if (!savedUser) return null;
+            const parsed = JSON.parse(savedUser) as Record<string, unknown>;
+            const te = parsed.target_exam ?? parsed.stream ?? parsed.course;
+            if (typeof te !== "string") return null;
+            return te;
+        } catch {
+            return null;
+        }
+    });
     const [user, setUser] = useState({
         name: "Harsh Budhauliya",
         course: "JEE Advanced 2026",
         avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Harsh",
     });
+
+    const stream = (targetExam || user.course || "").toUpperCase();
+    const hideNeet = stream.includes("JEE") && !stream.includes("NEET");
+    const hideJee = stream.includes("NEET") && !stream.includes("JEE");
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -184,7 +201,7 @@ function DashboardContent() {
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {(classGrade === 12) && (
+                                    {(classGrade === 12) && !hideNeet && (
                                         <>
                                             <Link
                                                 href="/dashboard/test-series/premium-neet-advanced"
@@ -360,7 +377,7 @@ function DashboardContent() {
                                         </>
                                     )}
 
-                                    {((classGrade === 11) || (classGrade === 12)) && (
+                                    {((classGrade === 11) || (classGrade === 12)) && !hideJee && (
                                         <Link
                                             href="/dashboard/test-series/premium-jee-main-copy-mocks"
                                             onClick={() => {

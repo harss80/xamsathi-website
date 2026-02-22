@@ -41,6 +41,23 @@ export default function FreeSeriesPage() {
         }
     });
 
+    const [targetExam] = useState<string | null>(() => {
+        try {
+            if (typeof window === "undefined") return null;
+            const savedUser = localStorage.getItem("xamsathi_user");
+            if (!savedUser) return null;
+            const parsed = JSON.parse(savedUser) as Record<string, unknown>;
+            const te = parsed.target_exam ?? parsed.stream ?? parsed.course;
+            if (typeof te !== "string") return null;
+            return te;
+        } catch {
+            return null;
+        }
+    });
+
+    const stream = (targetExam || "").toUpperCase();
+    const hideNeet = stream.includes("JEE") && !stream.includes("NEET");
+
     return (
         <div className="min-h-screen bg-slate-950 text-slate-200">
             <div className="max-w-6xl mx-auto px-4 py-8">
@@ -99,7 +116,7 @@ export default function FreeSeriesPage() {
                         </div>
                     </Link>
 
-                    {(typeof classGrade === "number" && classGrade >= 11) && (
+                    {(typeof classGrade === "number" && classGrade >= 11) && !hideNeet && (
                         <Link
                             href="/dashboard/test-series/neet"
                             className="group relative p-6 rounded-3xl bg-slate-900 border border-slate-800 hover:border-indigo-500/50 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden"
