@@ -234,6 +234,77 @@ export default function PremiumNeetConceptMasteryPage() {
                         <div className="text-sm text-slate-400 mt-2">Smooth interface for focused preparation.</div>
                     </div>
                 </div>
+
+                {/* --- DETAILS SECTION --- */}
+                <div className="mt-16 space-y-12 pb-12">
+                    <div className="space-y-6">
+                        <h2 className="text-2xl font-black text-white flex items-center gap-3">
+                            <Sparkles className="w-6 h-6 text-indigo-400" />
+                            What You'll Get in This Premium Series
+                        </h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {[
+                                "30 Chapter-wise High Quality Tests to clear core misconceptions.",
+                                "A carefully researched question bank verified by expert faculties.",
+                                "Detailed solutions referencing exact NCERT paragraph and page numbers.",
+                                "Real-time accuracy metrics and 'weak topic' highlighter.",
+                                "Unlimited re-attempts to cement the foundational concepts."
+                            ].map((item, i) => (
+                                <div key={i} className="flex items-start gap-4 p-5 rounded-2xl bg-slate-900 border border-slate-800 hover:border-indigo-500/30 transition-colors">
+                                    <div className="mt-0.5 shrink-0 w-6 h-6 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+                                        <BadgeCheck className="w-4 h-4" />
+                                    </div>
+                                    <p className="text-slate-300 text-sm leading-relaxed">{item}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="space-y-6">
+                        <h2 className="text-2xl font-black text-white flex items-center gap-3">
+                            <BookOpen className="w-6 h-6 text-indigo-400" />
+                            Chapters Covered Inside
+                        </h2>
+                        <div className="p-8 rounded-3xl bg-slate-900 border border-slate-800 space-y-8 relative overflow-hidden">
+                            <p className="text-slate-400 text-sm md:text-base max-w-3xl leading-relaxed">
+                                This series bridges the gap between basic understanding and NEET-level execution, focusing heavily on most tricky conceptual chapters in the NEET syllabus.
+                            </p>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div className="space-y-4 bg-slate-950/50 p-6 rounded-2xl border border-slate-800">
+                                    <h3 className="text-lg font-black text-indigo-300 border-b border-indigo-500/20 pb-3">Physics</h3>
+                                    <ul className="space-y-3 text-sm text-slate-300 font-medium tracking-wide">
+                                        <li className="flex gap-2"><span className="text-indigo-500">&bull;</span> Kinematics & Laws of Motion</li>
+                                        <li className="flex gap-2"><span className="text-indigo-500">&bull;</span> Work, Energy, & Power</li>
+                                        <li className="flex gap-2"><span className="text-indigo-500">&bull;</span> Rotational Dynamics</li>
+                                        <li className="flex gap-2"><span className="text-indigo-500">&bull;</span> Current Electricity</li>
+                                        <li className="flex gap-2"><span className="text-indigo-500">&bull;</span> Dual Nature & Semiconductor</li>
+                                    </ul>
+                                </div>
+                                <div className="space-y-4 bg-slate-950/50 p-6 rounded-2xl border border-slate-800">
+                                    <h3 className="text-lg font-black text-indigo-300 border-b border-indigo-500/20 pb-3">Chemistry</h3>
+                                    <ul className="space-y-3 text-sm text-slate-300 font-medium tracking-wide">
+                                        <li className="flex gap-2"><span className="text-indigo-500">&bull;</span> Atomic Structure & Bonding</li>
+                                        <li className="flex gap-2"><span className="text-indigo-500">&bull;</span> Equilibrium (Ionic & Chemical)</li>
+                                        <li className="flex gap-2"><span className="text-indigo-500">&bull;</span> General Organic Chemistry</li>
+                                        <li className="flex gap-2"><span className="text-indigo-500">&bull;</span> Coordination Compounds</li>
+                                        <li className="flex gap-2"><span className="text-indigo-500">&bull;</span> Thermodynamics</li>
+                                    </ul>
+                                </div>
+                                <div className="space-y-4 bg-slate-950/50 p-6 rounded-2xl border border-slate-800">
+                                    <h3 className="text-lg font-black text-indigo-300 border-b border-indigo-500/20 pb-3">Biology</h3>
+                                    <ul className="space-y-3 text-sm text-slate-300 font-medium tracking-wide">
+                                        <li className="flex gap-2"><span className="text-indigo-500">&bull;</span> Molecular Basis of Inheritance</li>
+                                        <li className="flex gap-2"><span className="text-indigo-500">&bull;</span> Principles of Inheritance</li>
+                                        <li className="flex gap-2"><span className="text-indigo-500">&bull;</span> Human Reproduction</li>
+                                        <li className="flex gap-2"><span className="text-indigo-500">&bull;</span> Ecology Series (4 chapters)</li>
+                                        <li className="flex gap-2"><span className="text-indigo-500">&bull;</span> Biomolecules & Cell Cycle</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );

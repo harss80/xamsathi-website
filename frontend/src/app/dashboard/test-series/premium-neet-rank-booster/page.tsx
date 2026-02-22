@@ -234,6 +234,77 @@ export default function PremiumNeetRankBoosterPage() {
                         <div className="text-sm text-slate-400 mt-2">Compact tests to revise quickly.</div>
                     </div>
                 </div>
+
+                {/* --- DETAILS SECTION --- */}
+                <div className="mt-16 space-y-12 pb-12">
+                    <div className="space-y-6">
+                        <h2 className="text-2xl font-black text-white flex items-center gap-3">
+                            <Zap className="w-6 h-6 text-emerald-400" />
+                            What You'll Get in This Premium Series
+                        </h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {[
+                                "20 Targeted Sectional & Part Tests to boost your confidence.",
+                                "A focus strictly on high-yield and frequently asked NCERT topics.",
+                                "Quick, crisp solutions explaining short-cuts and elimination techniques.",
+                                "Visual analytics mapping your progress curve over time.",
+                                "Exclusive access to top-tier rank-booster question formats (Assertion-Reason)."
+                            ].map((item, i) => (
+                                <div key={i} className="flex items-start gap-4 p-5 rounded-2xl bg-slate-900 border border-slate-800 hover:border-emerald-500/30 transition-colors">
+                                    <div className="mt-0.5 shrink-0 w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                                        <BadgeCheck className="w-4 h-4" />
+                                    </div>
+                                    <p className="text-slate-300 text-sm leading-relaxed">{item}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="space-y-6">
+                        <h2 className="text-2xl font-black text-white flex items-center gap-3">
+                            <BookOpen className="w-6 h-6 text-emerald-400" />
+                            Chapters Covered Inside
+                        </h2>
+                        <div className="p-8 rounded-3xl bg-slate-900 border border-slate-800 space-y-8 relative overflow-hidden">
+                            <p className="text-slate-400 text-sm md:text-base max-w-3xl leading-relaxed">
+                                Curated primarily for revision, this Rank Booster Pack highlights major scoring blocks across the 11th and 12th standard syllabus, letting you conquer high-weightage zones fast.
+                            </p>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div className="space-y-4 bg-slate-950/50 p-6 rounded-2xl border border-slate-800">
+                                    <h3 className="text-lg font-black text-emerald-300 border-b border-emerald-500/20 pb-3">Physics</h3>
+                                    <ul className="space-y-3 text-sm text-slate-300 font-medium tracking-wide">
+                                        <li className="flex gap-2"><span className="text-emerald-500">&bull;</span> Modern Physics & Optics</li>
+                                        <li className="flex gap-2"><span className="text-emerald-500">&bull;</span> Magnetism & EMI</li>
+                                        <li className="flex gap-2"><span className="text-emerald-500">&bull;</span> Current Electricity Focus</li>
+                                        <li className="flex gap-2"><span className="text-emerald-500">&bull;</span> Thermal Physics</li>
+                                        <li className="flex gap-2"><span className="text-emerald-500">&bull;</span> Mechanics Problem Types</li>
+                                    </ul>
+                                </div>
+                                <div className="space-y-4 bg-slate-950/50 p-6 rounded-2xl border border-slate-800">
+                                    <h3 className="text-lg font-black text-emerald-300 border-b border-emerald-500/20 pb-3">Chemistry</h3>
+                                    <ul className="space-y-3 text-sm text-slate-300 font-medium tracking-wide">
+                                        <li className="flex gap-2"><span className="text-emerald-500">&bull;</span> Block Chemistry (s,p,d,f)</li>
+                                        <li className="flex gap-2"><span className="text-emerald-500">&bull;</span> GOC & Isomerism</li>
+                                        <li className="flex gap-2"><span className="text-emerald-500">&bull;</span> Chemical Bonding Exceptions</li>
+                                        <li className="flex gap-2"><span className="text-emerald-500">&bull;</span> Electrochemistry & Kinetics</li>
+                                        <li className="flex gap-2"><span className="text-emerald-500">&bull;</span> Named Reactions & Reagents</li>
+                                    </ul>
+                                </div>
+                                <div className="space-y-4 bg-slate-950/50 p-6 rounded-2xl border border-slate-800">
+                                    <h3 className="text-lg font-black text-emerald-300 border-b border-emerald-500/20 pb-3">Biology</h3>
+                                    <ul className="space-y-3 text-sm text-slate-300 font-medium tracking-wide">
+                                        <li className="flex gap-2"><span className="text-emerald-500">&bull;</span> Genetics & Inheritance</li>
+                                        <li className="flex gap-2"><span className="text-emerald-500">&bull;</span> Physiology Highlights</li>
+                                        <li className="flex gap-2"><span className="text-emerald-500">&bull;</span> Biotechnology & Applications</li>
+                                        <li className="flex gap-2"><span className="text-emerald-500">&bull;</span> Plant Kingdom & Morphology</li>
+                                        <li className="flex gap-2"><span className="text-emerald-500">&bull;</span> Reproduction Strategies</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );

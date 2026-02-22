@@ -234,6 +234,77 @@ export default function PremiumNeetAdvancedPage() {
                         <div className="text-sm text-slate-400 mt-2">Clean interface designed for serious mock practice.</div>
                     </div>
                 </div>
+
+                {/* --- DETAILS SECTION --- */}
+                <div className="mt-16 space-y-12 pb-12">
+                    <div className="space-y-6">
+                        <h2 className="text-2xl font-black text-white flex items-center gap-3">
+                            <Sparkles className="w-6 h-6 text-yellow-400" />
+                            What You'll Get in This Premium Series
+                        </h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {[
+                                "15 Full-length NEET Mocks + 10 Part Tests (Strict NCERT & NTA Pattern).",
+                                "Comprehensive explanations covering tricky NCERT lines.",
+                                "Deep performance analytics with weak-topic identification.",
+                                "Exclusive access to premium doubts discussion platform.",
+                                "Clean, distraction-free environment to simulate the NEET UI."
+                            ].map((item, i) => (
+                                <div key={i} className="flex items-start gap-4 p-5 rounded-2xl bg-slate-900 border border-slate-800 hover:border-yellow-500/30 transition-colors">
+                                    <div className="mt-0.5 shrink-0 w-6 h-6 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-400">
+                                        <BadgeCheck className="w-4 h-4" />
+                                    </div>
+                                    <p className="text-slate-300 text-sm leading-relaxed">{item}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="space-y-6">
+                        <h2 className="text-2xl font-black text-white flex items-center gap-3">
+                            <BookOpen className="w-6 h-6 text-yellow-400" />
+                            Chapters Covered Inside
+                        </h2>
+                        <div className="p-8 rounded-3xl bg-slate-900 border border-slate-800 space-y-8 relative overflow-hidden">
+                            <p className="text-slate-400 text-sm md:text-base max-w-3xl leading-relaxed">
+                                The Advanced Mock Pro series comprehensively aligns with the latest NMC-issued syllabus, covering both Class 11 and Class 12 meticulously with a special focus on updated NCERT guidelines.
+                            </p>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div className="space-y-4 bg-slate-950/50 p-6 rounded-2xl border border-slate-800">
+                                    <h3 className="text-lg font-black text-yellow-300 border-b border-yellow-500/20 pb-3">Physics</h3>
+                                    <ul className="space-y-3 text-sm text-slate-300 font-medium tracking-wide">
+                                        <li className="flex gap-2"><span className="text-yellow-500">&bull;</span> Kinematics & Laws of Motion</li>
+                                        <li className="flex gap-2"><span className="text-yellow-500">&bull;</span> Rotational Mechanics</li>
+                                        <li className="flex gap-2"><span className="text-yellow-500">&bull;</span> Thermodynamics & Waves</li>
+                                        <li className="flex gap-2"><span className="text-yellow-500">&bull;</span> Electromagnetism</li>
+                                        <li className="flex gap-2"><span className="text-yellow-500">&bull;</span> Modern Physics & Optics</li>
+                                    </ul>
+                                </div>
+                                <div className="space-y-4 bg-slate-950/50 p-6 rounded-2xl border border-slate-800">
+                                    <h3 className="text-lg font-black text-yellow-300 border-b border-yellow-500/20 pb-3">Chemistry</h3>
+                                    <ul className="space-y-3 text-sm text-slate-300 font-medium tracking-wide">
+                                        <li className="flex gap-2"><span className="text-yellow-500">&bull;</span> Physical Chemistry Foundations</li>
+                                        <li className="flex gap-2"><span className="text-yellow-500">&bull;</span> p, d, f Blocks & Coordination</li>
+                                        <li className="flex gap-2"><span className="text-yellow-500">&bull;</span> Isomerism & GOC</li>
+                                        <li className="flex gap-2"><span className="text-yellow-500">&bull;</span> Oxygen & Nitrogen Compounds</li>
+                                        <li className="flex gap-2"><span className="text-yellow-500">&bull;</span> Biomolecules</li>
+                                    </ul>
+                                </div>
+                                <div className="space-y-4 bg-slate-950/50 p-6 rounded-2xl border border-slate-800">
+                                    <h3 className="text-lg font-black text-yellow-300 border-b border-yellow-500/20 pb-3">Biology</h3>
+                                    <ul className="space-y-3 text-sm text-slate-300 font-medium tracking-wide">
+                                        <li className="flex gap-2"><span className="text-yellow-500">&bull;</span> Human Physiology</li>
+                                        <li className="flex gap-2"><span className="text-yellow-500">&bull;</span> Plant Physiology</li>
+                                        <li className="flex gap-2"><span className="text-yellow-500">&bull;</span> Genetics & Evolution</li>
+                                        <li className="flex gap-2"><span className="text-yellow-500">&bull;</span> Cell Structure & Function</li>
+                                        <li className="flex gap-2"><span className="text-yellow-500">&bull;</span> Ecology & Biotechnology</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );

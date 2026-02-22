@@ -234,6 +234,77 @@ export default function PremiumNeetIntensivePapersPage() {
                         <div className="text-sm text-slate-400 mt-2">Perfect for last-month intensive practice.</div>
                     </div>
                 </div>
+
+                {/* --- DETAILS SECTION --- */}
+                <div className="mt-16 space-y-12 pb-12">
+                    <div className="space-y-6">
+                        <h2 className="text-2xl font-black text-white flex items-center gap-3">
+                            <Sparkles className="w-6 h-6 text-pink-400" />
+                            What You'll Get in This Premium Series
+                        </h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {[
+                                "20 Intensive Full Syllabus Papers to build the ultimate stamina.",
+                                "A strict mock environment mimicking the actual stress of NEET.",
+                                "Detailed performance insights, time-per-question analytics, and percentile prediction.",
+                                "Complete answer keys with high-yield tips and tricks.",
+                                "Hand-picked tough questions from previous year exams (AIPMT & AIIMS)."
+                            ].map((item, i) => (
+                                <div key={i} className="flex items-start gap-4 p-5 rounded-2xl bg-slate-900 border border-slate-800 hover:border-pink-500/30 transition-colors">
+                                    <div className="mt-0.5 shrink-0 w-6 h-6 rounded-full bg-pink-500/10 flex items-center justify-center text-pink-400">
+                                        <BadgeCheck className="w-4 h-4" />
+                                    </div>
+                                    <p className="text-slate-300 text-sm leading-relaxed">{item}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="space-y-6">
+                        <h2 className="text-2xl font-black text-white flex items-center gap-3">
+                            <BookOpen className="w-6 h-6 text-pink-400" />
+                            Chapters Covered Inside
+                        </h2>
+                        <div className="p-8 rounded-3xl bg-slate-900 border border-slate-800 space-y-8 relative overflow-hidden">
+                            <p className="text-slate-400 text-sm md:text-base max-w-3xl leading-relaxed">
+                                Because this is an Intensive Full Paper series, every single chapter from the Class 11 & Class 12 NEET Syllabus is assessed in every paper, matched precisely to the actual exam's weightage.
+                            </p>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div className="space-y-4 bg-slate-950/50 p-6 rounded-2xl border border-slate-800">
+                                    <h3 className="text-lg font-black text-pink-300 border-b border-pink-500/20 pb-3">Physics focus</h3>
+                                    <ul className="space-y-3 text-sm text-slate-300 font-medium tracking-wide">
+                                        <li className="flex gap-2"><span className="text-pink-500">&bull;</span> Modern Physics (High Weightage)</li>
+                                        <li className="flex gap-2"><span className="text-pink-500">&bull;</span> Ray & Wave Optics</li>
+                                        <li className="flex gap-2"><span className="text-pink-500">&bull;</span> Electrodynamics & AC</li>
+                                        <li className="flex gap-2"><span className="text-pink-500">&bull;</span> Heat & Thermodynamics</li>
+                                        <li className="flex gap-2"><span className="text-pink-500">&bull;</span> Mechanics Foundation</li>
+                                    </ul>
+                                </div>
+                                <div className="space-y-4 bg-slate-950/50 p-6 rounded-2xl border border-slate-800">
+                                    <h3 className="text-lg font-black text-pink-300 border-b border-pink-500/20 pb-3">Chemistry focus</h3>
+                                    <ul className="space-y-3 text-sm text-slate-300 font-medium tracking-wide">
+                                        <li className="flex gap-2"><span className="text-pink-500">&bull;</span> Coordination Chemistry</li>
+                                        <li className="flex gap-2"><span className="text-pink-500">&bull;</span> Equilibrium & Electrochemistry</li>
+                                        <li className="flex gap-2"><span className="text-pink-500">&bull;</span> Complete Organic Reactions</li>
+                                        <li className="flex gap-2"><span className="text-pink-500">&bull;</span> Hydrocarbons & Derivatives</li>
+                                        <li className="flex gap-2"><span className="text-pink-500">&bull;</span> Periodic Properties & Bonding</li>
+                                    </ul>
+                                </div>
+                                <div className="space-y-4 bg-slate-950/50 p-6 rounded-2xl border border-slate-800">
+                                    <h3 className="text-lg font-black text-pink-300 border-b border-pink-500/20 pb-3">Biology focus</h3>
+                                    <ul className="space-y-3 text-sm text-slate-300 font-medium tracking-wide">
+                                        <li className="flex gap-2"><span className="text-pink-500">&bull;</span> Human Physiology Integration</li>
+                                        <li className="flex gap-2"><span className="text-pink-500">&bull;</span> Genetics & Molecular Basis</li>
+                                        <li className="flex gap-2"><span className="text-pink-500">&bull;</span> Cell Biology & Assortment</li>
+                                        <li className="flex gap-2"><span className="text-pink-500">&bull;</span> Structural Organization</li>
+                                        <li className="flex gap-2"><span className="text-pink-500">&bull;</span> Reproduction in Organisms</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );
