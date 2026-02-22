@@ -152,6 +152,14 @@ export default function PremiumNeetAdvancedPage() {
 
                                     <button
                                         onClick={handleBuyNow}
+                                        onMouseEnter={async () => {
+                                            const { preloadRazorpay } = await import("@/lib/payment");
+                                            preloadRazorpay();
+                                        }}
+                                        onFocus={async () => {
+                                            const { preloadRazorpay } = await import("@/lib/payment");
+                                            preloadRazorpay();
+                                        }}
                                         disabled={isPaying}
                                         className="mt-6 w-full py-4 rounded-2xl bg-yellow-500 hover:bg-yellow-400 text-black font-black transition-colors disabled:opacity-70 disabled:cursor-not-allowed inline-flex items-center justify-center gap-3"
                                     >
