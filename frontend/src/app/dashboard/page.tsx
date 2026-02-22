@@ -11,10 +11,12 @@ import EarnSection from "@/components/dashboard/EarnSection";
 
 import ProfilePage from "@/app/dashboard/profile/page";
 
-import { BookOpen, Calendar, BarChart3, ArrowRight, Sparkles, FileText } from "lucide-react";
+import AutoGenerate from "@/components/dashboard/AutoGenerate";
+
+import { BookOpen, Calendar, BarChart3, ArrowRight, Sparkles, FileText, Settings } from "lucide-react";
 import { trackLead } from "@/lib/trackLead";
 
-const ALLOWED_TABS = ["overview", "courses", "tests", "schedule", "reports", "leaderboard", "profile", "earn"] as const;
+const ALLOWED_TABS = ["overview", "courses", "tests", "schedule", "reports", "leaderboard", "profile", "earn", "autogenerate"] as const;
 
 function DashboardContent() {
     const [isLoading, setIsLoading] = useState(true);
@@ -320,54 +322,195 @@ function DashboardContent() {
                                         <>
                                             {!isPurchased("699f9a1b2c3d4e5f6a7b8c9d") && (
                                                 <Link
-                                                href="/dashboard/test-series/premium-neet-advanced"
-                                                onClick={() => {
-                                                    trackLead({ action: "dashboard_open_paid_series", entity_type: "test_series", entity_id: "699f9a1b2c3d4e5f6a7b8c9d" });
-                                                }}
-                                                className="group relative bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden hover:border-yellow-500/50 hover:shadow-2xl transition-all hover:-translate-y-1"
-                                            >
-                                                <div className="h-40 relative overflow-hidden">
-                                                    <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/25 via-slate-950 to-slate-950" />
-                                                    <div className="absolute -top-12 -right-12 w-60 h-60 bg-yellow-500/20 blur-[60px] rounded-full" />
-                                                    <div className="absolute top-5 left-5 flex items-center gap-3">
-                                                        <div className="w-12 h-12 rounded-2xl bg-yellow-500/15 border border-yellow-500/20 flex items-center justify-center text-yellow-300">
-                                                            <Sparkles className="w-6 h-6" />
+                                                    href="/dashboard/test-series/premium-neet-advanced"
+                                                    onClick={() => {
+                                                        trackLead({ action: "dashboard_open_paid_series", entity_type: "test_series", entity_id: "699f9a1b2c3d4e5f6a7b8c9d" });
+                                                    }}
+                                                    className="group relative bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden hover:border-yellow-500/50 hover:shadow-2xl transition-all hover:-translate-y-1"
+                                                >
+                                                    <div className="h-40 relative overflow-hidden">
+                                                        <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/25 via-slate-950 to-slate-950" />
+                                                        <div className="absolute -top-12 -right-12 w-60 h-60 bg-yellow-500/20 blur-[60px] rounded-full" />
+                                                        <div className="absolute top-5 left-5 flex items-center gap-3">
+                                                            <div className="w-12 h-12 rounded-2xl bg-yellow-500/15 border border-yellow-500/20 flex items-center justify-center text-yellow-300">
+                                                                <Sparkles className="w-6 h-6" />
+                                                            </div>
+                                                            <div>
+                                                                <div className="text-xs font-black uppercase tracking-[0.25em] text-yellow-300">Premium</div>
+                                                                <div className="text-[11px] text-slate-400 font-bold">NEET | Class 12</div>
+                                                            </div>
                                                         </div>
-                                                        <div>
-                                                            <div className="text-xs font-black uppercase tracking-[0.25em] text-yellow-300">Premium</div>
-                                                            <div className="text-[11px] text-slate-400 font-bold">NEET | Class 12</div>
+                                                        <div className="absolute top-5 right-5 px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-300 text-xs font-black border border-yellow-500/20">
+                                                            ₹499
                                                         </div>
                                                     </div>
-                                                    <div className="absolute top-5 right-5 px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-300 text-xs font-black border border-yellow-500/20">
-                                                        ₹499
-                                                    </div>
-                                                </div>
 
-                                                <div className="p-6">
-                                                    <h4 className="text-xl font-black text-white group-hover:text-yellow-200 transition-colors">
-                                                        NEET Advanced Mock Pro
-                                                    </h4>
-                                                    <p className="text-slate-400 text-sm mt-2 line-clamp-2">
-                                                        15 Full Mocks + 10 Part Tests • premium experience.
-                                                    </p>
+                                                    <div className="p-6">
+                                                        <h4 className="text-xl font-black text-white group-hover:text-yellow-200 transition-colors">
+                                                            NEET Advanced Mock Pro
+                                                        </h4>
+                                                        <p className="text-slate-400 text-sm mt-2 line-clamp-2">
+                                                            15 Full Mocks + 10 Part Tests • premium experience.
+                                                        </p>
 
-                                                    <div className="flex items-center justify-between mt-6 pt-4 border-t border-slate-800">
-                                                        <div className="flex items-center gap-2 text-xs text-slate-500 font-bold">
-                                                            <BookOpen className="w-4 h-4" /> 25 Tests
-                                                        </div>
-                                                        <div className="flex items-center gap-2 text-sm font-black text-yellow-300 group-hover:translate-x-1 transition-transform">
-                                                            View <ArrowRight className="w-4 h-4" />
+                                                        <div className="flex items-center justify-between mt-6 pt-4 border-t border-slate-800">
+                                                            <div className="flex items-center gap-2 text-xs text-slate-500 font-bold">
+                                                                <BookOpen className="w-4 h-4" /> 25 Tests
+                                                            </div>
+                                                            <div className="flex items-center gap-2 text-sm font-black text-yellow-300 group-hover:translate-x-1 transition-transform">
+                                                                View <ArrowRight className="w-4 h-4" />
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
                                                 </Link>
                                             )}
 
                                             {!isPurchased("79bf9a1b2c3d4e5f6a7b8c9d") && (
                                                 <Link
-                                                href="/dashboard/test-series/premium-neet-rank-booster"
+                                                    href="/dashboard/test-series/premium-neet-rank-booster"
+                                                    onClick={() => {
+                                                        trackLead({ action: "dashboard_open_paid_series", entity_type: "test_series", entity_id: "79bf9a1b2c3d4e5f6a7b8c9d" });
+                                                    }}
+                                                    className="group relative bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden hover:border-emerald-500/50 hover:shadow-2xl transition-all hover:-translate-y-1"
+                                                >
+                                                    <div className="h-40 relative overflow-hidden">
+                                                        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/25 via-slate-950 to-slate-950" />
+                                                        <div className="absolute -top-12 -right-12 w-60 h-60 bg-emerald-500/20 blur-[60px] rounded-full" />
+                                                        <div className="absolute top-5 left-5 flex items-center gap-3">
+                                                            <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/20 flex items-center justify-center text-emerald-300">
+                                                                <Sparkles className="w-6 h-6" />
+                                                            </div>
+                                                            <div>
+                                                                <div className="text-xs font-black uppercase tracking-[0.25em] text-emerald-300">Premium</div>
+                                                                <div className="text-[11px] text-slate-400 font-bold">NEET | Class 12</div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="absolute top-5 right-5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 text-xs font-black border border-emerald-500/20">
+                                                            ₹199
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="p-6">
+                                                        <h4 className="text-xl font-black text-white group-hover:text-emerald-200 transition-colors">
+                                                            NEET Rank Booster Pack
+                                                        </h4>
+                                                        <p className="text-slate-400 text-sm mt-2 line-clamp-2">
+                                                            20 Part Tests • speed & accuracy focused.
+                                                        </p>
+
+                                                        <div className="flex items-center justify-between mt-6 pt-4 border-t border-slate-800">
+                                                            <div className="flex items-center gap-2 text-xs text-slate-500 font-bold">
+                                                                <BookOpen className="w-4 h-4" /> Part Tests
+                                                            </div>
+                                                            <div className="flex items-center gap-2 text-sm font-black text-emerald-300 group-hover:translate-x-1 transition-transform">
+                                                                View <ArrowRight className="w-4 h-4" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </Link>
+                                            )}
+
+                                            {!isPurchased("89cf9a1b2c3d4e5f6a7b8c9d") && (
+                                                <Link
+                                                    href="/dashboard/test-series/premium-neet-concept-mastery"
+                                                    onClick={() => {
+                                                        trackLead({ action: "dashboard_open_paid_series", entity_type: "test_series", entity_id: "89cf9a1b2c3d4e5f6a7b8c9d" });
+                                                    }}
+                                                    className="group relative bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden hover:border-indigo-500/50 hover:shadow-2xl transition-all hover:-translate-y-1"
+                                                >
+                                                    <div className="h-40 relative overflow-hidden">
+                                                        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/25 via-slate-950 to-slate-950" />
+                                                        <div className="absolute -top-12 -right-12 w-60 h-60 bg-indigo-500/20 blur-[60px] rounded-full" />
+                                                        <div className="absolute top-5 left-5 flex items-center gap-3">
+                                                            <div className="w-12 h-12 rounded-2xl bg-indigo-500/15 border border-indigo-500/20 flex items-center justify-center text-indigo-300">
+                                                                <Sparkles className="w-6 h-6" />
+                                                            </div>
+                                                            <div>
+                                                                <div className="text-xs font-black uppercase tracking-[0.25em] text-indigo-300">Premium</div>
+                                                                <div className="text-[11px] text-slate-400 font-bold">NEET | Class 12</div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="absolute top-5 right-5 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-xs font-black border border-indigo-500/20">
+                                                            ₹299
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="p-6">
+                                                        <h4 className="text-xl font-black text-white group-hover:text-indigo-200 transition-colors">
+                                                            NEET Concept Mastery
+                                                        </h4>
+                                                        <p className="text-slate-400 text-sm mt-2 line-clamp-2">
+                                                            30 Chapter Tests • concept strength.
+                                                        </p>
+
+                                                        <div className="flex items-center justify-between mt-6 pt-4 border-t border-slate-800">
+                                                            <div className="flex items-center gap-2 text-xs text-slate-500 font-bold">
+                                                                <BookOpen className="w-4 h-4" /> Chapter Tests
+                                                            </div>
+                                                            <div className="flex items-center gap-2 text-sm font-black text-indigo-300 group-hover:translate-x-1 transition-transform">
+                                                                View <ArrowRight className="w-4 h-4" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </Link>
+                                            )}
+
+                                            {!isPurchased("99df9a1b2c3d4e5f6a7b8c9d") && (
+                                                <Link
+                                                    href="/dashboard/test-series/premium-neet-intensive-papers"
+                                                    onClick={() => {
+                                                        trackLead({ action: "dashboard_open_paid_series", entity_type: "test_series", entity_id: "99df9a1b2c3d4e5f6a7b8c9d" });
+                                                    }}
+                                                    className="group relative bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden hover:border-pink-500/50 hover:shadow-2xl transition-all hover:-translate-y-1"
+                                                >
+                                                    <div className="h-40 relative overflow-hidden">
+                                                        <div className="absolute inset-0 bg-gradient-to-br from-pink-500/25 via-slate-950 to-slate-950" />
+                                                        <div className="absolute -top-12 -right-12 w-60 h-60 bg-pink-500/20 blur-[60px] rounded-full" />
+                                                        <div className="absolute top-5 left-5 flex items-center gap-3">
+                                                            <div className="w-12 h-12 rounded-2xl bg-pink-500/15 border border-pink-500/20 flex items-center justify-center text-pink-300">
+                                                                <Sparkles className="w-6 h-6" />
+                                                            </div>
+                                                            <div>
+                                                                <div className="text-xs font-black uppercase tracking-[0.25em] text-pink-300">Premium</div>
+                                                                <div className="text-[11px] text-slate-400 font-bold">NEET | Class 12</div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="absolute top-5 right-5 px-3 py-1 rounded-full bg-pink-500/10 text-pink-300 text-xs font-black border border-pink-500/20">
+                                                            ₹1999
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="p-6">
+                                                        <h4 className="text-xl font-black text-white group-hover:text-pink-200 transition-colors">
+                                                            NEET Intensive Papers Series
+                                                        </h4>
+                                                        <p className="text-slate-400 text-sm mt-2 line-clamp-2">
+                                                            20 Full Papers • exam pattern practice.
+                                                        </p>
+
+                                                        <div className="flex items-center justify-between mt-6 pt-4 border-t border-slate-800">
+                                                            <div className="flex items-center gap-2 text-xs text-slate-500 font-bold">
+                                                                <BookOpen className="w-4 h-4" /> Full Papers
+                                                            </div>
+                                                            <div className="flex items-center gap-2 text-sm font-black text-pink-300 group-hover:translate-x-1 transition-transform">
+                                                                View <ArrowRight className="w-4 h-4" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </Link>
+                                            )}
+                                        </>
+                                    )}
+
+                                    {((classGrade === 11) || (classGrade === 12)) && !hideJee && (
+                                        !isPurchased(classGrade === 11 ? "a1ef9a1b2c3d4e5f6a7b8c9d" : "b1ff9a1b2c3d4e5f6a7b8c9d") && (
+                                            <Link
+                                                href="/dashboard/test-series/premium-jee-main-copy-mocks"
                                                 onClick={() => {
-                                                    trackLead({ action: "dashboard_open_paid_series", entity_type: "test_series", entity_id: "79bf9a1b2c3d4e5f6a7b8c9d" });
+                                                    const entityId = classGrade === 11
+                                                        ? "a1ef9a1b2c3d4e5f6a7b8c9d"
+                                                        : "b1ff9a1b2c3d4e5f6a7b8c9d";
+                                                    trackLead({ action: "dashboard_open_paid_series", entity_type: "test_series", entity_id: entityId });
                                                 }}
                                                 className="group relative bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden hover:border-emerald-500/50 hover:shadow-2xl transition-all hover:-translate-y-1"
                                             >
@@ -380,173 +523,32 @@ function DashboardContent() {
                                                         </div>
                                                         <div>
                                                             <div className="text-xs font-black uppercase tracking-[0.25em] text-emerald-300">Premium</div>
-                                                            <div className="text-[11px] text-slate-400 font-bold">NEET | Class 12</div>
+                                                            <div className="text-[11px] text-slate-400 font-bold">JEE Main | Class {classGrade}</div>
                                                         </div>
                                                     </div>
                                                     <div className="absolute top-5 right-5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 text-xs font-black border border-emerald-500/20">
-                                                        ₹199
-                                                    </div>
-                                                </div>
-
-                                                <div className="p-6">
-                                                    <h4 className="text-xl font-black text-white group-hover:text-emerald-200 transition-colors">
-                                                        NEET Rank Booster Pack
-                                                    </h4>
-                                                    <p className="text-slate-400 text-sm mt-2 line-clamp-2">
-                                                        20 Part Tests • speed & accuracy focused.
-                                                    </p>
-
-                                                    <div className="flex items-center justify-between mt-6 pt-4 border-t border-slate-800">
-                                                        <div className="flex items-center gap-2 text-xs text-slate-500 font-bold">
-                                                            <BookOpen className="w-4 h-4" /> Part Tests
-                                                        </div>
-                                                        <div className="flex items-center gap-2 text-sm font-black text-emerald-300 group-hover:translate-x-1 transition-transform">
-                                                            View <ArrowRight className="w-4 h-4" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                </Link>
-                                            )}
-
-                                            {!isPurchased("89cf9a1b2c3d4e5f6a7b8c9d") && (
-                                                <Link
-                                                href="/dashboard/test-series/premium-neet-concept-mastery"
-                                                onClick={() => {
-                                                    trackLead({ action: "dashboard_open_paid_series", entity_type: "test_series", entity_id: "89cf9a1b2c3d4e5f6a7b8c9d" });
-                                                }}
-                                                className="group relative bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden hover:border-indigo-500/50 hover:shadow-2xl transition-all hover:-translate-y-1"
-                                            >
-                                                <div className="h-40 relative overflow-hidden">
-                                                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/25 via-slate-950 to-slate-950" />
-                                                    <div className="absolute -top-12 -right-12 w-60 h-60 bg-indigo-500/20 blur-[60px] rounded-full" />
-                                                    <div className="absolute top-5 left-5 flex items-center gap-3">
-                                                        <div className="w-12 h-12 rounded-2xl bg-indigo-500/15 border border-indigo-500/20 flex items-center justify-center text-indigo-300">
-                                                            <Sparkles className="w-6 h-6" />
-                                                        </div>
-                                                        <div>
-                                                            <div className="text-xs font-black uppercase tracking-[0.25em] text-indigo-300">Premium</div>
-                                                            <div className="text-[11px] text-slate-400 font-bold">NEET | Class 12</div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="absolute top-5 right-5 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-xs font-black border border-indigo-500/20">
-                                                        ₹299
-                                                    </div>
-                                                </div>
-
-                                                <div className="p-6">
-                                                    <h4 className="text-xl font-black text-white group-hover:text-indigo-200 transition-colors">
-                                                        NEET Concept Mastery
-                                                    </h4>
-                                                    <p className="text-slate-400 text-sm mt-2 line-clamp-2">
-                                                        30 Chapter Tests • concept strength.
-                                                    </p>
-
-                                                    <div className="flex items-center justify-between mt-6 pt-4 border-t border-slate-800">
-                                                        <div className="flex items-center gap-2 text-xs text-slate-500 font-bold">
-                                                            <BookOpen className="w-4 h-4" /> Chapter Tests
-                                                        </div>
-                                                        <div className="flex items-center gap-2 text-sm font-black text-indigo-300 group-hover:translate-x-1 transition-transform">
-                                                            View <ArrowRight className="w-4 h-4" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                </Link>
-                                            )}
-
-                                            {!isPurchased("99df9a1b2c3d4e5f6a7b8c9d") && (
-                                                <Link
-                                                href="/dashboard/test-series/premium-neet-intensive-papers"
-                                                onClick={() => {
-                                                    trackLead({ action: "dashboard_open_paid_series", entity_type: "test_series", entity_id: "99df9a1b2c3d4e5f6a7b8c9d" });
-                                                }}
-                                                className="group relative bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden hover:border-pink-500/50 hover:shadow-2xl transition-all hover:-translate-y-1"
-                                            >
-                                                <div className="h-40 relative overflow-hidden">
-                                                    <div className="absolute inset-0 bg-gradient-to-br from-pink-500/25 via-slate-950 to-slate-950" />
-                                                    <div className="absolute -top-12 -right-12 w-60 h-60 bg-pink-500/20 blur-[60px] rounded-full" />
-                                                    <div className="absolute top-5 left-5 flex items-center gap-3">
-                                                        <div className="w-12 h-12 rounded-2xl bg-pink-500/15 border border-pink-500/20 flex items-center justify-center text-pink-300">
-                                                            <Sparkles className="w-6 h-6" />
-                                                        </div>
-                                                        <div>
-                                                            <div className="text-xs font-black uppercase tracking-[0.25em] text-pink-300">Premium</div>
-                                                            <div className="text-[11px] text-slate-400 font-bold">NEET | Class 12</div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="absolute top-5 right-5 px-3 py-1 rounded-full bg-pink-500/10 text-pink-300 text-xs font-black border border-pink-500/20">
                                                         ₹1999
                                                     </div>
                                                 </div>
 
                                                 <div className="p-6">
-                                                    <h4 className="text-xl font-black text-white group-hover:text-pink-200 transition-colors">
-                                                        NEET Intensive Papers Series
+                                                    <h4 className="text-xl font-black text-white group-hover:text-emerald-200 transition-colors">
+                                                        JEE Main Copy Mocks
                                                     </h4>
                                                     <p className="text-slate-400 text-sm mt-2 line-clamp-2">
-                                                        20 Full Papers • exam pattern practice.
+                                                        25 Full Mocks • 180 mins • 90 Questions.
                                                     </p>
 
                                                     <div className="flex items-center justify-between mt-6 pt-4 border-t border-slate-800">
                                                         <div className="flex items-center gap-2 text-xs text-slate-500 font-bold">
                                                             <BookOpen className="w-4 h-4" /> Full Papers
                                                         </div>
-                                                        <div className="flex items-center gap-2 text-sm font-black text-pink-300 group-hover:translate-x-1 transition-transform">
+                                                        <div className="flex items-center gap-2 text-sm font-black text-emerald-300 group-hover:translate-x-1 transition-transform">
                                                             View <ArrowRight className="w-4 h-4" />
                                                         </div>
                                                     </div>
                                                 </div>
-                                                </Link>
-                                            )}
-                                        </>
-                                    )}
-
-                                    {((classGrade === 11) || (classGrade === 12)) && !hideJee && (
-                                        !isPurchased(classGrade === 11 ? "a1ef9a1b2c3d4e5f6a7b8c9d" : "b1ff9a1b2c3d4e5f6a7b8c9d") && (
-                                        <Link
-                                            href="/dashboard/test-series/premium-jee-main-copy-mocks"
-                                            onClick={() => {
-                                                const entityId = classGrade === 11
-                                                    ? "a1ef9a1b2c3d4e5f6a7b8c9d"
-                                                    : "b1ff9a1b2c3d4e5f6a7b8c9d";
-                                                trackLead({ action: "dashboard_open_paid_series", entity_type: "test_series", entity_id: entityId });
-                                            }}
-                                            className="group relative bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden hover:border-emerald-500/50 hover:shadow-2xl transition-all hover:-translate-y-1"
-                                        >
-                                            <div className="h-40 relative overflow-hidden">
-                                                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/25 via-slate-950 to-slate-950" />
-                                                <div className="absolute -top-12 -right-12 w-60 h-60 bg-emerald-500/20 blur-[60px] rounded-full" />
-                                                <div className="absolute top-5 left-5 flex items-center gap-3">
-                                                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/20 flex items-center justify-center text-emerald-300">
-                                                        <Sparkles className="w-6 h-6" />
-                                                    </div>
-                                                    <div>
-                                                        <div className="text-xs font-black uppercase tracking-[0.25em] text-emerald-300">Premium</div>
-                                                        <div className="text-[11px] text-slate-400 font-bold">JEE Main | Class {classGrade}</div>
-                                                    </div>
-                                                </div>
-                                                <div className="absolute top-5 right-5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 text-xs font-black border border-emerald-500/20">
-                                                    ₹1999
-                                                </div>
-                                            </div>
-
-                                            <div className="p-6">
-                                                <h4 className="text-xl font-black text-white group-hover:text-emerald-200 transition-colors">
-                                                    JEE Main Copy Mocks
-                                                </h4>
-                                                <p className="text-slate-400 text-sm mt-2 line-clamp-2">
-                                                    25 Full Mocks • 180 mins • 90 Questions.
-                                                </p>
-
-                                                <div className="flex items-center justify-between mt-6 pt-4 border-t border-slate-800">
-                                                    <div className="flex items-center gap-2 text-xs text-slate-500 font-bold">
-                                                        <BookOpen className="w-4 h-4" /> Full Papers
-                                                    </div>
-                                                    <div className="flex items-center gap-2 text-sm font-black text-emerald-300 group-hover:translate-x-1 transition-transform">
-                                                        View <ArrowRight className="w-4 h-4" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </Link>
+                                            </Link>
                                         )
                                     )}
                                 </div>
@@ -632,6 +634,7 @@ function DashboardContent() {
                         {activeTab === "leaderboard" && <Leaderboard />}
                         {activeTab === "profile" && <ProfilePage />}
                         {activeTab === "earn" && <EarnSection />}
+                        {activeTab === "autogenerate" && <AutoGenerate />}
 
                         {['schedule', 'reports'].includes(activeTab) && (
                             <div className="flex flex-col items-center justify-center py-20 text-center bg-slate-900/50 rounded-3xl border border-slate-800">
