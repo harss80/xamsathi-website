@@ -203,7 +203,7 @@ function DashboardContent() {
             items.push({
                 id: "699f9a1b2c3d4e5f6a7b8c9d",
                 title: "NEET Advanced Mock Pro",
-                subtitle: "15 Full Mocks + 10 Part Tests • premium experience.",
+                subtitle: "15 Full Mocks + 10 Part Tests • full syllabus coverage • detailed solutions & exam-level practice.",
                 priceTag: "₹499",
                 href: "/dashboard/test-series/premium-neet-advanced",
                 entityId: "699f9a1b2c3d4e5f6a7b8c9d",
@@ -213,7 +213,7 @@ function DashboardContent() {
             items.push({
                 id: "79bf9a1b2c3d4e5f6a7b8c9d",
                 title: "NEET Rank Booster Pack",
-                subtitle: "20 Part Tests • speed & accuracy focused.",
+                subtitle: "20 Part Tests • high-yield chapters • time-bound practice to improve speed & accuracy.",
                 priceTag: "₹199",
                 href: "/dashboard/test-series/premium-neet-rank-booster",
                 entityId: "79bf9a1b2c3d4e5f6a7b8c9d",
@@ -223,7 +223,7 @@ function DashboardContent() {
             items.push({
                 id: "89cf9a1b2c3d4e5f6a7b8c9d",
                 title: "NEET Concept Mastery",
-                subtitle: "30 Chapter Tests • concept strength.",
+                subtitle: "30 Chapter Tests • topic-wise mastery • strengthen concepts with instant scoring & explanations.",
                 priceTag: "₹299",
                 href: "/dashboard/test-series/premium-neet-concept-mastery",
                 entityId: "89cf9a1b2c3d4e5f6a7b8c9d",
@@ -233,7 +233,7 @@ function DashboardContent() {
             items.push({
                 id: "99df9a1b2c3d4e5f6a7b8c9d",
                 title: "NEET Intensive Papers Series",
-                subtitle: "20 Full Papers • exam pattern practice.",
+                subtitle: "20 Full Papers • real exam feel • full-length practice with solutions & performance tracking.",
                 priceTag: "₹1999",
                 href: "/dashboard/test-series/premium-neet-intensive-papers",
                 entityId: "99df9a1b2c3d4e5f6a7b8c9d",
@@ -247,7 +247,7 @@ function DashboardContent() {
             items.push({
                 id: cid,
                 title: "JEE Main Copy Mocks",
-                subtitle: "25 Full Mocks • 180 mins • 90 Questions.",
+                subtitle: "25 Full Mocks • JEE Main pattern • timed tests with solutions to build accuracy & stamina.",
                 priceTag: "₹1999",
                 href: "/dashboard/test-series/premium-jee-main-copy-mocks",
                 entityId: cid,
