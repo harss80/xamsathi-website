@@ -129,8 +129,8 @@ export const initiatePayment = async (
             key: keyId,
             amount,
             currency,
-            name: "Eduman Premium Series",
-            description: "Test Series Subscription",
+            name: "Xamsathi Test Series",
+            description: "Xamsathi Test Series Purchase",
             order_id: orderId,
             handler: async function (response: RazorpayPaymentSuccessResponse) {
                 // 3. Verify Payment
