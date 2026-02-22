@@ -208,14 +208,14 @@ export default function TestSeriesPlayer({
         setAnswers({});
         setMarkedForReview(new Set());
         setCurrentQuestionIndex(0);
-        setActiveSubject(questions[0]?.type.toLowerCase() || "general");
+        setActiveSubject(questions[0]?.type?.toLowerCase() || "general");
         setBottomTab("discussion");
     };
 
     const startReview = () => {
         setStatus("review");
         setCurrentQuestionIndex(0);
-        setActiveSubject(questions[0]?.type.toLowerCase() || "general");
+        setActiveSubject(questions[0]?.type?.toLowerCase() || "general");
         setBottomTab("solution");
     };
 
@@ -368,7 +368,7 @@ export default function TestSeriesPlayer({
     // Update active subject when question changes
     useEffect(() => {
         if (currentQ) {
-            setActiveSubject(currentQ.type.toLowerCase());
+            setActiveSubject(currentQ.type?.toLowerCase() || "general");
         }
     }, [currentQuestionIndex, currentQ]);
 
@@ -417,12 +417,12 @@ export default function TestSeriesPlayer({
         const subjectStats: Record<string, SubjectStat> = {};
 
         subjects.forEach(s => {
-            subjectStats[s.toLowerCase()] = { total: 0, attempted: 0, correct: 0, wrong: 0, score: 0 };
+            subjectStats[(s || "general").toLowerCase()] = { total: 0, attempted: 0, correct: 0, wrong: 0, score: 0 };
         });
 
         questions.forEach((q) => {
             const selected = answers[q.id];
-            const subj = q.type.toLowerCase();
+            const subj = (q.type || "general").toLowerCase();
             const format = q.format || "mcq";
 
             if (!subjectStats[subj]) {
@@ -625,7 +625,7 @@ export default function TestSeriesPlayer({
                                         <button
                                             key={subj}
                                             onClick={() => {
-                                                const firstIdx = questions.findIndex(q => q.type.toLowerCase() === subj.toLowerCase());
+                                                const firstIdx = questions.findIndex(q => (q.type || "general").toLowerCase() === subj.toLowerCase());
                                                 if (firstIdx >= 0) {
                                                     setCurrentQuestionIndex(firstIdx);
                                                     setActiveSubject(subj.toLowerCase());
