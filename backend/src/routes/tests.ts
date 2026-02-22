@@ -4,6 +4,8 @@ import Course, { ICourse } from '../models/Course';
 import Question from '../models/Question';
 import Attempt, { IAttempt } from '../models/Attempt';
 import LeaderboardEntry from '../models/LeaderboardEntry';
+import { allPhysicsQuestions } from '../data';
+
 
 
 const router = Router();
@@ -175,6 +177,31 @@ router.post('/submit', async (req: Request, res: Response) => {
     console.error('Leaderboard auto-submit error:', e);
   }
   return res.json({ attempt_id, score, total });
+});
+
+router.post('/auto-generate', (req: Request, res: Response) => {
+  const { subject, chapters, numQuestions } = req.body;
+  if (!subject || !numQuestions) {
+    return res.status(400).json({ error: 'subject and numQuestions are required' });
+  }
+
+  let selectedQuestions: any[] = [];
+
+  if (subject === 'Physics') {
+    // Pick random questions from allPhysicsQuestions
+    if (allPhysicsQuestions && allPhysicsQuestions.length > 0) {
+      let pool = [...allPhysicsQuestions];
+      // Shuffle pool
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+      selectedQuestions = pool.slice(0, numQuestions);
+    }
+  }
+
+  // If subject is not physics or we have no questions, return empty (or can handle fallback in frontend)
+  return res.json({ questions: selectedQuestions });
 });
 
 export default router;

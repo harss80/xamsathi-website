@@ -58,6 +58,17 @@ const generateMockQuestions = (subject: string, chapters: string[], numQuestions
     });
 };
 
+const getBackendBase = () => {
+    const envBase = (process.env.NEXT_PUBLIC_BACKEND_URL || "").trim();
+    if (envBase) return envBase;
+    if (typeof window !== "undefined") {
+        const host = window.location.hostname;
+        if (host === "localhost" || host === "127.0.0.1") return "http://localhost:3001";
+    }
+    return "http://localhost:3001";
+};
+
+
 export default function AutoGenerate() {
     const [step, setStep] = useState<1 | 2 | 3>(1);
     const [selectedSubject, setSelectedSubject] = useState<Subject | "">("");
@@ -82,11 +93,37 @@ export default function AutoGenerate() {
         }
     };
 
-    const handleGenerate = () => {
+    const handleGenerate = async () => {
         if (!selectedSubject || selectedChapters.length === 0) return;
         setIsGenerating(true);
         trackLead({ action: "autogenerate_test_started", entity_type: "custom_test", entity_id: `${selectedSubject}-${selectedChapters.length}-${numQuestions}` });
 
+        if (selectedSubject === "Physics") {
+            try {
+                const base = getBackendBase();
+                const res = await fetch(`${base}/api/tests/auto-generate`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        subject: selectedSubject,
+                        chapters: selectedChapters,
+                        numQuestions: numQuestions
+                    })
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.questions && data.questions.length > 0) {
+                        setTestQuestions(data.questions);
+                        setIsGenerating(false);
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.error("Failed to generate test", err);
+            }
+        }
+
+        // Fallback for missing subjects or network error
         // Simulate AI generation time
         setTimeout(() => {
             const qs = generateMockQuestions(selectedSubject, selectedChapters, numQuestions);
@@ -159,7 +196,7 @@ export default function AutoGenerate() {
                                 className={`flex flex-col items-center gap-2 focus:outline-none ${s.num <= step ? 'text-white' : 'text-slate-500 cursor-not-allowed'}`}
                             >
                                 <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-colors ${step === s.num ? 'bg-indigo-600 border border-indigo-500 shadow-[0_0_15px_rgba(79,70,229,0.5)]' :
-                                        s.num < step ? 'bg-emerald-500 text-black border border-emerald-400' : 'bg-slate-800 border border-slate-700'
+                                    s.num < step ? 'bg-emerald-500 text-black border border-emerald-400' : 'bg-slate-800 border border-slate-700'
                                     }`}>
                                     {s.num < step ? <Check className="w-4 h-4" /> : <s.icon className="w-4 h-4" />}
                                 </div>
@@ -221,8 +258,8 @@ export default function AutoGenerate() {
                                                 key={chap}
                                                 onClick={() => toggleChapter(chap)}
                                                 className={`flex items-start gap-3 p-4 rounded-xl border text-left transition-all ${isSelected
-                                                        ? "bg-indigo-600 border-indigo-500 shadow-[0_4px_20px_-5px_rgba(79,70,229,0.3)]"
-                                                        : "bg-slate-950/50 border-slate-800 hover:border-slate-600"
+                                                    ? "bg-indigo-600 border-indigo-500 shadow-[0_4px_20px_-5px_rgba(79,70,229,0.3)]"
+                                                    : "bg-slate-950/50 border-slate-800 hover:border-slate-600"
                                                     }`}
                                             >
                                                 <div className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center border transition-colors shrink-0 ${isSelected ? "bg-white/20 border-white/50" : "border-slate-600 bg-slate-900"
@@ -266,8 +303,8 @@ export default function AutoGenerate() {
                                                 key={num}
                                                 onClick={() => setNumQuestions(num)}
                                                 className={`py-3 rounded-xl border font-bold text-lg transition-all ${numQuestions === num
-                                                        ? "bg-indigo-600 border-indigo-500 text-white shadow-[0_0_15px_rgba(79,70,229,0.3)]"
-                                                        : "bg-slate-900 border-slate-800 text-slate-400 hover:bg-slate-800 hover:text-white"
+                                                    ? "bg-indigo-600 border-indigo-500 text-white shadow-[0_0_15px_rgba(79,70,229,0.3)]"
+                                                    : "bg-slate-900 border-slate-800 text-slate-400 hover:bg-slate-800 hover:text-white"
                                                     }`}
                                             >
                                                 {num}
