@@ -214,7 +214,7 @@ const Navbar = () => {
                                         transition={{ duration: 0.2 }}
                                         className="absolute top-full left-1/2 -translate-x-1/2 pt-4 w-[600px]"
                                     >
-                                        <div className="bg-slate-950/90 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-4 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.8)] relative overflow-hidden ring-1 ring-white/5">
+                                        <div className="bg-slate-950/90 backdrop-blur-xl border border-slate-800/80 rounded border-t-2 border-t-blue-500 p-4 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.8)] relative overflow-hidden ring-1 ring-white/5">
                                             <div className="absolute -top-5 left-0 right-0 h-5 bg-transparent" />
                                             <div className="grid grid-cols-2 gap-2 relative z-10">
                                                 {navStructure.map((nav) => (
@@ -225,9 +225,9 @@ const Navbar = () => {
                                                                 <Link
                                                                     key={item.title}
                                                                     href={item.href}
-                                                                    className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-800/60 transition-all duration-300 group/item border border-transparent hover:border-slate-700/50"
+                                                                    className="flex items-start gap-3 p-2.5 rounded-md hover:bg-slate-800/60 transition-all duration-300 group/item border border-transparent hover:border-slate-700/50"
                                                                 >
-                                                                    <div className="mt-0.5 p-2 rounded-lg bg-slate-900 shadow-inner text-blue-500 group-hover/item:bg-blue-600 group-hover/item:text-white transition-all duration-300 border border-slate-800 group-hover/item:border-blue-500">
+                                                                    <div className="mt-0.5 p-2 rounded-md bg-slate-900 shadow-inner text-blue-500 group-hover/item:bg-blue-600 group-hover/item:text-white transition-all duration-300 border border-slate-800 group-hover/item:border-blue-500">
                                                                         <item.icon className="w-4 h-4" />
                                                                     </div>
                                                                     <div className="flex-1">
