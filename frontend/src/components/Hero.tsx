@@ -20,9 +20,9 @@ const Hero = () => {
 
 
 
-                        <h1 className="text-5xl md:text-6xl lg:text-[4.25rem] font-black text-white tracking-tight leading-[1.1] mb-8">
-                            Prepare for 50+ Exams <br className="hidden md:block" />
-                            on <span className="text-blue-500">One Platform</span>
+                        <h1 className="text-[2.75rem] md:text-6xl lg:text-[4.5rem] font-black text-white tracking-tighter leading-[1.05] mb-8">
+                            Prepare for <span className="inline-block px-3 py-1 transform -skew-x-6 bg-blue-600 text-white rounded-lg shadow-lg rotate-1 my-2">50+ Exams</span> <br className="hidden md:block" />
+                            On <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-200 to-slate-400">One Platform.</span>
                         </h1>
 
                         <p className="text-lg text-slate-400 mb-10 leading-relaxed max-w-xl mx-auto lg:mx-0">
