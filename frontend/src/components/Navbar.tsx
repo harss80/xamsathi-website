@@ -190,63 +190,63 @@ const Navbar = () => {
                             Home
                         </Link>
 
-                        {navStructure.map((nav) => (
-                            <div
-                                key={nav.id}
-                                className="relative group"
-                                onMouseEnter={() => setHoveredNav(nav.id)}
-                                onMouseLeave={() => setHoveredNav(null)}
-                            >
-                                <button className={cn(
-                                    "flex items-center gap-1 text-sm font-semibold py-1 outline-none",
-                                    nav.items.some((item) => pathname?.startsWith(item.href))
-                                        ? "text-white"
-                                        : "text-slate-300 group-hover:text-white transition-colors"
-                                )} aria-haspopup="menu" aria-expanded={hoveredNav === nav.id ? "true" : "false"}>
-                                    {nav.label}
-                                    <ChevronDown className={cn("w-4 h-4 transition-transform duration-200", hoveredNav === nav.id ? "rotate-180" : "")} />
-                                </button>
+                        <div
+                            className="relative group"
+                            onMouseEnter={() => setHoveredNav("exams")}
+                            onMouseLeave={() => setHoveredNav(null)}
+                        >
+                            <button className={cn(
+                                "flex items-center gap-1 text-sm font-semibold py-1 outline-none",
+                                ["/government-exams", "/engineering-exams", "/medical-exams", "/banking-exams", "/defence-exams", "/entrance-exams"].some((path) => pathname?.startsWith(path))
+                                    ? "text-white"
+                                    : "text-slate-300 group-hover:text-white transition-colors"
+                            )}>
+                                Exams
+                                <ChevronDown className={cn("w-4 h-4 transition-transform duration-200", hoveredNav === "exams" ? "rotate-180" : "")} />
+                            </button>
 
-                                {/* Dropdown Menu */}
-                                <AnimatePresence>
-                                    {hoveredNav === nav.id && (
-                                        <motion.div
-                                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                                            exit={{ opacity: 0, y: 5, scale: 0.95 }}
-                                            transition={{ duration: 0.2 }}
-                                            className="absolute top-full left-1/2 -translate-x-1/2 pt-4 w-[380px]"
-                                        >
-                                            <div className="bg-slate-950/90 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-2.5 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.8)] relative overflow-hidden ring-1 ring-white/5">
-                                                {/* Connecting invisible block so hover doesn't break */}
-                                                <div className="absolute -top-5 left-0 right-0 h-5 bg-transparent" />
-
-                                                <div className="relative z-10 flex flex-col gap-1.5">
-                                                    {nav.items.map((item) => (
-                                                        <Link
-                                                            key={item.title}
-                                                            href={item.href}
-                                                            className="flex items-start gap-3.5 p-3 rounded-xl hover:bg-slate-800/60 transition-all duration-300 group/item border border-transparent hover:border-slate-700/50"
-                                                        >
-                                                            <div className="mt-0.5 p-2.5 rounded-xl bg-slate-900 shadow-inner text-blue-500 group-hover/item:bg-blue-600 group-hover/item:text-white transition-all duration-300 border border-slate-800 group-hover/item:border-blue-500">
-                                                                <item.icon className="w-5 h-5" />
-                                                            </div>
-                                                            <div className="flex-1">
-                                                                <div className="text-sm font-bold text-slate-200 group-hover/item:text-white flex items-center justify-between">
-                                                                    {item.title}
-                                                                    <ArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all text-blue-400" />
-                                                                </div>
-                                                                <div className="text-[13px] text-slate-400 mt-1 leading-snug">{item.desc}</div>
-                                                            </div>
-                                                        </Link>
-                                                    ))}
-                                                </div>
+                            <AnimatePresence>
+                                {hoveredNav === "exams" && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 5, scale: 0.95 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="absolute top-full left-1/2 -translate-x-1/2 pt-4 w-[600px]"
+                                    >
+                                        <div className="bg-slate-950/90 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-4 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.8)] relative overflow-hidden ring-1 ring-white/5">
+                                            <div className="absolute -top-5 left-0 right-0 h-5 bg-transparent" />
+                                            <div className="grid grid-cols-2 gap-2 relative z-10">
+                                                {navStructure.map((nav) => (
+                                                    <div key={nav.id}>
+                                                        <div className="px-3 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{nav.label}</div>
+                                                        <div className="flex flex-col gap-1">
+                                                            {nav.items.map((item) => (
+                                                                <Link
+                                                                    key={item.title}
+                                                                    href={item.href}
+                                                                    className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-800/60 transition-all duration-300 group/item border border-transparent hover:border-slate-700/50"
+                                                                >
+                                                                    <div className="mt-0.5 p-2 rounded-lg bg-slate-900 shadow-inner text-blue-500 group-hover/item:bg-blue-600 group-hover/item:text-white transition-all duration-300 border border-slate-800 group-hover/item:border-blue-500">
+                                                                        <item.icon className="w-4 h-4" />
+                                                                    </div>
+                                                                    <div className="flex-1">
+                                                                        <div className="text-[13px] font-bold text-slate-200 group-hover/item:text-white flex items-center justify-between">
+                                                                            {item.title}
+                                                                            <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all text-blue-400" />
+                                                                        </div>
+                                                                    </div>
+                                                                </Link>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                ))}
                                             </div>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                            </div>
-                        ))}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
 
                         <Link
                             href="/tests"
