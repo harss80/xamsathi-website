@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRight, BookOpen, Building2, GraduationCap, Shield, Sparkles } from "lucide-react";
+import ExamSearch from "@/components/ExamSearch";
 
 const categories = [
     {
@@ -62,6 +63,10 @@ export default function ExamCategories() {
                     <div className="text-blue-400 font-black tracking-wider text-sm">EXPLORE</div>
                     <h2 className="text-3xl md:text-4xl font-black text-white mt-2">Choose Your Exam Category</h2>
                     <p className="text-slate-400 text-lg mt-4">Pick your category to see exam-wise test series, syllabus and resources.</p>
+                </div>
+
+                <div className="max-w-2xl mx-auto mb-10">
+                    <ExamSearch />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
