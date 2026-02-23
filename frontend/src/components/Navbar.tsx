@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState, useEffect, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, ChevronDown, LayoutDashboard, Sparkles, BookOpen, Users, Phone, GraduationCap, PlayCircle, FileText, LogIn, UserPlus, LogOut } from "lucide-react";
+import { Menu, X, ChevronDown, LayoutDashboard, Sparkles, BookOpen, GraduationCap, Shield, LogIn, UserPlus, LogOut, Building2, FileText } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -106,23 +106,61 @@ const Navbar = () => {
 
     const navStructure = [
         {
-            id: "courses",
-            label: "Courses",
+            id: "government",
+            label: "Government Exams",
             type: "dropdown",
             items: [
-                { title: "All Courses", href: "/courses", icon: BookOpen, desc: "Comprehensive study material" },
-                { title: "Live Classes", href: "/live-classes", icon: PlayCircle, desc: "Interactive real-time sessions" },
-                { title: "Test Series", href: "/tests", icon: FileText, desc: "Exam-level mock tests" },
+                { title: "All Government Exams", href: "/government-exams", icon: Building2, desc: "SSC, Railways, UPSC & more" },
+                { title: "SSC", href: "/government-exams/ssc", icon: GraduationCap, desc: "CGL, CHSL, MTS and more" },
+                { title: "Railways", href: "/government-exams/railway", icon: GraduationCap, desc: "NTPC, Group D and more" },
+                { title: "UPSC", href: "/government-exams/upsc", icon: GraduationCap, desc: "Prelims & Mains practice" },
             ]
         },
         {
-            id: "company",
-            label: "Company",
+            id: "engineering",
+            label: "Engineering Exams",
             type: "dropdown",
             items: [
-                { title: "About Us", href: "/about", icon: Users, desc: "Our mission & story" },
-                { title: "Careers", href: "/careers", icon: Sparkles, desc: "Join our team" },
-                { title: "Contact", href: "/contact", icon: Phone, desc: "Get in touch" },
+                { title: "All Engineering Exams", href: "/engineering-exams", icon: GraduationCap, desc: "JEE Main, JEE Advanced & more" },
+                { title: "JEE Main", href: "/engineering-exams/jee-main", icon: GraduationCap, desc: "Mocks, PYQs, practice" },
+                { title: "JEE Advanced", href: "/engineering-exams/jee-advanced", icon: GraduationCap, desc: "Conceptual test series" },
+            ]
+        },
+        {
+            id: "medical",
+            label: "Medical Exams",
+            type: "dropdown",
+            items: [
+                { title: "All Medical Exams", href: "/medical-exams", icon: GraduationCap, desc: "NEET UG and more" },
+                { title: "NEET UG", href: "/medical-exams/neet", icon: GraduationCap, desc: "NCERT-based mocks" },
+            ]
+        },
+        {
+            id: "banking",
+            label: "Banking Exams",
+            type: "dropdown",
+            items: [
+                { title: "All Banking Exams", href: "/banking-exams", icon: BookOpen, desc: "SBI, IBPS and more" },
+                { title: "IBPS", href: "/banking-exams/ibps", icon: BookOpen, desc: "PO, Clerk practice" },
+                { title: "SBI PO", href: "/banking-exams/sbi-po", icon: BookOpen, desc: "Full mock drills" },
+            ]
+        },
+        {
+            id: "defence",
+            label: "Defence Exams",
+            type: "dropdown",
+            items: [
+                { title: "All Defence Exams", href: "/defence-exams", icon: Shield, desc: "NDA, CDS, AFCAT" },
+                { title: "NDA", href: "/defence-exams/nda", icon: Shield, desc: "Mock tests & practice" },
+            ]
+        },
+        {
+            id: "entrance",
+            label: "Private/Entrance Exams",
+            type: "dropdown",
+            items: [
+                { title: "All Entrance Exams", href: "/entrance-exams", icon: Sparkles, desc: "CUET and more" },
+                { title: "CUET", href: "/entrance-exams/cuet", icon: Sparkles, desc: "Practice sets" },
             ]
         }
     ];
@@ -172,7 +210,7 @@ const Navbar = () => {
                                     nav.items.some((item) => pathname?.startsWith(item.href))
                                         ? "text-white"
                                         : "text-slate-300 group-hover:text-white transition-colors"
-                                )} aria-haspopup="menu" aria-expanded={hoveredNav === nav.id}>
+                                )} aria-haspopup="menu" aria-expanded={hoveredNav === nav.id ? "true" : "false"}>
                                     {nav.label}
                                     <ChevronDown className={cn("w-4 h-4 transition-transform duration-200", hoveredNav === nav.id ? "rotate-180" : "")} />
                                 </button>
@@ -212,6 +250,25 @@ const Navbar = () => {
                                 </AnimatePresence>
                             </div>
                         ))}
+
+                        <Link
+                            href="/tests"
+                            className={cn("text-sm font-semibold py-1", pathname?.startsWith("/tests") ? "text-white" : "text-slate-300 hover:text-white transition-colors")}
+                        >
+                            Test Series
+                        </Link>
+                        <Link
+                            href="/about"
+                            className={cn("text-sm font-semibold py-1", pathname?.startsWith("/about") ? "text-white" : "text-slate-300 hover:text-white transition-colors")}
+                        >
+                            About
+                        </Link>
+                        <Link
+                            href="/contact"
+                            className={cn("text-sm font-semibold py-1", pathname?.startsWith("/contact") ? "text-white" : "text-slate-300 hover:text-white transition-colors")}
+                        >
+                            Contact
+                        </Link>
                     </div>
 
                     {/* Right Actions */}
@@ -256,8 +313,7 @@ const Navbar = () => {
                     <button
                         className="lg:hidden p-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
                         aria-label="Open menu"
-                        aria-controls="mobile-menu"
-                        aria-expanded={isMobileMenuOpen}
+                        aria-expanded={isMobileMenuOpen ? "true" : "false"}
                         onClick={() => setIsMobileMenuOpen(true)}
                     >
                         <Menu className="w-6 h-6" />
@@ -308,6 +364,15 @@ const Navbar = () => {
                                     Home
                                 </Link>
 
+                                <Link
+                                    href="/tests"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="flex items-center justify-between text-base font-bold text-slate-200 px-2"
+                                >
+                                    <span className="inline-flex items-center gap-3"><FileText className="w-4 h-4 text-blue-400" />Test Series</span>
+                                    <ChevronDown className="w-4 h-4 opacity-0" />
+                                </Link>
+
                                 {navStructure.map((nav) => (
                                     <div key={nav.id}>
                                         <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 px-2">{nav.label}</div>
@@ -328,6 +393,23 @@ const Navbar = () => {
                                         </div>
                                     </div>
                                 ))}
+
+                                <div className="mt-2 space-y-3">
+                                    <Link
+                                        href="/about"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className="block text-base font-bold text-slate-200 px-2"
+                                    >
+                                        About
+                                    </Link>
+                                    <Link
+                                        href="/contact"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className="block text-base font-bold text-slate-200 px-2"
+                                    >
+                                        Contact
+                                    </Link>
+                                </div>
 
                                 <div className="mt-8 pt-8 border-t border-slate-800">
                                     {isAuthenticated ? (

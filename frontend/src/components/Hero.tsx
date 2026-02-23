@@ -31,22 +31,38 @@ const Hero = () => {
 
 
                         <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tight leading-[1.15] mb-6">
-                            Crack JEE &amp; NEET with India’s Most <br />
-                            <span className="text-blue-500">Result-Focused Test Series</span>
+                            Prepare for 50+ Government &amp; Private Exams <br />
+                            on <span className="text-blue-500">One Platform</span>
                         </h1>
 
                         <p className="text-lg text-slate-400 mb-8 leading-relaxed max-w-xl mx-auto lg:mx-0">
-                            Improve your rank in 30 days with real exam simulation, strict timers, and detailed solutions—built to boost accuracy and speed.
+                            SSC • Banking • Railway • UPSC • JEE • NEET • CUET • Defence &amp; more.
+                            Practice with real exam simulation, strict timers, and detailed solutions.
                         </p>
+
+                        <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 mb-8">
+                            <Link href="/government-exams" className="px-4 py-2 rounded-full bg-slate-900 border border-slate-800 text-slate-200 text-sm font-bold hover:bg-slate-800 transition-colors">
+                                Explore Government Exams
+                            </Link>
+                            <Link href="/engineering-exams" className="px-4 py-2 rounded-full bg-slate-900 border border-slate-800 text-slate-200 text-sm font-bold hover:bg-slate-800 transition-colors">
+                                Explore Engineering Exams
+                            </Link>
+                            <Link href="/medical-exams" className="px-4 py-2 rounded-full bg-slate-900 border border-slate-800 text-slate-200 text-sm font-bold hover:bg-slate-800 transition-colors">
+                                Explore Medical Exams
+                            </Link>
+                            <Link href="/banking-exams" className="px-4 py-2 rounded-full bg-slate-900 border border-slate-800 text-slate-200 text-sm font-bold hover:bg-slate-800 transition-colors">
+                                Explore Banking Exams
+                            </Link>
+                        </div>
 
                         <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start mb-12">
                             <Link href="/dashboard/test-series/free-series" className="w-full sm:w-auto px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2">
                                 Start Free Mock Test Now
                                 <ArrowRight className="w-4 h-4" />
                             </Link>
-                            <Link href="/dashboard/test-series/free-series" className="w-full sm:w-auto px-8 py-3.5 bg-white hover:bg-slate-100 text-slate-900 font-semibold rounded-lg transition-colors border border-slate-200 flex items-center justify-center gap-2">
+                            <Link href="/tests" className="w-full sm:w-auto px-8 py-3.5 bg-white hover:bg-slate-100 text-slate-900 font-semibold rounded-lg transition-colors border border-slate-200 flex items-center justify-center gap-2">
                                 <Play className="w-4 h-4 fill-current" />
-                                Attempt Your First Test Free
+                                Browse Test Series
                             </Link>
                         </div>
 
