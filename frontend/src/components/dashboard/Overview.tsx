@@ -198,7 +198,7 @@ export default function Overview({ user }: { user: OverviewUser }) {
                             <Trophy className="w-5 h-5 text-yellow-500" />
                             <h3 className="text-white font-bold">Class Standings</h3>
                         </div>
-                        <a href="/dashboard?tab=leaderboard" className="text-xs text-indigo-400 hover:text-indigo-300">View All</a>
+                        <Link href="/dashboard?tab=leaderboard" className="text-xs text-indigo-400 hover:text-indigo-300">View All</Link>
                     </div>
 
                     <div className="space-y-3 flex-1">

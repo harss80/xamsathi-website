@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Mail, MapPin, Phone, Send } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 
 const ContactPage = () => {
     const [formData, setFormData] = useState({
@@ -89,9 +90,9 @@ const ContactPage = () => {
                             <div className="bg-gradient-to-r from-blue-900/20 to-indigo-900/20 p-8 rounded-2xl border border-blue-800/30">
                                 <h4 className="text-xl font-bold text-white mb-2">Frequently Asked Questions</h4>
                                 <p className="text-slate-400 mb-4">Find quick answers to common questions about our platform.</p>
-                                <a href="/faq" className="text-blue-400 font-semibold hover:text-blue-300 flex items-center gap-2">
+                                <Link href="/#faq" className="text-blue-400 font-semibold hover:text-blue-300 flex items-center gap-2">
                                     Visit FAQ Center <Send className="w-4 h-4" />
-                                </a>
+                                </Link>
                             </div>
                         </motion.div>
 

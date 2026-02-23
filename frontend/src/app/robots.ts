@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/dashboard", "/api/*"],
+        disallow: ["/admin", "/api/*", "/dashboard/profile"],
       },
     ],
     sitemap: "https://www.xamsathi.in/sitemap.xml",

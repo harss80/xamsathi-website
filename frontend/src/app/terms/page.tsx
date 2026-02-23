@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ScrollText, Shield, FileText, Lock } from "lucide-react";
+import Link from "next/link";
 
 export default function TermsAndConditions() {
     return (
@@ -79,7 +80,7 @@ export default function TermsAndConditions() {
 
                 <div className="mt-16 border-t border-slate-800 pt-8 text-center">
                     <p className="text-slate-400 mb-2">Have questions about our Terms?</p>
-                    <a href="/contact" className="text-blue-500 hover:text-blue-400 font-semibold">Contact Support</a>
+                    <Link href="/contact" className="text-blue-500 hover:text-blue-400 font-semibold">Contact Support</Link>
                 </div>
             </div>
         </main>

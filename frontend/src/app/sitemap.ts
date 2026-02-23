@@ -76,6 +76,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.4,
     },
+    ...[
+      '/blog',
+      '/blog/how-to-prepare-for-jee-in-90-days',
+      '/blog/neet-biology-study-guide',
+      '/blog/updated-exam-syllabus-2025',
+      '/blog/top-mock-test-mistakes',
+      '/dashboard/test-series/neet',
+      '/dashboard/test-series/cbse',
+      '/dashboard/test-series/premium-jee-main-copy-mocks'
+    ].map(route => ({
+      url: `${base}${route}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.8
+    }))
   ];
   return routes;
 }
