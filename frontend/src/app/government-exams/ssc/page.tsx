@@ -10,7 +10,6 @@ export default function SSCExamPage() {
 
       {/* Section 1 - Hero Section */}
       <section className="pt-32 pb-20 relative overflow-hidden bg-slate-950 border-b border-slate-800">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[100px] opacity-50 pointer-events-none" />
         <div className="container mx-auto px-4 md:px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-bold mb-6">
@@ -41,7 +40,7 @@ export default function SSCExamPage() {
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="#pricing" className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all flex items-center justify-center gap-2 w-full sm:w-auto text-lg active:scale-95">
+              <Link href="#pricing" className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 w-full sm:w-auto text-lg active:scale-95">
                 🚀 Buy Test Series
               </Link>
               <Link href="/dashboard/test-series/ssc-cgl" className="px-8 py-4 bg-slate-900 border border-slate-700 hover:bg-slate-800 text-white font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 w-full sm:w-auto text-lg active:scale-95">
@@ -201,33 +200,25 @@ export default function SSCExamPage() {
       </section>
 
       {/* Section 5 - Demo Test */}
-      <section className="py-24 bg-slate-900 relative overflow-hidden">
-        {/* Glow effect behind */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none" />
+      <section className="py-24 bg-slate-900 border-y border-slate-800 relative z-10">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="max-w-4xl mx-auto bg-slate-950 border border-slate-800 rounded-[2.5rem] p-12 md:p-16 text-center">
 
-        <div className="container mx-auto px-4 md:px-6 relative z-10">
-          <div className="max-w-4xl mx-auto bg-gradient-to-tr from-indigo-950 via-blue-900 to-slate-900 border border-blue-500/30 rounded-[3rem] p-12 md:p-16 text-center shadow-[0_0_50px_rgba(59,130,246,0.2)] backdrop-blur-2xl relative overflow-hidden">
-            {/* Decorative Orbs inside card */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl -ml-32 -mb-32"></div>
-
-            <div className="relative z-10">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-sm font-bold mb-8 shadow-inner shadow-blue-500/20">
-                <ShieldCheck className="w-4 h-4" /> Zero Commitment Required
-              </div>
-
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 tracking-tight leading-tight">
-                Experience the <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-emerald-300">Quality First.</span>
-              </h2>
-              <p className="text-lg md:text-xl text-blue-100/80 mb-10 max-w-2xl mx-auto font-medium leading-relaxed">
-                Take 1 Full-Length Mock Test entirely for FREE. No credit card required. Experience the exact exam interface, tricky TCS pattern questions, and detailed analytics.
-              </p>
-
-              <Link href="/dashboard/test-series/ssc-cgl" className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-white text-slate-950 hover:bg-slate-100 font-black rounded-2xl shadow-[0_0_40px_rgba(255,255,255,0.3)] hover:shadow-[0_0_60px_rgba(255,255,255,0.4)] transition-all duration-300 active:scale-95 text-xl group">
-                <Play className="w-6 h-6 fill-blue-600 text-blue-600 group-hover:scale-110 transition-transform" />
-                Start Free Test Now
-              </Link>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900 border border-slate-700 text-slate-300 text-sm font-bold mb-8">
+              <ShieldCheck className="w-4 h-4" /> Zero Commitment Required
             </div>
+
+            <h2 className="text-4xl md:text-5xl lg:text-5xl font-black text-white mb-6 tracking-tight leading-tight">
+              Experience the Quality First.
+            </h2>
+            <p className="text-lg text-slate-400 mb-10 max-w-2xl mx-auto font-medium leading-relaxed">
+              Take 1 Full-Length Mock Test entirely for FREE. No credit card required. Experience the exact exam interface, tricky TCS pattern questions, and detailed analytics.
+            </p>
+
+            <Link href="/dashboard/test-series/ssc-cgl" className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-white text-slate-950 hover:bg-slate-200 font-black rounded-2xl transition-all duration-300 active:scale-95 text-lg group border border-slate-300">
+              <Play className="w-5 h-5 fill-slate-950 text-slate-950 group-hover:scale-110 transition-transform" />
+              Start Free Test Now
+            </Link>
           </div>
         </div>
       </section>
@@ -267,8 +258,8 @@ export default function SSCExamPage() {
             </div>
 
             {/* Pro Plan */}
-            <div className="bg-gradient-to-b from-blue-900/40 to-slate-950 border-2 border-blue-500 rounded-3xl p-8 shadow-[0_0_30px_rgba(59,130,246,0.15)] relative scale-100 md:scale-105 z-10">
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-6 py-2 bg-blue-600 text-white text-sm font-black rounded-full uppercase tracking-wider shadow-lg flex items-center gap-2">
+            <div className="bg-slate-900 border-2 border-blue-600 rounded-3xl p-8 relative scale-100 md:scale-105 z-10">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-6 py-2 bg-blue-600 text-white text-sm font-black rounded-full uppercase tracking-wider flex items-center gap-2">
                 🥈 Most Popular
               </div>
               <h3 className="text-2xl font-bold text-white mb-2 mt-4">Pro Plan</h3>
@@ -289,7 +280,7 @@ export default function SSCExamPage() {
                   </div>
                 ))}
               </div>
-              <Link href="/checkout?plan=pro" className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl flex justify-center transition-colors shadow-lg">
+              <Link href="/checkout?plan=pro" className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl flex justify-center transition-colors">
                 Get Pro Plan
               </Link>
             </div>

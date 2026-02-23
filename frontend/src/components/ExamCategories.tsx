@@ -83,30 +83,22 @@ export default function ExamCategories() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {categories.map((c) => (
-                        <div key={c.title} className="relative group p-8 rounded-[2.5rem] bg-slate-900 border border-slate-800 hover:border-slate-700 transition-all duration-500 hover:shadow-[0_0_50px_rgba(59,130,246,0.1)] overflow-hidden">
-                            {/* Hover background gradient */}
-                            <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 via-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                            {/* Accent line on hover */}
-                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 group-hover:w-1/2 transition-all duration-500 opacity-0 group-hover:opacity-100 rounded-full blur-[1px]"></div>
-
+                        <div key={c.title} className="relative group p-8 rounded-[2.5rem] bg-slate-900 border border-slate-800 hover:border-slate-700 hover:bg-slate-800/50 transition-all duration-300 overflow-hidden">
                             <div className="relative z-10">
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                                     <div className="flex items-center gap-5">
-                                        <div className="w-16 h-16 rounded-[1.25rem] bg-slate-950 shadow-inner border border-slate-800 text-blue-500 flex items-center justify-center group-hover:-translate-y-1 group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-500 transition-all duration-300 relative">
-                                            <c.icon className="w-7 h-7 relative z-10" />
-                                            {/* Glow behind icon */}
-                                            <div className="absolute inset-0 bg-blue-500 rounded-[1.25rem] blur-xl opacity-0 group-hover:opacity-40 transition-opacity duration-500"></div>
+                                        <div className="w-16 h-16 rounded-[1.25rem] bg-slate-950 shadow-inner border border-slate-800 text-slate-300 flex items-center justify-center group-hover:-translate-y-1 group-hover:text-white transition-all duration-300">
+                                            <c.icon className="w-7 h-7" />
                                         </div>
                                         <h3 className="text-2xl md:text-3xl font-black text-white tracking-tight">{c.title}</h3>
                                     </div>
-                                    <Link href={c.href} className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-blue-500 hover:text-blue-400 hover:bg-blue-500/10 px-4 py-2 rounded-xl transition-all shrink-0 border border-transparent hover:border-blue-500/20 active:scale-95">
+                                    <Link href={c.href} className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-400 hover:text-white hover:bg-white/5 px-4 py-2 rounded-xl transition-all shrink-0 border border-transparent hover:border-white/10 active:scale-95">
                                         Explore All <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                     </Link>
                                 </div>
                                 <div className="flex flex-wrap gap-3">
                                     {c.exams.map((exam) => (
-                                        <Link key={exam.name} href={exam.link} className="px-5 py-2.5 bg-slate-950/60 backdrop-blur-md border border-slate-800 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white hover:border-blue-500/40 hover:shadow-[0_4px_20px_rgba(59,130,246,0.15)] hover:-translate-y-0.5 active:scale-95 transition-all duration-300 ring-1 ring-white/5 hover:ring-blue-500/30">
+                                        <Link key={exam.name} href={exam.link} className="px-5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white hover:border-slate-600 transition-all duration-300">
                                             {exam.name}
                                         </Link>
                                     ))}
