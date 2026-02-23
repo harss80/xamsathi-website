@@ -10,6 +10,7 @@ import Stats from "@/components/Stats";
 import Features from "@/components/Features";
 import Courses from "@/components/Courses";
 import TestSeries from "@/components/TestSeries";
+import PricingComparison from "@/components/PricingComparison";
 import Results from "@/components/Results";
 import Faculty from "@/components/Faculty";
 import Resources from "@/components/Resources";
@@ -26,6 +27,7 @@ export default function Home() {
         <Features />
         <Courses />
         <TestSeries />
+        <PricingComparison />
         <Results />
         <Faculty />
         <Resources />

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Clock, FileCheck, Users, Star } from "lucide-react";
+import { ArrowRight, FileCheck } from "lucide-react";
 import { trackLead } from "@/lib/trackLead";
 
 const tests = [
@@ -10,8 +10,6 @@ const tests = [
         title: "JEE Advanced 2026",
         tag: "Bestseller",
         description: "Aligns with new pattern. Deep conceptual questions.",
-        rating: 4.9,
-        students: "15k+",
         tests: "20 Full Tests",
         price: "₹1,499",
         oldPrice: "₹2,999"
@@ -21,8 +19,6 @@ const tests = [
         title: "NEET UG 2026 Elite",
         tag: "Trending",
         description: "NCERT-based rigorous practice for medical aspirants.",
-        rating: 4.8,
-        students: "22k+",
         tests: "30 Full Tests",
         price: "₹999",
         oldPrice: "₹1,999"
@@ -32,8 +28,6 @@ const tests = [
         title: "UPSC CSE Prelims",
         tag: "Comprehensive",
         description: "Covering GS Paper 1 & CSAT with detailed solutions.",
-        rating: 4.7,
-        students: "8k+",
         tests: "40 Sets",
         price: "₹1,999",
         oldPrice: "₹4,999"
@@ -43,8 +37,6 @@ const tests = [
         title: "SSC CGL Tier I & II",
         tag: "Popular",
         description: "Speed enhancement and accuracy building series.",
-        rating: 4.6,
-        students: "12k+",
         tests: "50 Tests",
         price: "₹499",
         oldPrice: "₹999"
@@ -81,9 +73,6 @@ const TestSeries = () => {
                                     <span className="px-3 py-1 bg-slate-900 text-slate-400 border border-slate-800 rounded-full text-xs font-semibold group-hover:bg-blue-900/30 group-hover:text-blue-400 group-hover:border-blue-800 transition-all">
                                         {test.tag}
                                     </span>
-                                    <div className="flex items-center gap-1 bg-yellow-900/20 border border-yellow-900/30 px-2 py-0.5 rounded text-yellow-500 text-xs font-bold">
-                                        <Star className="w-3 h-3 fill-yellow-500 text-yellow-500" /> {test.rating}
-                                    </div>
                                 </div>
 
                                 <h3 className="text-xl font-bold text-slate-100 mb-2 group-hover:text-blue-400 transition-colors">
@@ -97,10 +86,6 @@ const TestSeries = () => {
                                     <div className="flex items-center text-sm text-slate-400 gap-3">
                                         <FileCheck className="w-4 h-4 text-blue-500" />
                                         <span>{test.tests}</span>
-                                    </div>
-                                    <div className="flex items-center text-sm text-slate-400 gap-3">
-                                        <Users className="w-4 h-4 text-blue-500" />
-                                        <span>{test.students} Enrolled</span>
                                     </div>
                                 </div>
                             </div>
