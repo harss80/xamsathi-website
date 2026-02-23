@@ -3,7 +3,7 @@ import { Star, Users, CheckCircle2, Play, BookOpen, BarChart3, Clock, Trophy, Sh
 import Navbar from "@/components/Navbar";
 import Image from "next/image";
 
-export default function NDAExamPage() {
+export default function CDSExamPage() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200">
       <Navbar />
@@ -16,7 +16,7 @@ export default function NDAExamPage() {
               <Trophy className="w-4 h-4" /> Bestseller Test Series 2026
             </div>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6 tracking-tight">
-              NDA <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Test Series</span>
+              CDS <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Test Series</span>
             </h1>
             <p className="text-lg md:text-xl text-slate-400 mb-8 max-w-2xl mx-auto font-medium">
               The ultimate practice material with real exam interface, latest TCS pattern questions, and all-India ranking.
@@ -43,7 +43,7 @@ export default function NDAExamPage() {
               <Link href="#pricing" className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 w-full sm:w-auto text-lg active:scale-95">
                 🚀 Buy Test Series
               </Link>
-              <Link href="/dashboard/test-series/nda" className="px-8 py-4 bg-slate-900 border border-slate-700 hover:bg-slate-800 text-white font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 w-full sm:w-auto text-lg active:scale-95">
+              <Link href="/dashboard/test-series/cds" className="px-8 py-4 bg-slate-900 border border-slate-700 hover:bg-slate-800 text-white font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 w-full sm:w-auto text-lg active:scale-95">
                 📘 View Free Demo
               </Link>
             </div>
@@ -56,9 +56,9 @@ export default function NDAExamPage() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-black text-white mb-6">About NDA Exam</h2>
+              <h2 className="text-3xl font-black text-white mb-6">About CDS Exam</h2>
               <p className="text-slate-400 mb-6 leading-relaxed">
-                Details about NDA will be described here.
+                Details about CDS will be described here.
               </p>
               <div className="space-y-4">
                 <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-950 border border-slate-800">
@@ -215,7 +215,7 @@ export default function NDAExamPage() {
               Take 1 Full-Length Mock Test entirely for FREE. No credit card required. Experience the exact exam interface, tricky TCS pattern questions, and detailed analytics.
             </p>
 
-            <Link href="/dashboard/test-series/nda" className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-white text-slate-950 hover:bg-slate-200 font-black rounded-2xl transition-all duration-300 active:scale-95 text-lg group border border-slate-300">
+            <Link href="/dashboard/test-series/cds" className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-white text-slate-950 hover:bg-slate-200 font-black rounded-2xl transition-all duration-300 active:scale-95 text-lg group border border-slate-300">
               <Play className="w-5 h-5 fill-slate-950 text-slate-950 group-hover:scale-110 transition-transform" />
               Start Free Test Now
             </Link>
