@@ -645,8 +645,8 @@ export default function TestSeriesPlayer({
 
                         <div className="flex-1 flex overflow-hidden relative">
                             {/* Main Question Area */}
-                            <main className="flex-1 overflow-y-auto bg-[#0B1120] p-4 md:p-6 pb-32 custom-scrollbar">
-                                <div className="max-w-5xl mx-auto h-full flex flex-col">
+                            <main className="flex-1 overflow-y-auto bg-[#0B1120] p-4 md:p-6 pb-40 md:pb-32 custom-scrollbar relative">
+                                <div className="max-w-5xl mx-auto min-h-full flex flex-col">
                                     <AnimatePresence mode="wait">
                                         <motion.div
                                             key={currentQuestionIndex}
@@ -654,7 +654,7 @@ export default function TestSeriesPlayer({
                                             animate={{ opacity: 1, x: 0 }}
                                             exit={{ opacity: 0, x: -20 }}
                                             transition={{ duration: 0.2 }}
-                                            className="space-y-6"
+                                            className="space-y-6 pb-12 md:pb-24"
                                         >
                                             {/* Question Header Meta */}
                                             <div className="flex items-center justify-between bg-slate-800/40 p-3 rounded-xl border border-white/5">
