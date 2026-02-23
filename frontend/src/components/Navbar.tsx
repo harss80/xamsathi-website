@@ -212,11 +212,11 @@ const Navbar = () => {
                                         animate={{ opacity: 1, y: 0, scale: 1 }}
                                         exit={{ opacity: 0, y: 5, scale: 0.95 }}
                                         transition={{ duration: 0.2 }}
-                                        className="absolute top-full left-1/2 -translate-x-1/2 pt-4 w-[600px]"
+                                        className="absolute top-full left-1/2 -translate-x-1/2 pt-4 w-[90vw] lg:w-[850px]"
                                     >
-                                        <div className="bg-slate-950/90 backdrop-blur-xl border border-slate-800/80 rounded border-t-2 border-t-blue-500 p-4 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.8)] relative overflow-hidden ring-1 ring-white/5">
+                                        <div className="bg-slate-950/90 backdrop-blur-xl border border-slate-800/80 rounded border-t-2 border-t-blue-500 p-5 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.8)] relative overflow-hidden ring-1 ring-white/5">
                                             <div className="absolute -top-5 left-0 right-0 h-5 bg-transparent" />
-                                            <div className="grid grid-cols-2 gap-2 relative z-10">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4 relative z-10">
                                                 {navStructure.map((nav) => (
                                                     <div key={nav.id}>
                                                         <div className="px-3 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{nav.label}</div>
