@@ -13,6 +13,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import TestSeriesIntro from "@/components/dashboard/TestSeriesIntro";
 import confetti from "canvas-confetti";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
 // --- Types ---
 export type QuestionType = "physics" | "chemistry" | "botany" | "zoology" | "math" | "biology" | "general" | string;
@@ -1141,6 +1142,39 @@ export default function TestSeriesPlayer({
                                                 {Math.floor(questions.length - (Object.keys(answers).length)) + Math.floor(Math.random() * 50)}
                                             </div>
                                             <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Est. Rank</div>
+                                        </div>
+                                        <div className="col-span-2 bg-slate-900/50 border border-white/5 rounded-[2rem] p-6 text-center">
+                                            <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Performance Graph</h3>
+                                            <div className="h-[150px] w-full flex items-center justify-center">
+                                                <ResponsiveContainer width="100%" height="100%">
+                                                    <PieChart>
+                                                        <Pie
+                                                            data={[
+                                                                { name: 'Correct', value: Object.values(resultData.subjectAnalysis).reduce((acc, curr) => acc + curr.correct, 0), color: '#10b981' },
+                                                                { name: 'Wrong', value: Object.values(resultData.subjectAnalysis).reduce((acc, curr) => acc + curr.wrong, 0), color: '#ef4444' },
+                                                                { name: 'Left', value: questions.length - Object.keys(answers).length, color: '#64748b' }
+                                                            ]}
+                                                            cx="50%" cy="50%" innerRadius={40} outerRadius={60}
+                                                            dataKey="value" stroke="none"
+                                                        >
+                                                            {
+                                                                [
+                                                                    { name: 'Correct', value: Object.values(resultData.subjectAnalysis).reduce((acc, curr) => acc + curr.correct, 0), color: '#10b981' },
+                                                                    { name: 'Wrong', value: Object.values(resultData.subjectAnalysis).reduce((acc, curr) => acc + curr.wrong, 0), color: '#ef4444' },
+                                                                    { name: 'Left', value: questions.length - Object.keys(answers).length, color: '#64748b' }
+                                                                ].map((entry, index) => (
+                                                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                                                ))
+                                                            }
+                                                        </Pie>
+                                                    </PieChart>
+                                                </ResponsiveContainer>
+                                            </div>
+                                            <div className="flex justify-center gap-4 text-xs font-bold mt-2">
+                                                <div className="flex items-center gap-1 text-emerald-400"><div className="w-2 h-2 rounded-full bg-emerald-400"></div> Correct</div>
+                                                <div className="flex items-center gap-1 text-red-400"><div className="w-2 h-2 rounded-full bg-red-400"></div> Wrong</div>
+                                                <div className="flex items-center gap-1 text-slate-400"><div className="w-2 h-2 rounded-full bg-slate-400"></div> Left Blank</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
