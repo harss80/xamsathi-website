@@ -17,45 +17,46 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.xamsathi.in"),
   title: {
-    default: "XamSathi - Master Your Exam Preparation",
+    default: "Best Online Mock Tests in India for JEE & NEET | XamSathi",
     template: "%s | XamSathi",
   },
   description:
-    "Advanced test series and learning platform for JEE, NEET, UPSC, and Foundation students.",
+    "Practice with quality NEET and JEE mock tests, detailed solutions, and advanced analytics. Improve your score with XamSathi’s online exam preparation and best exam test series.",
   applicationName: "XamSathi",
   category: "education",
   referrer: "origin-when-cross-origin",
   keywords: [
-    "XamSathi",
+    "online mock tests India",
+    "JEE practice test online",
+    "NEET practice questions",
+    "best exam test series",
     "online test series",
-    "JEE",
-    "NEET",
-    "UPSC",
+    "JEE mock test",
+    "NEET mock test",
     "foundation courses",
-    "mock tests",
-    "practice questions",
+    "XamSathi"
   ],
   openGraph: {
     type: "website",
     url: "https://www.xamsathi.in/",
     siteName: "XamSathi",
-    title: "XamSathi - Master Your Exam Preparation",
+    title: "Best Online Mock Tests in India for JEE & NEET | XamSathi",
     description:
-      "Advanced test series and learning platform for JEE, NEET, UPSC, and Foundation students.",
+      "Practice with quality NEET and JEE mock tests, detailed solutions, and advanced analytics. Improve your score with XamSathi.",
     images: [
       {
         url: "/hero-students.png",
         width: 1200,
         height: 630,
-        alt: "XamSathi",
+        alt: "XamSathi - Best Online Mock Tests",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "XamSathi - Master Your Exam Preparation",
+    title: "Best Online Mock Tests in India for JEE & NEET | XamSathi",
     description:
-      "Advanced test series and learning platform for JEE, NEET, UPSC, and Foundation students.",
+      "Practice with quality NEET and JEE mock tests, detailed solutions, and advanced analytics. Improve your score with XamSathi.",
     images: ["/hero-students.png"],
   },
   robots: {

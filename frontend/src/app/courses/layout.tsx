@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Courses",
+  title: "Best Online Test Series & Courses for JEE, NEET, CBSE | XamSathi",
   description:
-    "Comprehensive courses for School, JEE, NEET, Government Exams, and more.",
+    "Enroll in the best exam test series for JEE, NEET, CBSE, and Government Exams. Get high-quality study materials, practice tests, and expert guidance at XamSathi.",
   alternates: { canonical: "/courses" },
   openGraph: {
-    title: "Courses | XamSathi",
+    title: "Best Online Test Series & Courses for JEE, NEET, CBSE | XamSathi",
+    description: "Enroll in the best exam test series for JEE, NEET, CBSE, and Government Exams. Get high-quality study materials, practice tests, and expert guidance at XamSathi.",
     url: "https://www.xamsathi.in/courses",
     images: [
       {
