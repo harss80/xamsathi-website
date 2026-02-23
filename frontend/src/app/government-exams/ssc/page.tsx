@@ -201,17 +201,33 @@ export default function SSCExamPage() {
       </section>
 
       {/* Section 5 - Demo Test */}
-      <section className="py-24 bg-slate-950 border-b border-slate-800 overflow-hidden relative">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_110%)] opacity-20" />
+      <section className="py-24 bg-slate-900 relative overflow-hidden">
+        {/* Glow effect behind */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none" />
+
         <div className="container mx-auto px-4 md:px-6 relative z-10">
-          <div className="max-w-3xl mx-auto bg-gradient-to-br from-indigo-900/50 to-blue-900/20 border border-blue-500/20 rounded-3xl p-10 md:p-14 text-center shadow-2xl backdrop-blur-xl">
-            <h2 className="text-3xl md:text-5xl font-black text-white mb-6">Experience the Quality First.</h2>
-            <p className="text-lg text-slate-300 mb-10 max-w-xl mx-auto">
-              Take 1 Full-Length Mock Test entirely for FREE. No credit card required. Experience the exact exam interface and detailed analytics.
-            </p>
-            <Link href="/dashboard/test-series/ssc-cgl" className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-white text-slate-950 hover:bg-slate-200 font-black rounded-2xl shadow-xl transition-all active:scale-95 text-xl">
-              <Play className="w-6 h-6 fill-slate-950" /> Start Free Test Now
-            </Link>
+          <div className="max-w-4xl mx-auto bg-gradient-to-tr from-indigo-950 via-blue-900 to-slate-900 border border-blue-500/30 rounded-[3rem] p-12 md:p-16 text-center shadow-[0_0_50px_rgba(59,130,246,0.2)] backdrop-blur-2xl relative overflow-hidden">
+            {/* Decorative Orbs inside card */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl -ml-32 -mb-32"></div>
+
+            <div className="relative z-10">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-sm font-bold mb-8 shadow-inner shadow-blue-500/20">
+                <ShieldCheck className="w-4 h-4" /> Zero Commitment Required
+              </div>
+
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 tracking-tight leading-tight">
+                Experience the <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-emerald-300">Quality First.</span>
+              </h2>
+              <p className="text-lg md:text-xl text-blue-100/80 mb-10 max-w-2xl mx-auto font-medium leading-relaxed">
+                Take 1 Full-Length Mock Test entirely for FREE. No credit card required. Experience the exact exam interface, tricky TCS pattern questions, and detailed analytics.
+              </p>
+
+              <Link href="/dashboard/test-series/ssc-cgl" className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-white text-slate-950 hover:bg-slate-100 font-black rounded-2xl shadow-[0_0_40px_rgba(255,255,255,0.3)] hover:shadow-[0_0_60px_rgba(255,255,255,0.4)] transition-all duration-300 active:scale-95 text-xl group">
+                <Play className="w-6 h-6 fill-blue-600 text-blue-600 group-hover:scale-110 transition-transform" />
+                Start Free Test Now
+              </Link>
+            </div>
           </div>
         </div>
       </section>
