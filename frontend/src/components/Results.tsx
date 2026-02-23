@@ -32,7 +32,7 @@ const Results = () => {
     };
 
     return (
-        <section id="results" className="py-20 bg-slate-950 text-white border-t border-slate-900">
+        <section id="results" className="py-20 bg-white text-slate-900 border-t border-slate-200">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
                     <div>
@@ -49,7 +49,7 @@ const Results = () => {
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: 0.1 }}
-                            className="text-slate-400 mt-4 text-lg"
+                            className="text-slate-600 mt-4 text-lg"
                         >
                             Our systematic approach delivers results year after year.
                         </motion.p>
@@ -68,22 +68,22 @@ const Results = () => {
                             key={idx}
                             variants={itemVariants}
                             whileHover={{ y: -5 }}
-                            className="bg-slate-900 rounded-2xl p-6 border border-slate-800 hover:border-blue-500/50 hover:shadow-lg transition-all text-center relative overflow-hidden group"
+                            className="bg-slate-50 rounded-2xl p-6 border border-slate-200 hover:border-blue-500/50 hover:shadow-lg transition-all text-center relative overflow-hidden group"
                         >
                             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-indigo-600 group-hover:h-1.5 transition-all" />
-                            <div className="w-24 h-24 rounded-full bg-slate-800 mx-auto mb-4 border-4 border-slate-700 group-hover:border-blue-500 transition-colors flex items-center justify-center text-xs text-slate-500">
+                            <div className="w-24 h-24 rounded-full bg-slate-100 mx-auto mb-4 border-4 border-slate-300 group-hover:border-blue-500 transition-colors flex items-center justify-center text-xs text-slate-600">
                                 [Photo]
                             </div>
-                            <h3 className="text-2xl font-bold mb-1 text-white">{res.rank}</h3>
+                            <h3 className="text-2xl font-bold mb-1 text-slate-900">{res.rank}</h3>
                             <p className="text-blue-400 font-medium mb-1">{res.exam}</p>
-                            <p className="text-lg font-semibold text-slate-200">{res.name}</p>
-                            {res.score && <p className="text-slate-500 text-sm mt-1">Score: {res.score}</p>}
+                            <p className="text-lg font-semibold text-slate-800">{res.name}</p>
+                            {res.score && <p className="text-slate-600 text-sm mt-1">Score: {res.score}</p>}
                         </motion.div>
                     ))}
                 </motion.div>
 
                 <div className="mt-12 flex justify-center">
-                    <div className="inline-flex flex-wrap justify-center gap-8 text-slate-400 text-sm font-medium">
+                    <div className="inline-flex flex-wrap justify-center gap-8 text-slate-600 text-sm font-medium">
                         <span>• 1000+ Selections in JEE</span>
                         <span>• 500+ in NEET Govt Colleges</span>
                         <span>• 50+ UPSC Officers</span>

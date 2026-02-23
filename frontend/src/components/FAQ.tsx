@@ -40,10 +40,10 @@ const FAQ = () => {
     } as const;
 
     return (
-        <section className="py-20 bg-slate-950">
+        <section className="py-20 bg-white">
             <div className="container mx-auto px-4 md:px-6 max-w-3xl">
                 <div className="text-center mb-12">
-                    <h2 className="text-3xl font-bold text-white">Frequently Asked Questions</h2>
+                    <h2 className="text-3xl font-bold text-slate-900">Frequently Asked Questions</h2>
                 </div>
                 <script
                     type="application/ld+json"
@@ -53,13 +53,13 @@ const FAQ = () => {
 
                 <div className="space-y-4">
                     {faqs.map((faq, idx) => (
-                        <div key={idx} className="border border-slate-800 rounded-lg overflow-hidden bg-slate-900/50">
+                        <div key={idx} className="border border-slate-200 rounded-lg overflow-hidden bg-slate-50/50">
                             <button
                                 onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
-                                className="w-full flex justify-between items-center p-4 text-left hover:bg-slate-900 transition-colors"
+                                className="w-full flex justify-between items-center p-4 text-left hover:bg-slate-50 transition-colors"
                             >
-                                <span className="font-semibold text-slate-200">{faq.q}</span>
-                                {openIndex === idx ? <Minus className="w-5 h-5 text-blue-500" /> : <Plus className="w-5 h-5 text-slate-500" />}
+                                <span className="font-semibold text-slate-800">{faq.q}</span>
+                                {openIndex === idx ? <Minus className="w-5 h-5 text-blue-500" /> : <Plus className="w-5 h-5 text-slate-600" />}
                             </button>
                             <AnimatePresence>
                                 {openIndex === idx && (
@@ -67,9 +67,9 @@ const FAQ = () => {
                                         initial={{ height: 0, opacity: 0 }}
                                         animate={{ height: "auto", opacity: 1 }}
                                         exit={{ height: 0, opacity: 0 }}
-                                        className="overflow-hidden bg-slate-900"
+                                        className="overflow-hidden bg-slate-50"
                                     >
-                                        <div className="p-4 pt-0 text-slate-400 leading-relaxed border-t border-slate-800/50">
+                                        <div className="p-4 pt-0 text-slate-600 leading-relaxed border-t border-slate-200/50">
                                             {faq.a}
                                         </div>
                                     </motion.div>

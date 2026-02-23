@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --background: #020617;
-  /* Slate 950 */
-  --foreground: #f8fafc;
-  /* Slate 50 */
+  --background: #ffffff;
+  /* White */
+  --foreground: #0f172a;
+  /* Slate 900 */
 }
 
 @theme inline {

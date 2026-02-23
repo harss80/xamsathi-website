@@ -143,7 +143,7 @@ export default function ExamSearch({
   return (
     <div className={`relative ${className}`}>
       <form onSubmit={onSubmit} className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
         <input
           value={q}
           onChange={(e) => {
@@ -155,22 +155,22 @@ export default function ExamSearch({
             window.setTimeout(() => setOpen(false), 120);
           }}
           placeholder={placeholder}
-          className="w-full bg-slate-900 border border-slate-800 rounded-2xl py-3 pl-11 pr-4 text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all placeholder:text-slate-600"
+          className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3 pl-11 pr-4 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all placeholder:text-slate-600"
         />
       </form>
 
       {open && (
-        <div className="absolute z-50 mt-2 w-full overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 shadow-2xl">
+        <div className="absolute z-50 mt-2 w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
           {suggestions.map((s) => (
             <button
               key={s.href}
               type="button"
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => go(s.href)}
-              className="w-full text-left px-4 py-3 hover:bg-slate-900 transition-colors flex items-center justify-between"
+              className="w-full text-left px-4 py-3 hover:bg-slate-50 transition-colors flex items-center justify-between"
             >
-              <span className="font-semibold text-slate-200">{s.label}</span>
-              <span className="text-xs text-slate-500">Open</span>
+              <span className="font-semibold text-slate-800">{s.label}</span>
+              <span className="text-xs text-slate-600">Open</span>
             </button>
           ))}
         </div>

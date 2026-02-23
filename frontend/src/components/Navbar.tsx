@@ -169,19 +169,11 @@ const Navbar = () => {
         <nav
             className={cn(
                 "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-                isScrolled ? "py-2" : "py-4"
+                isScrolled ? "py-2 bg-slate-950/95 backdrop-blur-md border-b border-slate-800 shadow-sm" : "py-4 bg-transparent border-b border-transparent"
             )}
         >
-            <div className={cn(
-                "container mx-auto px-4 md:px-6 transition-all duration-300",
-                isScrolled ? "max-w-6xl" : "max-w-7xl"
-            )}>
-                <div className={cn(
-                    "flex items-center justify-between px-6 py-2 rounded-2xl transition-all duration-300 border",
-                    isScrolled
-                        ? "bg-slate-950/80 backdrop-blur-xl border-slate-800 shadow-xl shadow-black/20"
-                        : "bg-transparent border-transparent"
-                )}>
+            <div className="container mx-auto px-4 md:px-6">
+                <div className="flex items-center justify-between">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-2 group shrink-0">
                         <div className="group-hover:scale-105 transition-transform duration-300 py-1">
@@ -225,8 +217,7 @@ const Navbar = () => {
                                             transition={{ duration: 0.2 }}
                                             className="absolute top-full left-1/2 -translate-x-1/2 pt-4 w-72"
                                         >
-                                            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-2 shadow-2xl relative overflow-hidden backdrop-blur-3xl">
-                                                <div className="absolute inset-0 bg-linear-to-b from-blue-900/10 to-transparent pointer-events-none" />
+                                            <div className="bg-slate-900 border border-slate-800 rounded-xl p-2 shadow-xl relative overflow-hidden">
                                                 <div className="relative z-10 flex flex-col gap-1">
                                                     {nav.items.map((item) => (
                                                         <Link
@@ -277,9 +268,9 @@ const Navbar = () => {
                             <>
                                 <Link
                                     href="/dashboard"
-                                    className="group relative inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-white text-slate-950 text-sm font-bold rounded-xl transition-all hover:bg-blue-50 shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)] hover:shadow-[0_0_25px_-5px_rgba(255,255,255,0.5)] active:scale-95"
+                                    className="group relative inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-lg transition-all hover:bg-blue-700 shadow-md active:scale-95"
                                 >
-                                    <LayoutDashboard className="w-4 h-4 text-blue-600" />
+                                    <LayoutDashboard className="w-4 h-4" />
                                     <span>Dashboard</span>
                                 </Link>
                                 <button
@@ -300,9 +291,9 @@ const Navbar = () => {
                                 </Link>
                                 <Link
                                     href="/signup"
-                                    className="group relative inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-white text-slate-950 text-sm font-bold rounded-xl transition-all hover:bg-blue-50 shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)] hover:shadow-[0_0_25px_-5px_rgba(255,255,255,0.5)] active:scale-95"
+                                    className="group relative inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-lg transition-all hover:bg-blue-700 shadow-md active:scale-95"
                                 >
-                                    <UserPlus className="w-4 h-4 text-blue-600" />
+                                    <UserPlus className="w-4 h-4" />
                                     Sign up
                                 </Link>
                             </>
@@ -417,14 +408,14 @@ const Navbar = () => {
                                             <Link
                                                 href="/dashboard"
                                                 onClick={() => setIsMobileMenuOpen(false)}
-                                                className="w-full flex items-center justify-center gap-2 py-4 bg-white text-slate-950 font-bold rounded-xl active:scale-95 transition-transform"
+                                                className="w-full flex items-center justify-center gap-2 py-4 bg-blue-600 text-white font-bold rounded-xl active:scale-95 transition-transform"
                                             >
-                                                <LayoutDashboard className="w-5 h-5 text-blue-600" />
+                                                <LayoutDashboard className="w-5 h-5" />
                                                 Dashboard
                                             </Link>
                                             <button
                                                 onClick={() => { setIsMobileMenuOpen(false); handleLogout(); }}
-                                                className="w-full flex items-center justify-center gap-2 py-4 bg-slate-900 text-white font-semibold rounded-xl border border-slate-800"
+                                                className="w-full flex items-center justify-center gap-2 py-4 bg-slate-800 text-white font-semibold rounded-xl"
                                                 aria-label="Logout"
                                             >
                                                 <LogOut className="w-5 h-5" />
@@ -436,7 +427,7 @@ const Navbar = () => {
                                             <Link
                                                 href="/login"
                                                 onClick={() => setIsMobileMenuOpen(false)}
-                                                className="w-full flex items-center justify-center gap-2 py-3 bg-slate-900 text-white font-semibold rounded-xl border border-slate-800"
+                                                className="w-full flex items-center justify-center gap-2 py-3 bg-slate-800 text-white font-semibold rounded-xl"
                                             >
                                                 <LogIn className="w-5 h-5" />
                                                 Login
@@ -444,9 +435,9 @@ const Navbar = () => {
                                             <Link
                                                 href="/signup"
                                                 onClick={() => setIsMobileMenuOpen(false)}
-                                                className="w-full flex items-center justify-center gap-2 py-3 bg-white text-slate-950 font-bold rounded-xl"
+                                                className="w-full flex items-center justify-center gap-2 py-3 bg-blue-600 text-white font-bold rounded-xl"
                                             >
-                                                <UserPlus className="w-4 h-4 text-blue-600" />
+                                                <UserPlus className="w-4 h-4" />
                                                 Sign up
                                             </Link>
                                         </div>
