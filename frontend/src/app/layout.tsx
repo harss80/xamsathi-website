@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google"; // Keep Geist, it's good
 import "./globals.css";
 import AppFrame from "@/components/AppFrame";
 import TrackPageView from "@/components/TrackPageView";
+import WhatsAppSupport from "@/components/WhatsAppSupport";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -126,6 +127,7 @@ export default function RootLayout({
       >
         <TrackPageView />
         <AppFrame>{children}</AppFrame>
+        <WhatsAppSupport />
       </body>
     </html>
   );

@@ -7,6 +7,7 @@ export const metadata: Metadata = {
 
 import Hero from "@/components/Hero";
 import Stats from "@/components/Stats";
+import SocialProof from "@/components/SocialProof";
 import Features from "@/components/Features";
 import Courses from "@/components/Courses";
 import TestSeries from "@/components/TestSeries";
@@ -24,6 +25,7 @@ export default function Home() {
       <main>
         <Hero />
         <Stats />
+        <SocialProof />
         <Features />
         <Courses />
         <TestSeries />
