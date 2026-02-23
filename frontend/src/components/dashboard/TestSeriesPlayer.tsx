@@ -562,7 +562,7 @@ export default function TestSeriesPlayer({
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-50 bg-[#020617] flex flex-col"
+                        className="absolute inset-0 z-50 bg-[#020617] flex flex-col w-full h-full"
                     >
                         {/* Mobile Optimized Header */}
                         <header className="bg-[#0B1120]/80 backdrop-blur-xl border-b border-white/5 h-16 md:h-20 shrink-0 z-40 relative">
