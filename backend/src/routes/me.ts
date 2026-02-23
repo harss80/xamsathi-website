@@ -208,4 +208,46 @@ router.get('/', async (req: Request, res: Response) => {
   }
 });
 
+router.get('/overview', async (req: Request, res: Response) => {
+  const userId = req.header('x-user-id');
+  if (!userId) return res.status(401).json({ error: 'x-user-id required' });
+
+  // In a real production scenario, these would aggregate actual DB models:
+  // Activity -> Aggregated from Attempt/Session models.
+  // Schedule -> Fetched from a live Schedule/Webinar model.
+  // Progress -> Fetched from UserCourse progress references.
+
+  // MOCKING with structured data for the 3 visual components for MVP
+  const today = new Date();
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const activity = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    activity.push({
+      day: days[d.getDay()],
+      score: Math.floor(Math.random() * 40) + 60,
+      hours: +(Math.random() * 4 + 1).toFixed(1)
+    });
+  }
+
+  const schedule = [
+    { time: "10:00 AM", subject: "Physics", topic: "Rotational Dynamics", type: "Live", status: "now" },
+    { time: "02:00 PM", subject: "Chemistry", topic: "Organic Reactions", type: "Lecture", status: "upcoming" },
+    { time: "04:30 PM", subject: "Maths", topic: "Calculus Review", type: "Practice", status: "upcoming" }
+  ];
+
+  const progress = [
+    { id: 1, title: 'Advanced Physics: Mechanics', chapter: 'Chapter 3', progress: 85 },
+    { id: 2, title: 'Organic Chemistry II', chapter: 'Chapter 7', progress: 60 },
+    { id: 3, title: 'Calculus: Derivatives', chapter: 'Chapter 4', progress: 40 }
+  ];
+
+  res.json({
+    activity,
+    schedule,
+    progress
+  });
+});
+
 export default router;

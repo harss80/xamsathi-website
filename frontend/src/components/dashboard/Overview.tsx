@@ -2,9 +2,19 @@
 
 import { motion } from "framer-motion";
 import {
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer,
+    AreaChart,
+    Area
+} from "recharts";
+import {
     Trophy,
     ChevronRight,
     PlayCircle,
+    Target
 } from "lucide-react";
 import Image from "next/image"; // For teacher avatars or course images
 
@@ -35,10 +45,17 @@ type Stats = {
     streak: { count: number; last_active_date: string } | null;
 };
 
+type ActivityData = { day: string; hours: number; score?: number };
+type ScheduleData = { time: string; subject: string; topic: string; type: string; status: string };
+type ProgressData = { id: string | number; title: string; chapter: string; progress: number };
+
 export default function Overview({ user }: { user: OverviewUser }) {
     const [leaderboard, setLeaderboard] = useState<LeaderboardItem[]>([]);
     const [stats, setStats] = useState<Stats | null>(null);
     const [courses, setCourses] = useState<CourseItem[]>([]);
+    const [activity, setActivity] = useState<ActivityData[]>([]);
+    const [schedule, setSchedule] = useState<ScheduleData[]>([]);
+    const [progress, setProgress] = useState<ProgressData[]>([]);
 
     useEffect(() => {
         const fetchOverviewData = async () => {
@@ -88,6 +105,20 @@ export default function Overview({ user }: { user: OverviewUser }) {
                         if (data && data.items) setCourses(data.items.slice(0, 6));
                     })
                     .catch(console.error);
+
+                // Fetch Overview Data (Chart, Schedule, Progress)
+                if (userId) {
+                    fetch(`${base}/api/me/overview`, { headers: { "x-user-id": userId } })
+                        .then(res => res.ok ? res.json() : null)
+                        .then(data => {
+                            if (data) {
+                                setActivity(data.activity || []);
+                                setSchedule(data.schedule || []);
+                                setProgress(data.progress || []);
+                            }
+                        })
+                        .catch(console.error);
+                }
 
             } catch (err) {
                 console.error("Failed to fetch overview data", err);
@@ -201,62 +232,122 @@ export default function Overview({ user }: { user: OverviewUser }) {
                 </motion.div>
             </div>
 
-            {/* Action Cards Instead of Fake Activity/Schedule */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Auto Generate CTA */}
+            {/* Analytics & Schedule */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Chart Section */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="bg-indigo-900/40 border border-indigo-500/30 rounded-3xl p-8 flex flex-col items-start"
+                    className="lg:col-span-2 bg-slate-900/50 border border-slate-800 rounded-3xl p-6"
                 >
-                    <h3 className="text-2xl font-bold text-white mb-2">Generate Custom Test</h3>
-                    <p className="text-indigo-200 mb-6 max-w-sm">Use AI to generate a custom test for any subject based on your requirements and track your strength.</p>
-                    <Link href="/dashboard?tab=autogenerate" className="mt-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition-colors shadow-lg shadow-indigo-500/20">
-                        Try Auto Generate
-                    </Link>
+                    <div className="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 className="text-xl font-bold text-white">Learning Activity</h3>
+                            <p className="text-sm text-slate-400">Your study hours over the last 7 days</p>
+                        </div>
+                        <select aria-label="Learning activity range" className="bg-slate-800 border-none text-slate-300 text-sm rounded-lg px-3 py-1 focus:ring-1 focus:ring-indigo-500">
+                            <option>Last 7 Days</option>
+                            <option>This Month</option>
+                        </select>
+                    </div>
+                    <div className="h-[300px] w-full">
+                        {activity.length > 0 ? (
+                            <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart data={activity}>
+                                    <defs>
+                                        <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
+                                            <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+                                    <XAxis dataKey="day" stroke="#64748b" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                                    <YAxis stroke="#64748b" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                                    <Tooltip
+                                        contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '12px' }}
+                                        itemStyle={{ color: '#e2e8f0' }}
+                                    />
+                                    <Area type="monotone" dataKey="hours" stroke="#6366f1" strokeWidth={3} fillOpacity={1} fill="url(#colorScore)" />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        ) : (
+                            <div className="flex items-center justify-center h-full text-slate-500 text-sm">
+                                No activity data available.
+                            </div>
+                        )}
+                    </div>
                 </motion.div>
 
-                {/* Earn Rewards CTA */}
+                {/* Upcoming Classes / Schedule */}
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="bg-emerald-900/30 border border-emerald-500/30 rounded-3xl p-8 flex flex-col items-start"
+                    className="bg-slate-900/50 border border-slate-800 rounded-3xl p-6"
                 >
-                    <h3 className="text-2xl font-bold text-white mb-2">Earn Xam Coins</h3>
-                    <p className="text-emerald-200 mb-6 max-w-sm">Refer a friend and both of you earn 500 coins. Use these coins to unlock premium tests!</p>
-                    <Link href="/dashboard?tab=earn" className="mt-auto px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-colors shadow-lg shadow-emerald-500/20">
-                        Refer & Earn
-                    </Link>
+                    <h3 className="text-xl font-bold text-white mb-6">Today&apos;s Schedule</h3>
+                    <div className="space-y-4">
+                        {schedule.length > 0 ? schedule.map((item, i) => (
+                            <div key={i} className={`p-4 rounded-xl border transition-all ${item.status === 'now' ? 'bg-indigo-900/20 border-indigo-500/50' : 'bg-slate-900 border-slate-800 hover:border-slate-700'}`}>
+                                <div className="flex justify-between items-start mb-2">
+                                    <span className={`text-xs font-bold px-2 py-1 rounded-md ${item.status === 'now' ? 'bg-red-500/20 text-red-400 animate-pulse' : 'bg-slate-800 text-slate-400'}`}>
+                                        {item.status === 'now' ? 'LIVE NOW' : item.time}
+                                    </span>
+                                    <span className="text-xs font-medium text-slate-500">{item.type}</span>
+                                </div>
+                                <h4 className="font-bold text-white text-lg leading-tight mb-1">{item.subject}</h4>
+                                <p className="text-sm text-slate-400">{item.topic}</p>
+
+                                {item.status === 'now' && (
+                                    <button className="w-full mt-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold rounded-lg transition-colors">
+                                        Join Class
+                                    </button>
+                                )}
+                            </div>
+                        )) : (
+                            <div className="flex items-center justify-center p-4 text-slate-500 text-sm text-center border border-slate-800 border-dashed rounded-xl">
+                                No classes scheduled today.
+                            </div>
+                        )}
+                    </div>
                 </motion.div>
             </div>
 
             {/* Recent Courses / Continue Learning */}
             <div>
                 <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-bold text-white">Available Courses</h3>
+                    <h3 className="text-xl font-bold text-white">Continue Learning</h3>
                     <Link href="/dashboard?tab=courses" className="text-indigo-400 text-sm font-medium hover:text-indigo-300 flex items-center gap-1">
                         View All Courses <ChevronRight className="w-4 h-4" />
                     </Link>
                 </div>
 
-                {courses.length > 0 ? (
+                {progress.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {courses.map((course, i) => (
-                            <div key={course._id} className="group bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-indigo-500/10 hover:border-indigo-500/30 transition-all duration-300">
+                        {progress.map((item, i) => (
+                            <div key={item.id} className="group bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-indigo-500/10 hover:border-indigo-500/30 transition-all duration-300">
                                 <div className="h-32 bg-slate-800 relative">
                                     {/* Placeholder for course image */}
                                     <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent opacity-80" />
                                     <div className="absolute bottom-3 left-4 right-4">
-                                        <span className="text-xs font-bold text-indigo-300 bg-indigo-900/50 px-2 py-0.5 rounded border border-indigo-500/30 mb-1 inline-block">Class {course.class_grade || 12}</span>
-                                        <h4 className="text-white font-bold truncate">{course.title}</h4>
+                                        <span className="text-xs font-bold text-indigo-300 bg-indigo-900/50 px-2 py-0.5 rounded border border-indigo-500/30 mb-1 inline-block">{item.chapter}</span>
+                                        <h4 className="text-white font-bold truncate">{item.title}</h4>
                                     </div>
                                 </div>
                                 <div className="p-4">
-                                    <p className="text-xs text-slate-400 mb-4 line-clamp-2">{course.description || "Learn and master concepts"}</p>
+                                    <div className="flex justify-between text-xs text-slate-400 mb-2">
+                                        <span>Progress</span>
+                                        <span>{item.progress}%</span>
+                                    </div>
+                                    <progress
+                                        value={item.progress}
+                                        max={100}
+                                        className="w-full h-1.5 rounded-full overflow-hidden bg-slate-800 accent-indigo-500 mb-4"
+                                        aria-label="Course progress"
+                                    />
                                     <Link href="/dashboard?tab=courses" className="w-full py-2 bg-slate-800 hover:bg-slate-700 text-white text-sm font-semibold rounded-lg transition-colors border border-slate-700 hover:border-slate-600 flex items-center justify-center gap-2">
-                                        <PlayCircle className="w-4 h-4" /> View Details
+                                        <PlayCircle className="w-4 h-4" /> Continue
                                     </Link>
                                 </div>
                             </div>
@@ -264,7 +355,7 @@ export default function Overview({ user }: { user: OverviewUser }) {
                     </div>
                 ) : (
                     <div className="text-slate-500 text-sm py-8 text-center bg-slate-900/30 rounded-2xl border border-slate-800 border-dashed">
-                        No courses available at the moment.
+                        No active course progress yet.
                     </div>
                 )}
             </div>
