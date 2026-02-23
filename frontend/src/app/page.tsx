@@ -12,6 +12,7 @@ import Courses from "@/components/Courses";
 import TestSeries from "@/components/TestSeries";
 import Results from "@/components/Results";
 import Faculty from "@/components/Faculty";
+import Resources from "@/components/Resources";
 import Testimonials from "@/components/Testimonials";
 import AppCTA from "@/components/AppCTA";
 import FAQ from "@/components/FAQ";
@@ -27,6 +28,7 @@ export default function Home() {
         <TestSeries />
         <Results />
         <Faculty />
+        <Resources />
         <Testimonials />
         <AppCTA />
         <FAQ />
