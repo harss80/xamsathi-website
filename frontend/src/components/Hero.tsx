@@ -18,14 +18,7 @@ const Hero = () => {
                     {/* Left Content - Centered on Mobile, Left on Desktop */}
                     <div className="flex-1 text-center lg:text-left max-w-2xl mx-auto lg:mx-0">
 
-                        <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 mb-8">
-                            <div className="inline-flex items-center gap-2 bg-blue-500/10 text-blue-400 border border-blue-500/20 px-4 py-1.5 rounded-full text-sm font-bold">
-                                <Trophy className="w-4 h-4" /> Trusted Across India
-                            </div>
-                            <div className="inline-flex items-center gap-2 bg-slate-900 border border-slate-800 text-slate-300 px-4 py-1.5 rounded-full text-sm font-bold">
-                                National Level Series
-                            </div>
-                        </div>
+
 
                         <h1 className="text-5xl md:text-6xl lg:text-[4.25rem] font-black text-white tracking-tight leading-[1.1] mb-8">
                             Prepare for 50+ Exams <br className="hidden md:block" />
