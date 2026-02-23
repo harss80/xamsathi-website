@@ -6,7 +6,7 @@ import { Moon, Sun } from "lucide-react";
 function applyTheme(theme: "light" | "dark") {
   if (typeof document === "undefined") return;
   const body = document.body;
-  const lightClasses = ["text-gray-900", "bg-white"];
+  const lightClasses = ["text-gray-900", "bg-slate-950"];
   const darkClasses = ["text-slate-200", "bg-slate-950"];
 
   // Remove both sets to avoid accumulation

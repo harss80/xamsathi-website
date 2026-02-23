@@ -316,7 +316,7 @@ export default function DashboardUtilities() {
                         <div className="text-xs text-slate-500">{cls.topic} — {cls.instructor}</div>
                       </div>
                     </div>
-                    <button onClick={() => router.push('/live-classes')} className={"px-3 py-1.5 rounded-lg text-xs font-bold transition " + (cls.live ? "bg-red-500 hover:bg-red-600 text-white" : "bg-slate-900 text-slate-300 hover:bg-white hover:text-slate-950 border border-slate-800")}>
+                    <button onClick={() => router.push('/live-classes')} className={"px-3 py-1.5 rounded-lg text-xs font-bold transition " + (cls.live ? "bg-red-500 hover:bg-red-600 text-white" : "bg-slate-900 text-slate-300 hover:bg-slate-950 hover:text-slate-950 border border-slate-800")}>
                       {cls.live ? 'Join' : 'Remind Me'}
                     </button>
                   </div>
