@@ -20,25 +20,34 @@ const Hero = () => {
                     {/* Left Content - Centered on Mobile, Left on Desktop */}
                     <div className="flex-1 text-center lg:text-left max-w-2xl mx-auto lg:mx-0">
 
+                        <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 mb-6">
+                            <div className="inline-flex items-center gap-2 bg-rose-500/10 border border-rose-500/20 text-rose-200 px-4 py-1.5 rounded-full text-sm font-semibold">
+                                Limited Seats for Intensive Batch
+                            </div>
+                            <div className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 text-blue-200 px-4 py-1.5 rounded-full text-sm font-semibold">
+                                Next Test Series Starts 27 March
+                            </div>
+                        </div>
+
 
                         <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tight leading-[1.15] mb-6">
-                            Master Your Exams with <br />
-                            <span className="text-blue-500">Structured Learning</span>
+                            Crack JEE &amp; NEET with India’s Most <br />
+                            <span className="text-blue-500">Result-Focused Test Series</span>
                         </h1>
 
                         <p className="text-lg text-slate-400 mb-8 leading-relaxed max-w-xl mx-auto lg:mx-0">
-                            Get access to India's best educators, comprehensive study material, and real-time performance analytics. Start your journey today.
+                            Improve your rank in 30 days with real exam simulation, strict timers, and detailed solutions—built to boost accuracy and speed.
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start mb-12">
-                            <Link href="/signup" className="w-full sm:w-auto px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2">
-                                Start Free Trial
+                            <Link href="/dashboard/test-series/free-series" className="w-full sm:w-auto px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2">
+                                Start Free Mock Test Now
                                 <ArrowRight className="w-4 h-4" />
                             </Link>
-                            <button className="w-full sm:w-auto px-8 py-3.5 bg-white hover:bg-slate-100 text-slate-900 font-semibold rounded-lg transition-colors border border-slate-200 flex items-center justify-center gap-2">
+                            <Link href="/dashboard/test-series/free-series" className="w-full sm:w-auto px-8 py-3.5 bg-white hover:bg-slate-100 text-slate-900 font-semibold rounded-lg transition-colors border border-slate-200 flex items-center justify-center gap-2">
                                 <Play className="w-4 h-4 fill-current" />
-                                View Demo
-                            </button>
+                                Attempt Your First Test Free
+                            </Link>
                         </div>
 
                         {/* Social Proof */}
@@ -50,14 +59,14 @@ const Hero = () => {
                                     </div>
                                 ))}
                                 <div className="w-10 h-10 rounded-full border-2 border-slate-950 bg-slate-800 flex items-center justify-center text-xs font-bold text-white relative">
-                                    +2k
+                                    FREE
                                 </div>
                             </div>
                             <div className="flex flex-col items-center sm:items-start">
                                 <div className="flex gap-0.5 text-yellow-500">
                                     {[1, 2, 3, 4, 5].map((i) => <Star key={i} className="w-4 h-4 fill-current" />)}
                                 </div>
-                                <p className="text-sm text-slate-400 mt-1">4.9/5 Rating from students</p>
+                                <p className="text-sm text-slate-400 mt-1">Start with a free mock and upgrade only if you love it.</p>
                             </div>
                         </div>
                     </div>
