@@ -5,61 +5,61 @@ const srcDir = path.join(__dirname, 'src', 'app');
 const bankingDir = path.join(srcDir, 'banking-exams');
 
 const examsData = {
-    'ibps-po': {
-        name: 'IBPS PO',
-        totalTests: 100,
-        prelims: 25,
-        mains: 20,
-        sectional: 40,
-        pyq: 15,
-        specials: [
-            "Interview Guidance PDF",
-            "Rank + Analytics",
-            "Prelims vs Mains Strategy"
-        ],
-        prices: { basic: 599, pro: 899, premium: 1199 },
-    },
-    'ibps-clerk': {
-        name: 'IBPS Clerk',
-        totalTests: 82,
-        prelims: 20,
-        mains: 15,
-        sectional: 35,
-        pyq: 12,
-        specials: [
-            "All India Rank",
-            "Detailed Solutions"
-        ],
-        prices: { basic: 499, pro: 799, premium: 999 },
-    },
-    'sbi-po': {
-        name: 'SBI PO',
-        totalTests: 120,
-        prelims: 30,
-        mains: 25,
-        sectional: 50,
-        pyq: 15,
-        specials: [
-            "Interview Guide Details",
-            "SBI Tough Level Mocks",
-            "Premium Exam Category"
-        ],
-        prices: { basic: 799, pro: 1099, premium: 1399 },
-    },
-    'rbi-grade-b': {
-        name: 'RBI Grade B',
-        totalTests: 70,
-        prelims: 20, // using Phase 1 as prelims variable
-        mains: 15,   // using Phase 2 as mains variable
-        sectional: 25,
-        pyq: 10,
-        specials: [
-            "Economic & Finance Notes",
-            "Descriptive Papers Evaluation",
-            "Serious Aspirant Level"
-        ],
-        prices: { basic: 999, pro: 1499, premium: 1799 },
-    }
+  'ibps-po': {
+    name: 'IBPS PO',
+    totalTests: 100,
+    prelims: 25,
+    mains: 20,
+    sectional: 40,
+    pyq: 15,
+    specials: [
+      "Interview Guidance PDF",
+      "Rank + Analytics",
+      "Prelims vs Mains Strategy"
+    ],
+    prices: { basic: 599, pro: 899, premium: 1199 },
+  },
+  'ibps-clerk': {
+    name: 'IBPS Clerk',
+    totalTests: 82,
+    prelims: 20,
+    mains: 15,
+    sectional: 35,
+    pyq: 12,
+    specials: [
+      "All India Rank",
+      "Detailed Solutions"
+    ],
+    prices: { basic: 499, pro: 799, premium: 999 },
+  },
+  'sbi-po': {
+    name: 'SBI PO',
+    totalTests: 120,
+    prelims: 30,
+    mains: 25,
+    sectional: 50,
+    pyq: 15,
+    specials: [
+      "Interview Guide Details",
+      "SBI Tough Level Mocks",
+      "Premium Exam Category"
+    ],
+    prices: { basic: 799, pro: 1099, premium: 1399 },
+  },
+  'rbi-grade-b': {
+    name: 'RBI Grade B',
+    totalTests: 70,
+    prelims: 20, // using Phase 1 as prelims variable
+    mains: 15,   // using Phase 2 as mains variable
+    sectional: 25,
+    pyq: 10,
+    specials: [
+      "Economic & Finance Notes",
+      "Descriptive Papers Evaluation",
+      "Serious Aspirant Level"
+    ],
+    prices: { basic: 999, pro: 1499, premium: 1799 },
+  }
 };
 
 const template = (examId, data) => `
@@ -69,7 +69,7 @@ import Link from "next/link";
 import { Star, CheckCircle2, Play, BookOpen, Clock, Trophy, ShieldCheck, Check, X, Building2, BarChart3, ChevronDown, Rocket } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
-export default function Banking_${examId.replace('-', '').toUpperCase()}Page() {
+export default function Banking_${examId.replace(/-/g, '').toUpperCase()}Page() {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
   const [showUpsell, setShowUpsell] = useState(false);
@@ -335,10 +335,10 @@ export default function Banking_${examId.replace('-', '').toUpperCase()}Page() {
 `;
 
 Object.keys(examsData).forEach(exam => {
-    const dir = path.join(bankingDir, exam);
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  const dir = path.join(bankingDir, exam);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 
-    fs.writeFileSync(path.join(dir, 'page.tsx'), template(exam, examsData[exam]));
+  fs.writeFileSync(path.join(dir, 'page.tsx'), template(exam, examsData[exam]));
 });
 
 console.log("Banking inner pages generated.");

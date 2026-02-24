@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Star, CheckCircle2, Play, BookOpen, Clock, Trophy, ShieldCheck, Check, X, Building2, BarChart3, ChevronDown, Rocket } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
-export default function Banking_RBIGRADE-BPage() {
+export default function Banking_RBIGRADEBPage() {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
   const [showUpsell, setShowUpsell] = useState(false);
