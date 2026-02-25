@@ -155,9 +155,9 @@ export default function SSCCGLExamPage() {
                   <Link href="/dashboard/test-series/ssc-cgl" className="w-full sm:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 text-lg shadow-lg shadow-blue-500/20 active:scale-95">
                     <Play className="w-5 h-5 fill-white" /> Start Free Demo
                   </Link>
-                  <a href="#test-syllabus" className="w-full sm:w-auto px-8 py-4 bg-slate-950 border border-slate-700 hover:border-slate-500 hover:text-white text-slate-300 font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-lg active:scale-95 shadow-sm">
+                  <Link href="/government-exams/ssc/ssc-cgl/schedule" className="w-full sm:w-auto px-8 py-4 bg-slate-950 border border-slate-700 hover:border-slate-500 hover:text-white text-slate-300 font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-lg active:scale-95 shadow-sm">
                     <Calendar className="w-5 h-5" /> View Schedule
-                  </a>
+                  </Link>
                 </div>
                 <div className="text-sm font-semibold text-slate-400 flex items-center justify-start gap-2 mt-4 px-2">
                   <ShieldCheck className="w-5 h-5 text-emerald-400" />
