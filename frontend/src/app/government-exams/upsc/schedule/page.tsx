@@ -547,7 +547,7 @@ export default function UPSCCSE_SchedulePage() {
                                 <Link href="/dashboard/test-series/upsc" className="w-full py-4 bg-slate-950 border border-slate-700 hover:border-slate-500 text-white font-black rounded-xl text-center transition-all text-sm active:scale-95 flex justify-center items-center gap-2">
                                     <MonitorPlay className="w-4 h-4" /> Try Free Mock Test
                                 </Link>
-                                <Link href="/government-exams/upsc/complete" className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl text-center transition-all text-lg shadow-lg shadow-blue-500/30 active:scale-95">
+                                <Link href="/government-exams/upsc" className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl text-center transition-all text-lg shadow-lg shadow-blue-500/30 active:scale-95">
                                     Unlock Complete Pass
                                 </Link>
                             </div>
