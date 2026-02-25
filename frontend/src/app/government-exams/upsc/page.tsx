@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Star, Users, CheckCircle2, Play, BookOpen, BarChart3, Trophy, ShieldCheck, Check, X, FileText, TrendingUp, Cpu, Award } from "lucide-react";
+import { Star, Users, CheckCircle2, Play, BookOpen, BarChart3, Trophy, ShieldCheck, Check, X, FileText, TrendingUp, Cpu, Award, Calendar } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Image from "next/image";
 
@@ -25,12 +25,15 @@ export default function UPSCExamsCategoryPage() {
                 Prelims + Mains + CSAT Complete Preparation with exact UPSC syllabus matching and all-India ranking.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+              <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center lg:justify-start gap-4">
                 <Link href="#courses" className="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 w-full sm:w-auto text-lg active:scale-95 shadow-lg shadow-blue-500/20">
                   🚀 View Plans
                 </Link>
                 <Link href="#demo" className="px-8 py-4 bg-slate-900 border border-slate-700 hover:bg-slate-800 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 w-full sm:w-auto text-lg active:scale-95">
                   📘 Start Free Prelims Mock
+                </Link>
+                <Link href="/government-exams/upsc/schedule" className="px-8 py-4 bg-slate-950 border border-slate-700 hover:border-slate-500 hover:text-white text-slate-300 font-bold rounded-xl transition-all flex items-center justify-center gap-2 w-full sm:w-auto text-lg active:scale-95 shadow-sm">
+                  <Calendar className="w-5 h-5" /> View Schedule
                 </Link>
               </div>
             </div>
