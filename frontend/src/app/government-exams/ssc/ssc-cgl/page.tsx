@@ -4,7 +4,7 @@ import Link from "next/link";
 import {
   Star, Users, CheckCircle2, Play, BookOpen, Clock,
   Trophy, ShieldCheck, Check, ChevronDown, ChevronUp, ChevronRight,
-  Lock, Languages, MonitorPlay, FileText, Award
+  Lock, Languages, MonitorPlay, FileText, Award, Calendar
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
@@ -153,12 +153,15 @@ export default function SSCCGLExamPage() {
 
                 <div className="flex flex-col sm:flex-row items-center gap-4">
                   <Link href="/dashboard/test-series/ssc-cgl" className="w-full sm:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 text-lg shadow-lg shadow-blue-500/20 active:scale-95">
-                    <Play className="w-5 h-5 fill-white" /> Start Free Demo Test
+                    <Play className="w-5 h-5 fill-white" /> Start Free Demo
                   </Link>
-                  <div className="text-sm font-semibold text-slate-400 flex items-center justify-center gap-2 px-4 py-2">
-                    <ShieldCheck className="w-5 h-5 text-emerald-400" />
-                    Strictly per Latest Exam Pattern
-                  </div>
+                  <a href="#test-syllabus" className="w-full sm:w-auto px-8 py-4 bg-slate-950 border border-slate-700 hover:border-slate-500 hover:text-white text-slate-300 font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-lg active:scale-95 shadow-sm">
+                    <Calendar className="w-5 h-5" /> View Schedule
+                  </a>
+                </div>
+                <div className="text-sm font-semibold text-slate-400 flex items-center justify-start gap-2 mt-4 px-2">
+                  <ShieldCheck className="w-5 h-5 text-emerald-400" />
+                  Strictly per Latest Exam Pattern
                 </div>
               </div>
             </div>
