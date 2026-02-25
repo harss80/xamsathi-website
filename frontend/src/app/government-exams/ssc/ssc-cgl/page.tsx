@@ -1,464 +1,375 @@
-
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { Star, Users, CheckCircle2, Play, BookOpen, BarChart3, Clock, Trophy, ShieldCheck, Check, ChevronDown, Quote, X } from "lucide-react";
+import {
+  Star, Users, CheckCircle2, Play, BookOpen, Clock,
+  Trophy, ShieldCheck, Check, ChevronDown, ChevronUp,
+  Lock, Languages, MonitorPlay, FileText, Award
+} from "lucide-react";
 import Navbar from "@/components/Navbar";
 
-export default function SSCCGLExamPage() {
-  const [activeFaq, setActiveFaq] = useState<number | null>(null);
-  const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
+const testBreakdown = [
+  {
+    id: "full-tests",
+    title: "SSC CGL Tier 1 Full Mock Tests",
+    desc: "Strictly based on the latest TCS pattern. Includes negative marking.",
+    testCount: 20,
+    freeCount: 1,
+    tests: [
+      { name: "SSC CGL Tier 1 Full Mock Test 1", q: 100, m: 200, time: "60 Mins", isFree: true },
+      { name: "SSC CGL Tier 1 Full Mock Test 2", q: 100, m: 200, time: "60 Mins", isFree: false },
+      { name: "SSC CGL Tier 1 Full Mock Test 3", q: 100, m: 200, time: "60 Mins", isFree: false },
+      { name: "SSC CGL Tier 1 Full Mock Test 4", q: 100, m: 200, time: "60 Mins", isFree: false },
+      { name: "SSC CGL Tier 1 Full Mock Test 5", q: 100, m: 200, time: "60 Mins", isFree: false },
+    ]
+  },
+  {
+    id: "pyq-2023",
+    title: "SSC CGL Tier 1 Previous Year Papers (2023)",
+    desc: "Official papers from SSC CGL 2023 exam, set as timed mocks.",
+    testCount: 39,
+    freeCount: 1,
+    tests: [
+      { name: "SSC CGL Tier 1 (14th July 2023 - Shift 1)", q: 100, m: 200, time: "60 Mins", isFree: true },
+      { name: "SSC CGL Tier 1 (14th July 2023 - Shift 2)", q: 100, m: 200, time: "60 Mins", isFree: false },
+      { name: "SSC CGL Tier 1 (14th July 2023 - Shift 3)", q: 100, m: 200, time: "60 Mins", isFree: false },
+      { name: "SSC CGL Tier 1 (17th July 2023 - Shift 1)", q: 100, m: 200, time: "60 Mins", isFree: false },
+    ]
+  },
+  {
+    id: "quant-chapter",
+    title: "Chapter Tests - Quantitative Aptitude",
+    desc: "Topic-wise tests to strengthen your mathematical foundation.",
+    testCount: 24,
+    freeCount: 2,
+    tests: [
+      { name: "Percentage - Conceptual", q: 20, m: 40, time: "20 Mins", isFree: true },
+      { name: "Ratio and Proportion", q: 20, m: 40, time: "20 Mins", isFree: true },
+      { name: "Number System - Level 1", q: 20, m: 40, time: "20 Mins", isFree: false },
+      { name: "Time and Work - Advanced", q: 20, m: 40, time: "20 Mins", isFree: false },
+    ]
+  },
+  {
+    id: "reasoning-chapter",
+    title: "Chapter Tests - Logical Reasoning",
+    desc: "Topic-wise reasoning tests to improve logic and speed.",
+    testCount: 18,
+    freeCount: 1,
+    tests: [
+      { name: "Blood Relations", q: 20, m: 40, time: "15 Mins", isFree: true },
+      { name: "Coding Decoding", q: 25, m: 50, time: "20 Mins", isFree: false },
+      { name: "Syllogism", q: 20, m: 40, time: "15 Mins", isFree: false },
+    ]
+  }
+];
 
-  // Faq toggle
-  const toggleFaq = (index: number) => {
-    setActiveFaq(activeFaq === index ? null : index);
+const faqs = [
+  { q: "Is this test series bilingual?", a: "Yes, all tests in the SSC CGL Mock Test Series are available in both English and Hindi. You can switch the language anytime during the test." },
+  { q: "What is the validity of the plans?", a: "The Basic plan has a validity of 6 months. Pro plan comes with an All-India Rank and 6-month validity. Premium plan gives you 1 Year extra (total 1.5 Years)." },
+  { q: "Are the questions based on the latest TCS pattern?", a: "Absolutely. All mock tests and sectional tests are updated strictly according to the latest SSC CGL pattern conducted by TCS." },
+  { q: "Can I access this test series on my mobile phone?", a: "Yes, the platform is fully responsive. You can flawlessly attempt tests, review solutions, and check analytics on your mobile or tablet." }
+];
+
+export default function SSCCGLExamPage() {
+  const [activeAccordion, setActiveAccordion] = useState<string>("full-tests");
+  const [activeFaq, setActiveFaq] = useState<number | null>(null);
+
+  const toggleAccordion = (id: string) => {
+    setActiveAccordion(activeAccordion === id ? "" : id);
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-blue-500/30">
+    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans selection:bg-blue-500/30">
       <Navbar />
 
-      {/* Plan Selection Modal */}
-      {isPlanModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto relative animate-in fade-in zoom-in duration-300">
-            <button 
-              onClick={() => setIsPlanModalOpen(false)}
-              className="absolute top-6 right-6 p-2 bg-slate-800 hover:bg-slate-700 rounded-full text-slate-400 hover:text-white transition-colors z-10"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            
-            <div className="p-8 md:p-10">
-              <div className="text-center mb-10">
-                <h3 className="text-3xl font-black text-white mb-3">Choose Your Preparation Plan</h3>
-                <p className="text-slate-400">Select the plan that best fits your goal for SSC CGL.</p>
-              </div>
+      <main className="container mx-auto px-4 md:px-6 pt-24 pb-20">
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Basic */}
-                <div className="bg-slate-950 border border-slate-800 rounded-2xl p-6 hover:border-slate-700 transition-colors relative flex flex-col">
-                  <h4 className="text-xl font-bold text-white mb-2">Basic</h4>
-                  <div className="text-3xl font-black text-white mb-6">₹499</div>
-                  <div className="space-y-4 mb-8 flex-1">
-                    <div className="flex items-start gap-3 text-sm text-slate-300"><Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5"/> Limited Sectional Tests</div>
-                    <div className="flex items-start gap-3 text-sm text-slate-500"><X className="w-4 h-4 text-slate-600 shrink-0 mt-0.5"/> No All India Rank</div>
-                  </div>
-                  <Link href="/checkout?plan=basic&exam=ssc-cgl" className="w-full py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl text-center transition-colors">Select Basic</Link>
-                </div>
-
-                {/* Pro */}
-                <div className="bg-slate-900 border-2 border-blue-600 rounded-2xl p-6 relative flex flex-col shadow-[0_0_30px_rgba(59,130,246,0.15)] md:-translate-y-4">
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">Most Popular</div>
-                  <h4 className="text-xl font-bold text-white mb-2">Pro</h4>
-                  <div className="text-4xl font-black text-blue-400 mb-6">₹799</div>
-                  <div className="space-y-4 mb-8 flex-1">
-                    <div className="flex items-start gap-3 text-sm text-white font-medium"><Check className="w-4 h-4 text-blue-400 shrink-0 mt-0.5"/> Full Access to all Tests</div>
-                    <div className="flex items-start gap-3 text-sm text-white font-medium"><Check className="w-4 h-4 text-blue-400 shrink-0 mt-0.5"/> All India Rank</div>
-                    <div className="flex items-start gap-3 text-sm text-white font-medium"><Check className="w-4 h-4 text-blue-400 shrink-0 mt-0.5"/> Detailed Analytics</div>
-                  </div>
-                  <Link href="/checkout?plan=pro&exam=ssc-cgl" className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl text-center transition-colors">Select Pro</Link>
-                </div>
-
-                {/* Premium */}
-                <div className="bg-slate-950 border border-slate-800 rounded-2xl p-6 hover:border-slate-700 transition-colors relative flex flex-col">
-                  <h4 className="text-xl font-bold text-white mb-2">Premium</h4>
-                  <div className="text-3xl font-black text-amber-400 mb-6">₹999</div>
-                  <div className="space-y-4 mb-8 flex-1">
-                    <div className="flex items-start gap-3 text-sm text-slate-300"><Check className="w-4 h-4 text-amber-500 shrink-0 mt-0.5"/> Everything in Pro</div>
-                    <div className="flex items-start gap-3 text-sm text-slate-300"><Check className="w-4 h-4 text-amber-500 shrink-0 mt-0.5"/> PDF Performance Report</div>
-                    <div className="flex items-start gap-3 text-sm text-slate-300"><Check className="w-4 h-4 text-amber-500 shrink-0 mt-0.5"/> 1 Year Extra Access</div>
-                  </div>
-                  <Link href="/checkout?plan=premium&exam=ssc-cgl" className="w-full py-3 bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold rounded-xl text-center transition-colors">Select Premium</Link>
-                </div>
-              </div>
-              
-            </div>
-          </div>
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-2 text-sm text-slate-500 mb-6 font-medium">
+          <Link href="/" className="hover:text-blue-600">Home</Link>
+          <span>›</span>
+          <Link href="/government-exams" className="hover:text-blue-600">Government Exams</Link>
+          <span>›</span>
+          <span className="text-slate-900 font-bold">SSC CGL Test Series</span>
         </div>
-      )}
 
-      {/* 1️⃣ Hero Section */}
-      <section className="pt-32 pb-20 relative overflow-hidden bg-slate-950 border-b border-slate-800">
-        <div className="container mx-auto px-4 md:px-6 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center max-w-7xl mx-auto">
-            
-            {/* Left Content */}
-            <div className="lg:col-span-7 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-600/10 border border-blue-500/20 text-blue-400 text-sm font-bold mb-6">
-                <Trophy className="w-4 h-4" /> Trusted by 45,000+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+
+          {/* LEFT COLUMN - MAIN CONTENT */}
+          <div className="lg:col-span-8 space-y-10">
+
+            {/* 1️⃣ Hero Info Section */}
+            <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-blue-50 border border-blue-100 text-blue-700 text-xs font-bold mb-5 uppercase tracking-wider">
+                <Trophy className="w-4 h-4" /> Bestseller
               </div>
-              <h1 className="text-4xl md:text-5xl lg:text-7xl font-black text-white mb-6 tracking-tight">
-                SSC CGL 2026 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Test Series</span>
+
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 mb-4 tracking-tight leading-tight">
+                SSC CGL Mock Test Series 2026
               </h1>
-              
-              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-6 mb-8 text-slate-300">
-                <div className="flex items-center gap-2">
-                  <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
-                  <span className="font-bold text-lg">4.8 Rating</span>
+
+              <p className="text-lg text-slate-600 mb-6 font-medium leading-relaxed">
+                Boost your SSC CGL Tier 1 & Tier 2 preparation with India's most trusted mock tests based on the latest TCS exam pattern. Get detailed solutions, All India Ranks, and performance analytics.
+              </p>
+
+              <div className="flex flex-wrap items-center gap-6 mb-8 text-sm">
+                <div className="flex items-center gap-2 font-bold text-slate-700">
+                  <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
+                  4.8 <span className="text-slate-500 font-medium">(14,200+ Ratings)</span>
                 </div>
-                <div className="w-1.5 h-1.5 rounded-full bg-slate-700"></div>
-                <div className="flex items-center gap-2">
-                  <Users className="w-5 h-5 text-blue-400" />
-                  <span className="font-bold text-lg">45,000+ Students</span>
-                </div>
-                <div className="w-1.5 h-1.5 rounded-full bg-slate-700"></div>
-                <div className="flex items-center gap-2">
-                  <BookOpen className="w-5 h-5 text-emerald-400" />
-                  <span className="font-bold text-lg">70 Total Tests</span>
+                <div className="flex items-center gap-2 font-bold text-slate-700">
+                  <Users className="w-5 h-5 text-blue-500" />
+                  45,000+ Students Enrolled
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                <button onClick={() => setIsPlanModalOpen(true)} className="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 w-full sm:w-auto text-lg active:scale-95 shadow-lg shadow-blue-500/20">
-                  🚀 Buy Now
-                </button>
-                <Link href="#demo" className="px-8 py-4 bg-slate-900 border border-slate-700 hover:bg-slate-800 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 w-full sm:w-auto text-lg active:scale-95">
-                  📘 Start Free Mock
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div className="flex flex-col items-center justify-center p-4 bg-slate-50 rounded-2xl border border-slate-100 text-center">
+                  <FileText className="w-7 h-7 text-blue-600 mb-2" />
+                  <span className="font-extrabold text-xl text-slate-900">450+</span>
+                  <span className="text-xs text-slate-500 font-bold uppercase tracking-wide mt-1">Total Tests</span>
+                </div>
+                <div className="flex flex-col items-center justify-center p-4 bg-slate-50 rounded-2xl border border-slate-100 text-center">
+                  <Award className="w-7 h-7 text-emerald-600 mb-2" />
+                  <span className="font-extrabold text-xl text-slate-900">45+</span>
+                  <span className="text-xs text-slate-500 font-bold uppercase tracking-wide mt-1">Free Tests</span>
+                </div>
+                <div className="flex flex-col items-center justify-center p-4 bg-slate-50 rounded-2xl border border-slate-100 text-center">
+                  <Languages className="w-7 h-7 text-purple-600 mb-2" />
+                  <span className="font-extrabold text-xl text-slate-900">Eng/Hin</span>
+                  <span className="text-xs text-slate-500 font-bold uppercase tracking-wide mt-1">Bilingual</span>
+                </div>
+                <div className="flex flex-col items-center justify-center p-4 bg-slate-50 rounded-2xl border border-slate-100 text-center">
+                  <MonitorPlay className="w-7 h-7 text-rose-600 mb-2" />
+                  <span className="font-extrabold text-xl text-slate-900">TCS</span>
+                  <span className="text-xs text-slate-500 font-bold uppercase tracking-wide mt-1">Pattern</span>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <Link href="/dashboard/test-series/ssc-cgl" className="w-full sm:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-lg shadow-lg shadow-blue-500/30">
+                  <Play className="w-5 h-5 fill-white" /> Start Free Demo Test
                 </Link>
+                <div className="text-sm font-semibold text-slate-500 flex items-center justify-center gap-2">
+                  <ShieldCheck className="w-5 h-5 text-emerald-500" />
+                  Strictly per Latest Exam Pattern
+                </div>
               </div>
             </div>
 
-            {/* Right Content - Pricing Highlight */}
-            <div className="lg:col-span-5 relative">
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-blue-600/20 rounded-full blur-[80px]"></div>
-              
-              <div className="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-8 shadow-2xl relative z-10 text-center flex flex-col items-center">
-                <div className="px-4 py-1.5 bg-blue-600/10 border border-blue-500/20 text-blue-400 text-xs font-black rounded-full uppercase tracking-widest mb-6">
-                  🔥 Most Popular Plan
-                </div>
-                
-                <h3 className="text-2xl font-black text-white mb-2">Pro Plan</h3>
-                <div className="text-6xl font-black text-white mb-6 tracking-tighter">
-                  ₹799
-                </div>
-                
-                <div className="w-full space-y-3 mb-8 text-left">
-                  <div className="flex items-start gap-3 text-slate-300 font-medium">
-                    <CheckCircle2 className="w-5 h-5 text-blue-400 shrink-0" /> Full Access to All 70 Tests
+            {/* 2️⃣ Detailed Test Breakdown (Testbook Style Accordion) */}
+            <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden" id="test-syllabus">
+              <div className="p-6 md:p-8 border-b border-slate-100 bg-slate-50/50">
+                <h2 className="text-2xl font-black text-slate-900">Test Series Breakdown</h2>
+                <p className="text-slate-500 mt-2 font-medium">Explore everything included in the SSC CGL Test Series package.</p>
+              </div>
+
+              <div className="divide-y divide-slate-100">
+                {testBreakdown.map((category) => (
+                  <div key={category.id} className="bg-white">
+                    <button
+                      onClick={() => toggleAccordion(category.id)}
+                      className="w-full text-left p-6 md:px-8 flex items-start md:items-center justify-between hover:bg-slate-50 transition-colors group"
+                    >
+                      <div className="pr-4">
+                        <h3 className="text-lg md:text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                          {category.title}
+                        </h3>
+                        <div className="flex flex-wrap items-center gap-2 mt-2">
+                          <span className="text-sm font-semibold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-md">
+                            {category.testCount} Tests Total
+                          </span>
+                          {category.freeCount > 0 && (
+                            <span className="text-sm font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md">
+                              {category.freeCount} Free Test{category.freeCount > 1 ? 's' : ''}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className={`p-2 rounded-full border border-slate-200 transition-transform ${activeAccordion === category.id ? 'rotate-180 bg-slate-100' : 'bg-white'}`}>
+                        <ChevronDown className="w-5 h-5 text-slate-500" />
+                      </div>
+                    </button>
+
+                    {/* Accordion Content */}
+                    {activeAccordion === category.id && (
+                      <div className="px-6 md:px-8 pb-6 bg-slate-50/50 border-t border-slate-50">
+                        <p className="text-sm text-slate-600 mb-4 pt-4 font-medium">{category.desc}</p>
+
+                        <div className="space-y-3">
+                          {category.tests.map((test, idx) => (
+                            <div key={idx} className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-white border border-slate-200 rounded-xl hover:border-blue-300 transition-colors gap-4 shadow-sm">
+                              <div>
+                                <div className="flex items-center gap-2 mb-2">
+                                  {test.isFree ? (
+                                    <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase rounded">Free</span>
+                                  ) : (
+                                    <span className="px-2 py-0.5 bg-slate-100 text-slate-600 text-[10px] font-black uppercase rounded flex items-center gap-1">
+                                      <Lock className="w-3 h-3" /> Pro
+                                    </span>
+                                  )}
+                                  <h4 className="font-bold text-slate-800 text-base">{test.name}</h4>
+                                </div>
+                                <div className="flex items-center gap-4 text-xs font-semibold text-slate-500">
+                                  <span className="flex items-center gap-1"><FileText className="w-3.5 h-3.5" /> {test.q} Questions</span>
+                                  <span className="flex items-center gap-1"><CheckCircle2 className="w-3.5 h-3.5" /> {test.m} Marks</span>
+                                  <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {test.time}</span>
+                                </div>
+                              </div>
+                              <div>
+                                {test.isFree ? (
+                                  <Link href={`/dashboard/test-series/ssc-cgl`} className="w-full md:w-auto px-5 py-2.5 bg-white border-2 border-slate-200 hover:border-blue-600 hover:text-blue-600 text-slate-700 font-bold rounded-lg transition-colors flex items-center justify-center text-sm shadow-sm active:scale-95">
+                                    Start Test
+                                  </Link>
+                                ) : (
+                                  <a href="#pricing" className="w-full md:w-auto px-5 py-2.5 bg-slate-100 text-slate-500 font-bold rounded-lg flex items-center justify-center text-sm cursor-not-allowed border border-slate-200">
+                                    <Lock className="w-4 h-4 mr-1.5" /> Unlock
+                                  </a>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {category.tests.length < category.testCount && (
+                          <div className="mt-4 text-center">
+                            <a href="#pricing" className="text-blue-600 hover:text-blue-700 font-bold text-sm hover:underline">
+                              Unlock all {category.testCount} tests »
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
-                  <div className="flex items-start gap-3 text-slate-300 font-medium">
-                    <CheckCircle2 className="w-5 h-5 text-blue-400 shrink-0" /> Accurate All India Ranking
+                ))}
+              </div>
+            </div>
+
+            {/* 3️⃣ About the Exam Section */}
+            <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm">
+              <h2 className="text-2xl font-black text-slate-900 mb-6">About SSC CGL 2026</h2>
+              <p className="text-slate-600 font-medium leading-relaxed mb-6">
+                The Staff Selection Commission Combined Graduate Level (SSC CGL) is one of the most prestigious exams in India, recruiting candidates for various Group B & Group C posts in ministries and departments of the Government of India.
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                  <div className="text-xs text-slate-500 font-bold uppercase mb-1">Exam Mode</div>
+                  <div className="font-bold text-slate-900">Online CBT</div>
+                </div>
+                <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                  <div className="text-xs text-slate-500 font-bold uppercase mb-1">Sections (Tier 1)</div>
+                  <div className="font-bold text-slate-900">4 Sections (100 Qs)</div>
+                </div>
+                <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                  <div className="text-xs text-slate-500 font-bold uppercase mb-1">Negative Marking</div>
+                  <div className="font-bold text-slate-900">0.50 Marks (Tier 1)</div>
+                </div>
+              </div>
+            </div>
+
+            {/* 4️⃣ FAQ */}
+            <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm">
+              <h2 className="text-2xl font-black text-slate-900 mb-6">Frequently Asked Questions</h2>
+              <div className="space-y-3">
+                {faqs.map((faq, idx) => (
+                  <div key={idx} className="border border-slate-100 rounded-xl overflow-hidden bg-slate-50/50">
+                    <button
+                      onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
+                      className="w-full p-5 text-left flex items-center justify-between font-bold text-slate-800"
+                    >
+                      {faq.q}
+                      <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform ${activeFaq === idx ? 'rotate-180' : ''}`} />
+                    </button>
+                    {activeFaq === idx && (
+                      <div className="px-5 pb-5 text-slate-600 font-medium leading-relaxed border-t border-slate-100 pt-4 bg-white">
+                        {faq.a}
+                      </div>
+                    )}
                   </div>
-                  <div className="flex items-start gap-3 text-slate-300 font-medium">
-                    <CheckCircle2 className="w-5 h-5 text-blue-400 shrink-0" /> In-depth Performance Analytics
+                ))}
+              </div>
+            </div>
+
+          </div>
+
+
+          {/* RIGHT COLUMN - STICKY PRICING CARD */}
+          <div className="lg:col-span-4" id="pricing">
+            <div className="sticky top-24 bg-white border-2 border-blue-600 rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">
+                Limited Time Offer
+              </div>
+
+              <h3 className="text-xl font-bold text-slate-900 mb-2 mt-2">Get Xamsathi Pro Pass</h3>
+              <p className="text-sm text-slate-500 font-medium mb-6">Unlock all SSC CGL mocks, chapter tests, PYQs, and detailed analytics.</p>
+
+              <div className="space-y-4 mb-6">
+                <div className="flex justify-between items-center p-4 rounded-xl border-2 border-blue-100 bg-blue-50/50 cursor-pointer relative overflow-hidden transition-all hover:border-blue-300 group">
+                  <div className="absolute top-0 right-0 bg-amber-400 text-slate-900 text-[9px] font-black px-2 py-0.5 rounded-bl-lg uppercase tracking-wider">Popular</div>
+                  <div>
+                    <div className="font-bold text-slate-900">12 Months Pass</div>
+                    <div className="text-xs font-medium text-slate-500 line-through">₹1999</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-2xl font-black text-blue-700">₹799</div>
+                  </div>
+                  <div className="absolute inset-0 border-2 border-blue-500 rounded-xl opacity-100"></div>
+                </div>
+
+                <div className="flex justify-between items-center p-4 rounded-xl border border-slate-200 hover:border-slate-300 bg-white cursor-pointer transition-colors group">
+                  <div>
+                    <div className="font-bold text-slate-700">6 Months Pass</div>
+                    <div className="text-xs font-medium text-slate-400 line-through">₹999</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xl font-black text-slate-700">₹499</div>
                   </div>
                 </div>
-
-                <button onClick={() => setIsPlanModalOpen(true)} className="w-full py-4 bg-white hover:bg-slate-200 text-slate-950 font-black rounded-xl transition-colors text-lg">
-                  Select Pro Plan
-                </button>
               </div>
-            </div>
 
-          </div>
-        </div>
-      </section>
-
-      {/* 2️⃣ What's Included */}
-      <section className="py-24 bg-slate-900 border-b border-slate-800">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-black text-white mb-4">Detailed Test Breakdown</h2>
-            <p className="text-lg text-slate-400 max-w-2xl mx-auto">Everything you get inside the SSC CGL preparation package.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-            {/* Full Length */}
-            <div className="bg-slate-950 border border-slate-800 rounded-3xl p-8 hover:border-slate-700 transition-colors group relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
-                <BookOpen className="w-24 h-24 text-blue-500" />
-              </div>
-              <div className="relative z-10 space-y-6">
-                <div className="text-5xl font-black text-blue-400">20</div>
-                <h3 className="text-2xl font-black text-white">Full Length Mocks</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-center gap-2 text-slate-400 font-medium text-sm"><Check className="w-4 h-4 text-slate-600"/> Tier 1 exact pattern</li>
-                  <li className="flex items-center gap-2 text-slate-400 font-medium text-sm"><Check className="w-4 h-4 text-slate-600"/> Real exam difficulty</li>
-                  <li className="flex items-center gap-2 text-slate-400 font-medium text-sm"><Check className="w-4 h-4 text-slate-600"/> Negative marking included</li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Sectional */}
-            <div className="bg-slate-950 border border-slate-800 rounded-3xl p-8 hover:border-slate-700 transition-colors group relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
-                <BarChart3 className="w-24 h-24 text-emerald-500" />
-              </div>
-              <div className="relative z-10 space-y-6">
-                <div className="text-5xl font-black text-emerald-400">35</div>
-                <h3 className="text-2xl font-black text-white">Sectional Tests</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-center gap-2 text-slate-400 font-medium text-sm"><Check className="w-4 h-4 text-slate-600"/> Quantitative Aptitude</li>
-                  <li className="flex items-center gap-2 text-slate-400 font-medium text-sm"><Check className="w-4 h-4 text-slate-600"/> Logical Reasoning</li>
-                  <li className="flex items-center gap-2 text-slate-400 font-medium text-sm"><Check className="w-4 h-4 text-slate-600"/> English & GA Topics</li>
-                </ul>
-              </div>
-            </div>
-
-            {/* PYQ */}
-            <div className="bg-slate-950 border border-slate-800 rounded-3xl p-8 hover:border-slate-700 transition-colors group relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
-                <Clock className="w-24 h-24 text-amber-500" />
-              </div>
-              <div className="relative z-10 space-y-6">
-                <div className="text-5xl font-black text-amber-400">15</div>
-                <h3 className="text-2xl font-black text-white">Previous Year</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-center gap-2 text-slate-400 font-medium text-sm"><Check className="w-4 h-4 text-slate-600"/> 2023 Papers</li>
-                  <li className="flex items-center gap-2 text-slate-400 font-medium text-sm"><Check className="w-4 h-4 text-slate-600"/> 2022 Papers</li>
-                  <li className="flex items-center gap-2 text-slate-400 font-medium text-sm"><Check className="w-4 h-4 text-slate-600"/> 2021 Papers</li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Analytics */}
-            <div className="bg-slate-950 border border-slate-800 rounded-3xl p-8 hover:border-slate-700 transition-colors group relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
-                <Trophy className="w-24 h-24 text-purple-500" />
-              </div>
-              <div className="relative z-10 space-y-6">
-                <div className="text-5xl font-black text-purple-400">AI</div>
-                <h3 className="text-2xl font-black text-white">Smart Analytics</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-center gap-2 text-slate-400 font-medium text-sm"><Check className="w-4 h-4 text-slate-600"/> Accuracy % Tracking</li>
-                  <li className="flex items-center gap-2 text-slate-400 font-medium text-sm"><Check className="w-4 h-4 text-slate-600"/> Time Analysis per Q</li>
-                  <li className="flex items-center gap-2 text-slate-400 font-medium text-sm"><Check className="w-4 h-4 text-slate-600"/> Weak Topic Detection</li>
-                </ul>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* 3️⃣ Test Structure Table */}
-      <section className="py-24 bg-slate-950 border-b border-slate-800">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-5xl font-black text-white mb-4">Test Structure</h2>
-              <p className="text-lg text-slate-400">Total 70 tests structured for maximum improvement.</p>
-            </div>
-
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-slate-950 border-b border-slate-800">
-                    <th className="p-6 font-bold text-white text-lg">Test Type</th>
-                    <th className="p-6 font-bold text-white text-lg text-center">Number</th>
-                    <th className="p-6 font-bold text-white text-lg text-right">Duration</th>
-                  </tr>
-                </thead>
-                <tbody className="text-slate-300">
-                  <tr className="border-b border-slate-800/50 hover:bg-slate-800/50 transition-colors">
-                    <td className="p-6 font-medium flex items-center gap-3"><BookOpen className="w-5 h-5 text-blue-400"/> Full Mock</td>
-                    <td className="p-6 text-center font-bold text-white">20</td>
-                    <td className="p-6 text-right font-medium">60 min</td>
-                  </tr>
-                  <tr className="border-b border-slate-800/50 hover:bg-slate-800/50 transition-colors">
-                    <td className="p-6 font-medium flex items-center gap-3"><BarChart3 className="w-5 h-5 text-emerald-400"/> Sectional</td>
-                    <td className="p-6 text-center font-bold text-white">35</td>
-                    <td className="p-6 text-right font-medium">20–30 min</td>
-                  </tr>
-                  <tr className="border-b border-slate-800/50 hover:bg-slate-800/50 transition-colors">
-                    <td className="p-6 font-medium flex items-center gap-3"><Clock className="w-5 h-5 text-amber-400"/> PYQ</td>
-                    <td className="p-6 text-center font-bold text-white">15</td>
-                    <td className="p-6 text-right font-medium">60 min</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4️⃣ Plan Selection Section */}
-      <section className="py-24 bg-slate-900 border-b border-slate-800">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-black text-white mb-4">Select Your Plan</h2>
-            <p className="text-lg text-slate-400 max-w-2xl mx-auto">Start practicing immediately.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto items-stretch">
-            {/* Basic */}
-            <div className="bg-slate-950 border border-slate-800 rounded-3xl p-8 flex flex-col hover:border-slate-700 transition-colors relative">
-              <h3 className="text-2xl font-bold text-white mb-2">Basic</h3>
-              <div className="text-4xl font-black text-white mb-8">₹499</div>
-              
-              <div className="space-y-4 mb-8 flex-1">
-                <div className="flex items-center gap-3 text-slate-300 font-medium">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-400" /> Limited Sectional
+              <div className="space-y-3 mb-8">
+                <div className="flex items-start gap-2.5 text-sm text-slate-600 font-medium">
+                  <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" /> Access to all 450+ Tests
                 </div>
-                <div className="flex items-center gap-3 text-slate-500 font-medium">
-                  <X className="w-5 h-5 text-slate-600" /> No Rank
+                <div className="flex items-start gap-2.5 text-sm text-slate-600 font-medium">
+                  <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" /> Real TCS Interface
+                </div>
+                <div className="flex items-start gap-2.5 text-sm text-slate-600 font-medium">
+                  <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" /> All India Ranking & Percentile
+                </div>
+                <div className="flex items-start gap-2.5 text-sm text-slate-600 font-medium">
+                  <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" /> Detailed Solutions & PDF
                 </div>
               </div>
-              <button onClick={() => setIsPlanModalOpen(true)} className="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition-colors">
-                Choose Basic
-              </button>
+
+              <Link href="/checkout?plan=pro&exam=ssc-cgl" className="block w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl text-center transition-all text-lg shadow-lg shadow-blue-500/30 active:scale-95">
+                Buy Xamsathi Pro
+              </Link>
+              <div className="mt-4 text-center text-xs font-bold text-slate-500 flex items-center justify-center gap-1.5">
+                <ShieldCheck className="w-4 h-4" /> Secure Payment & 100% Guaranteed
+              </div>
             </div>
 
-            {/* Pro */}
-            <div className="bg-slate-900 border-2 border-blue-600 rounded-3xl p-8 flex flex-col relative scale-100 md:scale-105 z-10 shadow-2xl">
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-4 py-1 bg-blue-600 text-white text-xs font-black rounded-full uppercase tracking-widest whitespace-nowrap">
-                High Priority
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-2 mt-2">Pro Plan</h3>
-              <div className="text-5xl font-black text-blue-400 mb-8">₹799</div>
-              
-              <div className="space-y-4 mb-8 flex-1">
-                <div className="flex items-center gap-3 text-white font-bold">
-                  <CheckCircle2 className="w-5 h-5 text-blue-400" /> Full Access
+            {/* Trust Badges */}
+            <div className="mt-6 p-6 bg-slate-100 rounded-3xl border border-slate-200">
+              <h4 className="font-bold text-slate-800 mb-4 text-center">Why thousands trust us?</h4>
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm text-xs font-black text-slate-600">95%</div>
+                  <div className="text-sm font-semibold text-slate-600 leading-tight">Questions matched with actual exam</div>
                 </div>
-                <div className="flex items-center gap-3 text-white font-bold">
-                  <CheckCircle2 className="w-5 h-5 text-blue-400" /> All India Rank
-                </div>
-                <div className="flex items-center gap-3 text-white font-bold">
-                  <CheckCircle2 className="w-5 h-5 text-blue-400" /> Deep Analytics
-                </div>
-              </div>
-              <button onClick={() => setIsPlanModalOpen(true)} className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl transition-colors text-lg shadow-lg shadow-blue-500/20">
-                Choose Pro
-              </button>
-            </div>
-
-            {/* Premium */}
-            <div className="bg-slate-950 border border-slate-800 rounded-3xl p-8 flex flex-col hover:border-slate-700 transition-colors relative">
-              <h3 className="text-2xl font-bold text-white mb-2">Premium</h3>
-              <div className="text-4xl font-black text-white mb-8">₹999</div>
-              
-              <div className="space-y-4 mb-8 flex-1">
-                <div className="flex items-center gap-3 text-slate-300 font-medium">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-400" /> PDF Performance Report
-                </div>
-                <div className="flex items-center gap-3 text-slate-300 font-medium">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-400" /> 1 Year Extra Access
-                </div>
-              </div>
-              <button onClick={() => setIsPlanModalOpen(true)} className="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition-colors">
-                Choose Premium
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 5️⃣ Free Demo Section */}
-      <section id="demo" className="py-24 bg-slate-950 border-b border-slate-800 relative z-10">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="max-w-4xl mx-auto bg-slate-900 border border-slate-800 rounded-[2.5rem] p-12 md:p-16 text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-800 border border-slate-700 text-slate-300 text-sm font-bold mb-8">
-              <ShieldCheck className="w-4 h-4" /> Try Before You Buy
-            </div>
-            
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 tracking-tight leading-tight">
-              1 Free SSC CGL Mock
-            </h2>
-            <p className="text-lg text-slate-400 mb-10 max-w-2xl mx-auto font-medium leading-relaxed">
-              Experience the TCS interface, try real questions, and see your analytics entirely for free.
-            </p>
-            
-            <Link href="/dashboard/test-series/ssc-cgl" className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-white text-slate-950 hover:bg-slate-200 font-black rounded-2xl transition-all duration-300 active:scale-95 text-xl group border border-slate-300">
-              <Play className="w-6 h-6 fill-slate-950 text-slate-950 group-hover:scale-110 transition-transform" /> 
-              Start Free Test
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* 6️⃣ FAQ Section */}
-      <section className="py-24 bg-slate-900 border-b border-slate-800">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-black text-white mb-4">Frequently Asked Questions</h2>
-          </div>
-
-          <div className="max-w-3xl mx-auto space-y-4">
-            {[
-              { q: "Validity kitni hai?", a: "Basic and Pro plans come with 6-month validity. The Premium plan includes 1 Year Extra Access (1.5 Years total)." },
-              { q: "Refund policy kya hai?", a: "We offer a 3-day no-questions-asked refund policy if you are not satisfied with the course structure." },
-              { q: "Mobile me chalega kya?", a: "Yes! Our platform is fully responsive. You can attempt tests smoothly on both desktop and mobile browsers." },
-              { q: "Solutions milenge?", a: "Yes, every test comes with detailed step-by-step solutions and shortcut methods immediately after submission." }
-            ].map((faq, i) => (
-              <div key={i} className="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden hover:border-slate-700 transition-colors">
-                <button 
-                  onClick={() => toggleFaq(i)}
-                  className="w-full p-6 text-left flex items-center justify-between font-bold text-white text-lg"
-                >
-                  {faq.q}
-                  <ChevronDown className={`w-6 h-6 text-slate-500 transition-transform ${activeFaq === i ? 'rotate-180' : ''}`} />
-                </button>
-                {activeFaq === i && (
-                  <div className="px-6 pb-6 text-slate-400 leading-relaxed border-t border-slate-800/50 pt-4">
-                    {faq.a}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 7️⃣ Student Reviews */}
-      <section className="py-24 bg-slate-950">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-black text-white mb-4">Student Reviews</h2>
-            <p className="text-lg text-slate-400">See what past successful candidates are saying.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {/* Review 1 */}
-            <div className="bg-slate-900 border border-slate-800 p-8 rounded-3xl relative">
-              <div className="flex gap-1 mb-6">
-                {[...Array(5)].map((_, i) => <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />)}
-              </div>
-              <p className="text-slate-300 font-medium mb-8 text-lg leading-relaxed">"Mocks bilkul real exam jaisa tha. Quant part specially TCS level ke hi questions the. Highly recommend."</p>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-blue-600/20 text-blue-400 rounded-full flex items-center justify-center font-black">AM</div>
-                <div>
-                  <div className="font-bold text-white">Amit Mishra</div>
-                  <div className="text-sm text-slate-500">Selected in 2023</div>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm"><Star className="w-5 h-5 text-amber-500 fill-amber-500" /></div>
+                  <div className="text-sm font-semibold text-slate-600 leading-tight">Top rated mock tests across internet</div>
                 </div>
               </div>
             </div>
 
-            {/* Review 2 */}
-            <div className="bg-slate-900 border border-slate-800 p-8 rounded-3xl relative">
-              <div className="flex gap-1 mb-6">
-                {[...Array(5)].map((_, i) => <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />)}
-              </div>
-              <p className="text-slate-300 font-medium mb-8 text-lg leading-relaxed">"UI is so clean and analytics helped me find my weak topics easily in Reasoning. Ranked under top 500."</p>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-emerald-600/20 text-emerald-400 rounded-full flex items-center justify-center font-black">PK</div>
-                <div>
-                  <div className="font-bold text-white">Pooja Kumari</div>
-                  <div className="text-sm text-slate-500">Selected in 2023</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Review 3 */}
-            <div className="bg-slate-900 border border-slate-800 p-8 rounded-3xl relative">
-              <div className="flex gap-1 mb-6">
-                {[...Array(5)].map((_, i) => <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />)}
-              </div>
-              <p className="text-slate-300 font-medium mb-8 text-lg leading-relaxed">"Best PYQ section format. Solutions are very detailed and shortcut methods provided are gold."</p>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-purple-600/20 text-purple-400 rounded-full flex items-center justify-center font-black">RS</div>
-                <div>
-                  <div className="font-bold text-white">Ravi Sharma</div>
-                  <div className="text-sm text-slate-500">Tier 2 Candidate</div>
-                </div>
-              </div>
-            </div>
           </div>
 
         </div>
-      </section>
-
+      </main>
     </div>
   );
 }
