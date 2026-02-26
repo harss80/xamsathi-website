@@ -8,8 +8,8 @@ export default function GovernmentExamsCategory() {
     { id: "upsc", title: "UPSC Civil Services", desc: "Prelims, Mains, CSAT", tests: 200, users: "50k", tag: "Premium", link: "/government-exams/upsc" },
     { id: "railway", title: "Railway Exams", desc: "NTPC, Group D, ALP", tests: 350, users: "2.1 Lakh", tag: "Trending", link: "/government-exams/railway" },
     { id: "state-psc", title: "State PSC Exams", desc: "UPPSC, BPSC, MPPSC", tests: 180, users: "80k", link: "/government-exams/state-psc" },
-    { id: "banking", title: "Banking & Insurance", desc: "IBPS, SBI, RBI", tests: 400, users: "1.5 Lakh", link: "/banking-exams" },
-    { id: "defence", title: "Defence Exams", desc: "NDA, CDS, AFCAT", tests: 250, users: "90k", link: "/defence-exams" },
+    { id: "banking", title: "Banking & Insurance", desc: "IBPS, SBI, RBI", tests: 400, users: "1.5 Lakh", link: "/government-exams/banking" },
+    { id: "defence", title: "Defence Exams", desc: "NDA, CDS, AFCAT", tests: 250, users: "90k", link: "/government-exams/defence" },
   ];
 
   return (
