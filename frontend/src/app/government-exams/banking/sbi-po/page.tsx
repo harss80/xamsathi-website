@@ -4,7 +4,7 @@ import Link from "next/link";
 import {
     Star, Users, CheckCircle2, Play, BookOpen, Clock,
     Trophy, ShieldCheck, Check, ChevronDown, ChevronRight,
-    Lock, Languages, MonitorPlay, FileText, Award, Calendar, Landmark, Zap, BookMarked, Shield
+    Lock, Languages, MonitorPlay, FileText, Award, Calendar, Landmark, Zap, BookMarked, Shield, Target, TrendingUp, Calculator
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
