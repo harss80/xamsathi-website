@@ -5,7 +5,7 @@ import {
     FileText, Calendar, BookOpen, Clock, Users,
     CheckCircle2, Target, Banknote, HelpCircle, AlertCircle,
     Briefcase, ChevronDown, ChevronRight, Calculator,
-    Globe2, BookMarked, MonitorPlay, Check, Shield, Landmark, Trophy, TrendingUp, Medal
+    Globe2, BookMarked, MonitorPlay, Check, Shield, Landmark, Trophy, TrendingUp, Medal, Zap, ShieldCheck
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
