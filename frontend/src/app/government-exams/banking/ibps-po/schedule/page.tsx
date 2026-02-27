@@ -5,7 +5,7 @@ import {
     FileText, Calendar, BookOpen, Clock, Users,
     CheckCircle2, Target, Banknote, HelpCircle,
     ChevronDown, ChevronRight, Calculator,
-    ShieldCheck, Zap, MonitorPlay, Landmark, AlertCircle, BookMarked, Award, Layout, Briefcase, TrendingUp
+    ShieldCheck, Zap, MonitorPlay, Landmark, AlertCircle, BookMarked, Award, Layout, Briefcase, TrendingUp, Brain
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
@@ -15,96 +15,93 @@ export default function IBPSPOSchedulePage() {
     const syllabusData = [
         {
             subject: "Reasoning Ability",
-            icon: BrainIcon,
-            chapters: ["Puzzles (Floor, Box, Circular, Linear)", "Seating Arrangement", "Syllogism", "Coding-Decoding", "Blood Relations", "Direction & Distance", "Inequalities", "Input-Output", "Order & Ranking", "Alphanumeric Series", "Data Sufficiency", "Logical Reasoning", "Statement-Conclusion", "Cause & Effect", "Assumption", "Course of Action"]
+            icon: Brain,
+            chapters: ["Puzzles (3-Variable)", "Seating Arrangement", "Syllogism", "Coding-Decoding", "Advanced Input-Output", "Blood Relations", "Data Sufficiency", "Logical Reasoning"]
         },
         {
             subject: "Quantitative Aptitude",
             icon: Calculator,
-            chapters: ["Simplification & Approximation", "Number Series", "Quadratic Equation", "Data Interpretation (Table, Bar, Pie, Caselet)", "Profit & Loss", "Time & Work", "Time, Speed & Distance", "Simple & Compound Interest", "Ratio & Proportion", "Percentage", "Partnership", "Mixture & Alligation", "Probability", "Permutation & Combination", "Mensuration", "Average", "Boats & Streams"]
+            chapters: ["Data Interpretation (Elite)", "Missing Number Series", "Quadratic Equations", "Arithmetic Word Problems", "Probability", "Permutations", "Mensuration"]
         },
         {
             subject: "English Language",
             icon: BookOpen,
-            chapters: ["Reading Comprehension", "Cloze Test", "Error Detection", "Sentence Improvement", "Para Jumbles", "Fill in the Blanks", "Phrase Replacement", "Column Based Questions", "Word Swap", "Vocabulary", "Synonyms & Antonyms"]
+            chapters: ["Reading Comprehension", "Cloze Test", "Error Detection", "Sentence Improvement", "Para Jumbles", "Column Based Matching"]
         },
         {
-            subject: "General & Banking Awareness",
+            subject: "Banking Awareness",
             icon: Landmark,
-            chapters: ["Banking Terms & RSI Functions", "Monetary Policy", "Inflation", "Union Budget", "Current Affairs (Last 6 months)", "Banking Schemes", "Financial Institutions", "Static Banking GK"]
+            chapters: ["RBI Notifications", "Monetary Policy", "Union Budget 2026", "Current Financial Affairs", "Static Banking GK", "Financial Institutions"]
         }
     ];
 
     return (
-        <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-indigo-500/30 text-[15px]">
+        <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-indigo-500/30">
             <Navbar />
 
             <main className="container mx-auto px-4 md:px-6 pt-24 pb-20">
 
                 {/* Breadcrumb */}
-                <div className="flex flex-wrap items-center gap-2 text-sm text-slate-400 mb-6 font-medium">
+                <div className="flex flex-wrap items-center gap-2 text-sm text-slate-400 mb-8 font-black uppercase tracking-widest italic">
                     <Link href="/" className="hover:text-indigo-400 transition-colors">Home</Link>
-                    <span>›</span>
-                    <Link href="/government-exams" className="hover:text-indigo-400 transition-colors">Government Exams</Link>
-                    <span>›</span>
+                    <span>&rsaquo;</span>
                     <Link href="/government-exams/banking" className="hover:text-indigo-400 transition-colors">Banking</Link>
-                    <span>›</span>
+                    <span>&rsaquo;</span>
                     <Link href="/government-exams/banking/ibps-po" className="hover:text-indigo-400 transition-colors">IBPS PO</Link>
-                    <span>›</span>
-                    <span className="text-white font-bold">Complete Guide & Syllabus</span>
+                    <span>&rsaquo;</span>
+                    <span className="text-white font-black truncate">Roadmap 2026</span>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14">
 
                     {/* LEFT COLUMN */}
-                    <div className="lg:col-span-8 space-y-10">
+                    <div className="lg:col-span-8 space-y-12 md:space-y-20">
 
-                        {/* 1️⃣ Top Banner */}
-                        <div className="bg-slate-900 rounded-3xl p-8 border border-indigo-500/30 shadow-[0_0_30px_rgba(79,70,229,0.1)] relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+                        {/* Banner */}
+                        <div className="bg-slate-900 rounded-[3rem] p-7 md:p-14 border border-indigo-500/20 shadow-2xl relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-600/10 rounded-full blur-[100px] -mr-40 -mt-40 transition-transform duration-1000 group-hover:scale-110"></div>
 
                             <div className="relative z-10">
-                                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-bold mb-5 uppercase tracking-wider">
+                                <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[10px] md:text-xs font-black mb-8 uppercase tracking-[0.3em] shadow-lg">
                                     <Target className="w-4 h-4" /> IBPS PO 2026 Master Guide
                                 </div>
 
-                                <h1 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight leading-tight">
-                                    Everything You Need to Know <br className="hidden md:block" /> to Become a Bank PO
+                                <h1 className="text-4xl md:text-6xl font-black text-white mb-8 tracking-tighter leading-[0.85] uppercase italic underline decoration-indigo-500/30 decoration-8 underline-offset-[12px]">
+                                    The Ultimate <br /> Officer Roadmap
                                 </h1>
 
-                                <p className="text-slate-400 mb-8 font-medium leading-relaxed max-w-2xl text-lg">
-                                    The <span className="text-white font-bold">Institute of Banking Personnel Selection</span> recruits probationary officers for 11+ participating public sector banks. This guide covers the complete ecosystem of the IBPS PO 2026 exam.
+                                <p className="text-lg md:text-2xl text-slate-400 mb-12 font-bold leading-relaxed max-w-2xl italic">
+                                    From notification to final selection – every milestone you need to master for the 2026 probationary officer examination.
                                 </p>
 
-                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                    <div className="p-4 bg-slate-950/50 rounded-2xl border border-slate-800 flex items-center gap-3">
-                                        <Briefcase className="w-5 h-5 text-indigo-400" />
-                                        <span className="text-sm font-bold text-slate-300">Scale-1 Officer Post</span>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                                    <div className="p-6 bg-slate-950/80 rounded-[2rem] border border-slate-800 flex items-center gap-4 hover:border-indigo-500/50 transition-all shadow-inner">
+                                        <Briefcase className="w-6 h-6 text-indigo-400" />
+                                        <span className="text-[11px] font-black text-slate-300 uppercase tracking-widest leading-none">Officer Rank</span>
                                     </div>
-                                    <div className="p-4 bg-slate-950/50 rounded-2xl border border-slate-800 flex items-center gap-3">
-                                        <TrendingUp className="w-5 h-5 text-emerald-400" />
-                                        <span className="text-sm font-bold text-slate-300">Fast-track Growth</span>
+                                    <div className="p-6 bg-slate-950/80 rounded-[2rem] border border-slate-800 flex items-center gap-4 hover:border-emerald-500/50 transition-all shadow-inner">
+                                        <TrendingUp className="w-6 h-6 text-emerald-400" />
+                                        <span className="text-[11px] font-black text-slate-300 uppercase tracking-widest leading-none">Promotion Path</span>
                                     </div>
-                                    <div className="p-4 bg-slate-950/50 rounded-2xl border border-slate-800 flex items-center gap-3">
-                                        <Landmark className="w-5 h-5 text-blue-400" />
-                                        <span className="text-sm font-bold text-slate-300">Participating Banks</span>
+                                    <div className="p-6 bg-slate-950/80 rounded-[2rem] border border-slate-800 flex items-center gap-4 hover:border-blue-500/50 transition-all shadow-inner">
+                                        <Landmark className="w-6 h-6 text-blue-400" />
+                                        <span className="text-[11px] font-black text-slate-300 uppercase tracking-widest leading-none">11+ PS Banks</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* 2️⃣ Detailed Guide */}
-                        <div className="bg-slate-900 rounded-3xl border border-slate-800 shadow-xl overflow-hidden">
+                        {/* Guide components */}
+                        <div className="bg-slate-900 rounded-[3rem] border border-slate-800 shadow-2xl overflow-hidden">
 
-                            {/* Sticky Tabs */}
-                            <div className="flex overflow-x-auto border-b border-slate-800 bg-slate-950/50 hide-scrollbar no-scrollbar scroll-smooth">
+                            {/* Tabs */}
+                            <div className="flex overflow-x-auto border-b border-slate-800 bg-slate-950/50 no-scrollbar scroll-smooth p-1 sticky top-0 z-20 backdrop-blur-xl">
                                 {[
-                                    { id: 'dates', label: 'Exam Dates', icon: Calendar },
+                                    { id: 'dates', label: 'Timeline', icon: Calendar },
                                     { id: 'pattern', label: 'Pattern', icon: Layout },
                                     { id: 'syllabus', label: 'Syllabus', icon: BookMarked },
                                     { id: 'eligibility', label: 'Eligibility', icon: Users },
-                                    { id: 'salary', label: 'Salary', icon: Banknote },
-                                    { id: 'strategy', label: 'Strategy', icon: Target },
+                                    { id: 'salary', label: 'Pay', icon: Banknote },
                                 ].map((tab) => (
                                     <button
                                         key={tab.id}
@@ -112,9 +109,9 @@ export default function IBPSPOSchedulePage() {
                                             setActiveTab(tab.id);
                                             document.getElementById(tab.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                                         }}
-                                        className={`flex items-center gap-2 px-6 py-4 font-bold text-sm whitespace-nowrap transition-colors border-b-2 ${activeTab === tab.id
-                                            ? "border-indigo-500 text-indigo-400 bg-slate-900"
-                                            : "border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900"
+                                        className={`flex items-center gap-3 px-8 py-6 font-black text-[10px] md:text-[11px] uppercase tracking-[0.25em] transition-all border-b-[4px] shrink-0 ${activeTab === tab.id
+                                            ? "border-indigo-500 text-indigo-400 bg-slate-900 shadow-inner"
+                                            : "border-transparent text-slate-500 hover:text-slate-200"
                                             }`}
                                     >
                                         <tab.icon className="w-4 h-4" /> {tab.label}
@@ -122,168 +119,103 @@ export default function IBPSPOSchedulePage() {
                                 ))}
                             </div>
 
-                            <div className="p-6 md:p-8 space-y-16">
+                            <div className="p-8 md:p-14 space-y-24 md:space-y-32">
 
-                                {/* Section: Intro participating banks */}
-                                <div id="intro" className="scroll-mt-24">
-                                    <h3 className="text-xl font-bold text-white mb-4 border-l-4 border-indigo-500 pl-4">🏦 Participating Public Sector Banks</h3>
-                                    <div className="flex flex-wrap gap-2">
-                                        {['PNB', 'Canara Bank', 'Bank of Baroda', 'Union Bank', 'Indian Bank', 'Bank of India', 'UCO Bank', 'IOB', 'Bank of Maharashtra', 'Central Bank', 'Punjab & Sind Bank'].map((bank) => (
-                                            <span key={bank} className="px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs font-bold text-slate-400">{bank}</span>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Section: Dates */}
-                                <div id="dates" className="scroll-mt-24">
-                                    <h3 className="text-2xl font-black text-white flex items-center gap-2 mb-6">
-                                        <Calendar className="w-6 h-6 text-indigo-400" /> Key Dates (Expected)
+                                {/* Dates */}
+                                <div id="dates" className="scroll-mt-32">
+                                    <h3 className="text-2xl md:text-3xl font-black text-white flex items-center gap-5 mb-12 uppercase tracking-tighter italic">
+                                        <Calendar className="w-9 h-9 text-indigo-400" /> Cycle Estimates 2026
                                     </h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="p-5 bg-slate-950 rounded-2xl border border-slate-800 group hover:border-indigo-500/50 transition-all">
-                                            <div className="flex justify-between items-center mb-1">
-                                                <span className="text-slate-400 font-bold text-sm">Notification Release</span>
-                                                <span className="px-2 py-0.5 bg-indigo-500/10 text-indigo-400 text-[10px] font-black rounded uppercase tracking-tighter">Expected</span>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
+                                        <div className="p-10 bg-slate-950 rounded-[2.5rem] border border-slate-800 hover:border-indigo-500/30 transition-all font-black group shadow-inner">
+                                            <span className="text-slate-600 font-black text-[10px] uppercase tracking-[0.3em] mb-4 block italic">Notification</span>
+                                            <div className="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter italic">August 2026</div>
+                                        </div>
+                                        <div className="p-10 bg-indigo-600 rounded-[2.5rem] border border-indigo-400 shadow-2xl relative overflow-hidden group">
+                                            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none group-hover:scale-125 transition-transform"></div>
+                                            <div className="relative z-10 font-black">
+                                                <span className="text-indigo-100 font-black text-[10px] uppercase tracking-[0.3em] mb-4 block italic">Prelims Exam</span>
+                                                <div className="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter italic">October 2026</div>
                                             </div>
-                                            <div className="text-xl font-black text-white">July–August 2026</div>
                                         </div>
-                                        <div className="p-5 bg-indigo-600 rounded-2xl border border-indigo-500/50 shadow-[0_10px_20px_rgba(79,70,229,0.2)]">
-                                            <div className="flex justify-between items-center mb-1">
-                                                <span className="text-indigo-200 font-bold text-sm">Prelims Exam</span>
-                                                <span className="px-2 py-0.5 bg-white text-indigo-600 text-[10px] font-black rounded uppercase tracking-tighter">Crucial</span>
-                                            </div>
-                                            <div className="text-xl font-black text-white">October 2026</div>
+                                        <div className="p-10 bg-slate-950 rounded-[2.5rem] border border-slate-800 font-black group shadow-inner">
+                                            <span className="text-slate-600 font-black text-[10px] uppercase tracking-[0.3em] mb-4 block italic">Phase 2: Mains</span>
+                                            <div className="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter italic">November 2026</div>
                                         </div>
-                                        <div className="p-5 bg-slate-950 rounded-2xl border border-slate-800">
-                                            <div className="text-slate-400 font-bold text-sm mb-1">Mains Exam</div>
-                                            <div className="text-xl font-black text-white">November 2026</div>
-                                        </div>
-                                        <div className="p-5 bg-slate-950 rounded-2xl border border-slate-800">
-                                            <div className="text-slate-400 font-bold text-sm mb-1">Interview Window</div>
-                                            <div className="text-xl font-black text-white">Jan–Feb 2027</div>
+                                        <div className="p-10 bg-slate-950 rounded-[2.5rem] border border-slate-800 font-black group shadow-inner">
+                                            <span className="text-slate-600 font-black text-[10px] uppercase tracking-[0.3em] mb-4 block italic">Final Allotment</span>
+                                            <div className="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter italic">April 2027</div>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Section: Pattern */}
-                                <div id="pattern" className="scroll-mt-24">
-                                    <h3 className="text-2xl font-black text-white flex items-center gap-2 mb-6 uppercase tracking-wide">
-                                        <Layout className="w-6 h-6 text-indigo-400" /> Exam Pattern
+                                {/* Pattern */}
+                                <div id="pattern" className="scroll-mt-32">
+                                    <h3 className="text-2xl md:text-3xl font-black text-white flex items-center gap-5 mb-12 uppercase tracking-tighter italic">
+                                        <Layout className="w-9 h-9 text-indigo-400" /> Structural Blueprint
                                     </h3>
-
-                                    <div className="space-y-8">
-                                        <div>
-                                            <h4 className="text-lg font-bold text-indigo-400 mb-4 flex items-center gap-2">Phase 1: Prelims (Objective)</h4>
-                                            <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950">
-                                                <table className="w-full text-left border-collapse min-w-[500px]">
-                                                    <thead>
-                                                        <tr className="bg-slate-900 border-b border-slate-800 text-[13px]">
-                                                            <th className="p-4 font-bold text-slate-300">Section</th>
-                                                            <th className="p-4 font-bold text-slate-300">Questions</th>
-                                                            <th className="p-4 font-bold text-slate-300">Marks</th>
-                                                            <th className="p-4 font-bold text-slate-300">Duration</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody className="text-slate-400 font-semibold text-[14px]">
-                                                        <tr className="border-b border-slate-800">
-                                                            <td className="p-4 text-white">English Language</td>
-                                                            <td className="p-4">30</td>
-                                                            <td className="p-4">30</td>
-                                                            <td className="p-4 text-indigo-400">20 Mins</td>
-                                                        </tr>
-                                                        <tr className="border-b border-slate-800">
-                                                            <td className="p-4 text-white">Quantitative Aptitude</td>
-                                                            <td className="p-4">35</td>
-                                                            <td className="p-4">35</td>
-                                                            <td className="p-4 text-indigo-400">20 Mins</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td className="p-4 text-white">Reasoning Ability</td>
-                                                            <td className="p-4">35</td>
-                                                            <td className="p-4">35</td>
-                                                            <td className="p-4 text-indigo-400">20 Mins</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <h4 className="text-lg font-bold text-indigo-400 mb-4 flex items-center gap-2">Phase 2: Mains (Obj + Desc)</h4>
-                                            <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950">
-                                                <table className="w-full text-left border-collapse min-w-[500px]">
-                                                    <thead>
-                                                        <tr className="bg-slate-900 border-b border-slate-800 text-[13px]">
-                                                            <th className="p-4 font-bold text-slate-300">Section</th>
-                                                            <th className="p-4 font-bold text-slate-300">Qs</th>
-                                                            <th className="p-4 font-bold text-slate-300">Marks</th>
-                                                            <th className="p-4 font-bold text-slate-300">Time</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody className="text-slate-400 font-semibold text-[14px]">
-                                                        <tr className="border-b border-slate-800">
-                                                            <td className="p-4 text-white">Reasoning & Computer</td>
-                                                            <td className="p-4">45</td>
-                                                            <td className="p-4">60</td>
-                                                            <td className="p-4">60 Min</td>
-                                                        </tr>
-                                                        <tr className="border-b border-slate-800">
-                                                            <td className="p-4 text-white">Data Analysis (Quant)</td>
-                                                            <td className="p-4">35</td>
-                                                            <td className="p-4">60</td>
-                                                            <td className="p-4">45 Min</td>
-                                                        </tr>
-                                                        <tr className="border-b border-slate-800">
-                                                            <td className="p-4 text-white">General Economy/Banking</td>
-                                                            <td className="p-4">40</td>
-                                                            <td className="p-4">40</td>
-                                                            <td className="p-4">35 Min</td>
-                                                        </tr>
-                                                        <tr className="border-b border-slate-800">
-                                                            <td className="p-4 text-white">English (Obj)</td>
-                                                            <td className="p-4">35</td>
-                                                            <td className="p-4">40</td>
-                                                            <td className="p-4">40 Min</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td className="p-4 text-white">Descriptive (Letter/Essay)</td>
-                                                            <td className="p-4">2</td>
-                                                            <td className="p-4 text-indigo-400">25</td>
-                                                            <td className="p-4">30 Min</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                    <div className="space-y-16">
+                                        <div className="overflow-x-auto rounded-[2.5rem] border border-slate-800 bg-slate-950 p-2 shadow-2xl">
+                                            <table className="w-full text-left border-collapse min-w-[500px]">
+                                                <thead>
+                                                    <tr className="bg-slate-900 border-b border-slate-800">
+                                                        <th className="p-7 font-black text-slate-500 uppercase text-[11px] tracking-[0.2em] italic">Prelims Section</th>
+                                                        <th className="p-7 font-black text-slate-500 uppercase text-[11px] tracking-[0.2em] italic">Qs</th>
+                                                        <th className="p-7 font-black text-slate-500 uppercase text-[11px] tracking-[0.2em] italic">Marks</th>
+                                                        <th className="p-7 font-black text-slate-500 uppercase text-[11px] tracking-[0.2em] italic">Time</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="text-slate-300 font-black text-sm divide-y divide-slate-800/40 italic">
+                                                    <tr className="hover:bg-indigo-500/5 transition-all">
+                                                        <td className="p-7 text-white font-black uppercase">English Language</td>
+                                                        <td className="p-7">30</td>
+                                                        <td className="p-7">30</td>
+                                                        <td className="p-7 text-indigo-400">20 Min</td>
+                                                    </tr>
+                                                    <tr className="hover:bg-indigo-500/5 transition-all">
+                                                        <td className="p-7 text-white font-black uppercase">Quant Aptitude</td>
+                                                        <td className="p-7">35</td>
+                                                        <td className="p-7">35</td>
+                                                        <td className="p-7 text-indigo-400">20 Min</td>
+                                                    </tr>
+                                                    <tr className="hover:bg-indigo-500/5 transition-all">
+                                                        <td className="p-7 text-white font-black uppercase">Reasoning Skill</td>
+                                                        <td className="p-7">35</td>
+                                                        <td className="p-7">35</td>
+                                                        <td className="p-7 text-indigo-400">20 Min</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
-                                    <div className="flex flex-wrap gap-4 mt-6">
-                                        <div className="bg-slate-950 border border-red-500/20 px-4 py-2 rounded-lg text-sm font-semibold text-slate-300 flex items-center gap-2">
-                                            <AlertCircle className="w-4 h-4 text-red-500" /> Negative Marking: 0.25 on all objective papers
+                                    <div className="mt-12 flex flex-wrap gap-6 font-black uppercase tracking-[0.15em] text-xs">
+                                        <div className="bg-red-500/10 border-2 border-red-500/20 px-8 py-5 rounded-3xl flex items-center gap-5 text-red-100 shadow-xl">
+                                            <AlertCircle className="w-7 h-7 text-red-500" /> Negative Scoring: 0.25 on all sections.
                                         </div>
-                                        <div className="bg-slate-950 border border-indigo-500/20 px-4 py-2 rounded-lg text-sm font-semibold text-slate-300 flex items-center gap-2">
-                                            <MonitorPlay className="w-4 h-4 text-indigo-400" /> Sectional Cutoff applied separately
+                                        <div className="bg-indigo-500/10 border-2 border-indigo-500/20 px-8 py-5 rounded-3xl flex items-center gap-5 text-indigo-100 shadow-xl">
+                                            <CheckCircle2 className="w-7 h-7 text-indigo-500" /> Sectional Cutoffs apply for qualifying.
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Section: Syllabus */}
-                                <div id="syllabus" className="scroll-mt-24">
-                                    <h3 className="text-2xl font-black text-white flex items-center gap-3 mb-8">
-                                        <BookMarked className="w-6 h-6 text-indigo-400" /> Detailed IBPS PO Syllabus
+                                {/* Syllabus */}
+                                <div id="syllabus" className="scroll-mt-32">
+                                    <h3 className="text-2xl md:text-3xl font-black text-white flex items-center gap-5 mb-12 uppercase tracking-tighter italic">
+                                        <BookMarked className="w-9 h-9 text-indigo-400" /> Advanced Curriculum
                                     </h3>
-
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 md:gap-10">
                                         {syllabusData.map((s, i) => (
-                                            <div key={i} className="p-6 bg-slate-950 rounded-2xl border border-slate-800 group hover:border-indigo-500/30 transition-all">
-                                                <div className="flex items-center gap-3 mb-5">
-                                                    <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 group-hover:bg-indigo-500 transition-colors">
-                                                        <s.icon className="w-5 h-5 text-indigo-400 group-hover:text-white" />
+                                            <div key={i} className="p-10 bg-slate-950 rounded-[3rem] border border-slate-800 group hover:border-indigo-500/40 transition-all shadow-2xl relative overflow-hidden">
+                                                <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity"><s.icon className="w-20 h-20" /></div>
+                                                <div className="flex items-center gap-6 mb-10 relative z-10">
+                                                    <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 group-hover:bg-indigo-600 transition-all text-indigo-400 group-hover:text-white shadow-lg">
+                                                        <s.icon className="w-7 h-7" />
                                                     </div>
-                                                    <h4 className="font-bold text-white text-lg">{s.subject}</h4>
+                                                    <h4 className="font-black text-white text-xl md:text-2xl uppercase tracking-tighter leading-none italic">{s.subject}</h4>
                                                 </div>
-                                                <div className="flex flex-wrap gap-2">
+                                                <div className="flex flex-wrap gap-3 relative z-10 font-black italic">
                                                     {s.chapters.map((chap, idx) => (
-                                                        <span key={idx} className="px-2 py-1 bg-slate-900 border border-slate-800 rounded text-[11px] font-bold text-slate-400">
+                                                        <span key={idx} className="px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-[10px] md:text-[11px] font-black text-slate-500 uppercase tracking-widest group-hover:border-slate-700 transition-all">
                                                             {chap}
                                                         </span>
                                                     ))}
@@ -293,126 +225,90 @@ export default function IBPSPOSchedulePage() {
                                     </div>
                                 </div>
 
-                                {/* Section: Eligibility */}
-                                <div id="eligibility" className="scroll-mt-24">
-                                    <h3 className="text-2xl font-black text-white flex items-center gap-2 mb-6 uppercase tracking-wide">
-                                        <Users className="w-6 h-6 text-indigo-400" /> Eligibility Criteria
+                                {/* Eligibility */}
+                                <div id="eligibility" className="scroll-mt-32">
+                                    <h3 className="text-2xl md:text-3xl font-black text-white flex items-center gap-5 mb-12 uppercase tracking-tighter italic">
+                                        <Users className="w-9 h-9 text-indigo-400" /> Applicant Benchmarks
                                     </h3>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="p-6 bg-slate-950 rounded-2xl border border-slate-800">
-                                            <div className="text-[10px] font-black uppercase tracking-widest text-indigo-500 mb-2">Academic</div>
-                                            <h4 className="font-bold text-white mb-2">Educational Qualification</h4>
-                                            <p className="text-sm text-slate-400 font-medium">Any Graduation degree from a recognized university. Final year students can apply if results are declared by certain date.</p>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 font-black italic">
+                                        <div className="p-10 md:p-12 bg-slate-950 rounded-[3rem] border border-slate-800 shadow-2xl group hover:border-indigo-500/30 transition-all">
+                                            <div className="text-[10px] font-black uppercase tracking-[0.4em] text-indigo-500 mb-5 opacity-60">Academic Status</div>
+                                            <h4 className="font-black text-white text-xl md:text-2xl mb-5 uppercase tracking-tighter italic underline decoration-indigo-500/30 decoration-4 underline-offset-8">Degree Mandatory</h4>
+                                            <p className="text-slate-500 font-black leading-relaxed text-sm md:text-base border-l-[6px] border-indigo-600/30 pl-5">Graduation in any discipline from a recognized University. Computer literacy is highly preferred for the digital test interface.</p>
                                         </div>
-                                        <div className="p-6 bg-slate-950 rounded-2xl border border-slate-800">
-                                            <div className="text-[10px] font-black uppercase tracking-widest text-indigo-500 mb-2">Age Window</div>
-                                            <h4 className="font-bold text-white mb-2">20 – 30 Years</h4>
-                                            <p className="text-sm text-slate-400 font-medium leading-relaxed">Relaxations for reserved categories: SC/ST (5Y), OBC (3Y), PwBD (10Y) as per standard norms.</p>
+                                        <div className="p-10 md:p-12 bg-slate-950 rounded-[3rem] border border-slate-800 shadow-2xl group hover:border-indigo-500/30 transition-all">
+                                            <div className="text-[10px] font-black uppercase tracking-[0.4em] text-indigo-500 mb-5 opacity-60">Age Restrictions</div>
+                                            <h4 className="font-black text-white text-xl md:text-2xl mb-5 uppercase tracking-tighter italic underline decoration-indigo-500/30 decoration-4 underline-offset-8">20 – 30 Years</h4>
+                                            <p className="text-slate-500 font-black leading-relaxed text-sm md:text-base border-l-[6px] border-indigo-600/30 pl-5">Applicable relaxations for OBC (3Y), SC/ST (5Y), PwBD (10Y+) following standard central government recruitment norms.</p>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Section: Salary */}
-                                <div id="salary" className="scroll-mt-24">
-                                    <h3 className="text-2xl font-black text-white flex items-center gap-2 mb-6 uppercase tracking-wide">
-                                        <Banknote className="w-6 h-6 text-emerald-400" /> Salary Structure (Scale-1)
+                                {/* Salary */}
+                                <div id="salary" className="scroll-mt-32">
+                                    <h3 className="text-2xl md:text-3xl font-black text-white flex items-center gap-5 mb-12 uppercase tracking-tighter italic">
+                                        <Banknote className="w-9 h-9 text-emerald-400" /> Scale-1 High Pay Structure
                                     </h3>
-                                    <div className="p-8 bg-slate-950 rounded-2xl border-2 border-emerald-500/20 relative overflow-hidden">
-                                        <div className="absolute top-0 right-0 p-4 opacity-10"><Banknote className="w-24 h-24" /></div>
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 items-center relative z-10">
+                                    <div className="p-10 md:p-16 bg-slate-950 rounded-[4rem] border-[4px] border-emerald-600/10 relative overflow-hidden shadow-2xl group">
+                                        <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none transition-transform duration-1000 group-hover:scale-125"><Landmark className="w-64 h-64 text-emerald-500" /></div>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-12 md:gap-20 items-center relative z-10">
                                             <div>
-                                                <div className="text-slate-400 font-bold mb-1">In-Hand Salary</div>
-                                                <div className="text-4xl font-black text-white">₹55,000 – ₹65,000</div>
-                                                <div className="mt-4 flex flex-wrap gap-2">
-                                                    {['DA', 'HRA', 'Travel Allowance', 'Medical Benefits', 'LC Facility'].map(p => (
-                                                        <span key={p} className="text-[10px] font-black uppercase px-2 py-0.5 bg-emerald-500/10 text-emerald-400 rounded">{p}</span>
+                                                <div className="text-slate-600 font-black text-[12px] uppercase tracking-[0.4em] mb-4 italic">Estimated Gross CTC</div>
+                                                <div className="text-5xl md:text-6xl font-black text-white tracking-tighter mb-10 tabular-nums italic group-hover:text-emerald-400 transition-colors">₹56k – ₹68k<span className="text-xs md:text-sm align-top ml-2 opacity-50">+Perks</span></div>
+                                                <div className="flex flex-wrap gap-3 font-black italic">
+                                                    {['Bank Medical', 'LTC/LTA', 'Petrol Plan', 'Highest HRA', 'Entertainment'].map(p => (
+                                                        <span key={p} className="text-[10px] md:text-[11px] font-black uppercase px-5 py-2.5 bg-emerald-500/5 text-emerald-200 rounded-2xl border border-emerald-500/20 shadow-xl leading-none">{p}</span>
                                                     ))}
                                                 </div>
                                             </div>
-                                            <div className="space-y-3">
-                                                <div className="flex justify-between items-center text-sm border-b border-slate-800 pb-2">
-                                                    <span className="text-slate-500">Basic Pay</span>
-                                                    <span className="font-bold text-white">₹36,000</span>
+                                            <div className="space-y-8 font-black uppercase tracking-tight text-sm md:text-base italic">
+                                                <div className="flex justify-between items-center border-b border-slate-800 pb-5">
+                                                    <span className="text-slate-600 tracking-[0.2em] text-[11px]">Basic Starting</span>
+                                                    <span className="text-white text-lg md:text-xl">₹36,000+</span>
                                                 </div>
-                                                <div className="flex justify-between items-center text-sm border-b border-slate-800 pb-2">
-                                                    <span className="text-slate-500">Service Group</span>
-                                                    <span className="font-bold text-white">Group A (Officer)</span>
-                                                </div>
-                                                <div className="flex justify-between items-center text-sm">
-                                                    <span className="text-slate-500">Designation</span>
-                                                    <span className="font-bold text-white">Probationary Officer</span>
+                                                <div className="flex justify-between items-center border-b border-slate-800 pb-5">
+                                                    <span className="text-slate-600 tracking-[0.2em] text-[11px]">Rank Status</span>
+                                                    <span className="text-white">Officer Scale-1</span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
-                                {/* Section: Strategy */}
-                                <div id="strategy" className="scroll-mt-24 p-8 bg-gradient-to-br from-indigo-900/10 to-slate-900/30 border border-indigo-500/20 rounded-3xl">
-                                    <h3 className="text-2xl font-black text-white flex items-center gap-3 mb-8">
-                                        <TrendingUp className="w-6 h-6 text-indigo-400" /> Winning Strategy for 2026
-                                    </h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        {[
-                                            { t: "Speed & Accuracy First", d: "Prelims is all about solving 100 questions in 60 mins. Improve your calculation speed daily with speed math.", i: Zap },
-                                            { t: "Data Interpretation Focus", d: "Mains Quant is heavily dependent on complex DI sets. Practice Caselets and Mixed Graphs daily.", i: Calculator },
-                                            { t: "The 6-Month Current Rule", d: "IBPS focuses on the last 6 months of banking current affairs. Revise our monthly capsules specifically for this.", i: BookMarked },
-                                            { t: "Mock Test Cycle", d: "Start with 1 mock every week now, increasing to 1 every 2 days once notification hits.", i: Award }
-                                        ].map((item, idx) => (
-                                            <div key={idx} className="flex gap-4">
-                                                <div className="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center shrink-0 border border-indigo-500/20">
-                                                    <item.i className="w-5 h-5 text-indigo-400" />
-                                                </div>
-                                                <div>
-                                                    <h5 className="font-bold text-white mb-1">{item.t}</h5>
-                                                    <p className="text-sm text-slate-400 leading-relaxed font-medium">{item.d}</p>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
                             </div>
                         </div>
 
                     </div>
 
-
                     {/* RIGHT COLUMN */}
-                    <div className="lg:col-span-4 space-y-6">
+                    <div className="lg:col-span-4 space-y-12">
+                        <div className="sticky top-24 space-y-12">
+                            <div className="bg-slate-900 border-[4px] border-indigo-600 rounded-[3.5rem] p-10 md:p-12 shadow-[0_0_80px_rgba(99,102,241,0.25)] relative overflow-hidden group transition-all hover:scale-[1.01]">
+                                <div className="absolute top-0 right-0 w-40 h-40 bg-indigo-600/30 rounded-full blur-[100px] -mr-20 -mt-20 pointer-events-none group-hover:scale-150 transition-transform duration-1000"></div>
 
-                        {/* Action Card */}
-                        <div className="sticky top-24 bg-slate-900 border-2 border-indigo-600 rounded-3xl p-8 shadow-[0_0_40px_rgba(79,70,229,0.15)] relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-600/20 rounded-full blur-2xl -mr-10 -mt-10"></div>
+                                <h3 className="text-3xl md:text-4xl font-black text-white mb-6 mt-6 relative z-10 leading-[0.8] uppercase tracking-tighter italic">Join The <br /> Officer Series</h3>
+                                <p className="text-base text-slate-400 font-bold mb-12 relative z-10 uppercase tracking-tight leading-relaxed italic opacity-80 decoration-indigo-500/40 underline underline-offset-8 decoration-4">The definitive training for IBPS PO, clerk & insurance exams.</p>
 
-                            <h3 className="text-2xl font-black text-white mb-3 mt-3 relative z-10 leading-tight">Begin Your <br /> Bank PO Prep</h3>
-                            <p className="text-sm text-slate-400 font-medium mb-6 relative z-10">Master the 799/- Bank Master Pass to unlock all IBPS exams + Sectional tests.</p>
-
-                            <div className="space-y-4 mb-8 p-5 bg-slate-950/50 rounded-2xl border border-slate-800 relative z-10">
-                                <div className="flex items-center gap-3 text-sm text-white font-medium">
-                                    <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" /> Prelims & Mains Mocks
+                                <div className="space-y-6 mb-14 p-10 bg-slate-950/90 rounded-[2.5rem] border-2 border-slate-800 relative z-10 font-black uppercase text-[11px] tracking-[0.25em] shadow-2xl text-white italic">
+                                    <div className="flex items-center gap-5">
+                                        <CheckCircle2 className="w-6 h-6 text-emerald-400 shrink-0" /> Prelims Mastery Mocks
+                                    </div>
+                                    <div className="flex items-center gap-5">
+                                        <CheckCircle2 className="w-6 h-6 text-emerald-400 shrink-0" /> Mains Advanced Sets
+                                    </div>
+                                    <div className="flex items-center gap-5">
+                                        <CheckCircle2 className="w-6 h-6 text-emerald-400 shrink-0" /> Group interview prep
+                                    </div>
                                 </div>
-                                <div className="flex items-center gap-3 text-sm text-white font-medium">
-                                    <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" /> Real Exam Interface
-                                </div>
-                                <div className="flex items-center gap-3 text-sm text-white font-medium">
-                                    <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" /> AI Growth Analysis
+
+                                <div className="flex flex-col gap-6 relative z-10 font-black uppercase tracking-[0.25em] text-xs">
+                                    <Link href="/government-exams/banking/ibps-po" className="w-full py-7 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-3xl text-center transition-all active:scale-95 shadow-2xl shadow-indigo-600/40 border-b-4 border-indigo-900 leading-none text-base">
+                                        Unlock Full Series
+                                    </Link>
+                                    <button className="w-full py-7 bg-slate-950 border-2 border-slate-700 text-slate-500 hover:text-white rounded-3xl transition-all font-black leading-none italic uppercase">
+                                        Join Community
+                                    </button>
                                 </div>
                             </div>
-
-                            <div className="flex flex-col gap-4 relative z-10">
-                                <Link href="/government-exams/banking/ibps-po" className="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl text-center transition-all text-sm active:scale-95 flex justify-center items-center gap-2">
-                                    <MonitorPlay className="w-4 h-4" /> Start Demo Mock
-                                </Link>
-                            </div>
-                        </div>
-
-                        {/* Promotion/Stats */}
-                        <div className="p-8 bg-slate-950 border border-slate-800 rounded-3xl text-center">
-                            <Users className="w-8 h-8 text-indigo-400 mx-auto mb-4" />
-                            <div className="text-2xl font-black text-white">85,000+</div>
-                            <div className="text-xs font-bold text-slate-500 uppercase mt-1 tracking-widest">Aspirants Preparing Here</div>
                         </div>
                     </div>
 
@@ -420,25 +316,4 @@ export default function IBPSPOSchedulePage() {
             </main>
         </div>
     );
-}
-
-// Sub-component for Brain icon since lucide-react Brain might not be preferred
-function BrainIcon(props: any) {
-    return (
-        <svg
-            {...props}
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
-            <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04Z" />
-            <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04Z" />
-        </svg>
-    )
 }

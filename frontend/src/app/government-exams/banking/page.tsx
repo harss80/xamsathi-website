@@ -2,9 +2,9 @@
 import React from "react";
 import Link from "next/link";
 import {
-    Star, Users, CheckCircle2, Play, BookOpen, BarChart3, Clock,
-    Trophy, ShieldCheck, Check, X, ChevronRight,
-    Award, MonitorPlay, Languages, Building, Banknote
+    Star, Users, CheckCircle2, Play, BookOpen, Clock,
+    Trophy, ShieldCheck, Check, ChevronRight,
+    Award, MonitorPlay, Languages, Building, Banknote, Shield, Landmark, Target, Zap
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
@@ -15,397 +15,233 @@ export default function BankingExamsCategoryPage() {
 
             <main className="container mx-auto px-4 md:px-6 pt-24 pb-20">
                 {/* Breadcrumb */}
-                <div className="flex items-center gap-2 text-sm text-slate-400 mb-6 font-medium">
+                <div className="flex flex-wrap items-center gap-2 text-sm text-slate-400 mb-8 font-black uppercase tracking-widest italic">
                     <Link href="/" className="hover:text-indigo-400">Home</Link>
-                    <span>›</span>
-                    <Link href="/government-exams" className="hover:text-indigo-400">Government Exams</Link>
-                    <span>›</span>
-                    <span className="text-white font-bold">Banking & Insurance</span>
+                    <span>&rsaquo;</span>
+                    <Link href="/government-exams" className="hover:text-indigo-400">Gov Exams</Link>
+                    <span>&rsaquo;</span>
+                    <span className="text-white font-black">Banking & Insurance</span>
                 </div>
 
                 {/* Hero Section */}
-                <div className="bg-slate-900 rounded-[2.5rem] p-8 md:p-12 border border-slate-800 shadow-2xl mb-16 relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl -mr-32 -mt-32 transition-transform duration-1000 group-hover:scale-110 pointer-events-none"></div>
+                <div className="bg-slate-900 rounded-[3rem] p-7 md:p-14 border border-slate-800 shadow-2xl mb-16 md:mb-24 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-600/10 rounded-full blur-[100px] -mr-48 -mt-48 transition-transform duration-1000 group-hover:scale-110 pointer-events-none"></div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center relative z-10">
                         {/* Left Content */}
                         <div>
-                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-bold mb-5 uppercase tracking-wider">
-                                <Banknote className="w-4 h-4" /> Top Ranked Test Series
+                            <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[10px] md:text-xs font-black mb-8 uppercase tracking-[0.3em] shadow-lg">
+                                <Shield className="w-4 h-4" /> Trusted by 1.5L+ Aspirants
                             </div>
-                            <h1 className="text-4xl md:text-5xl lg:text-5xl font-black text-white mb-6 tracking-tight leading-tight">
-                                Complete Banking Preparation 2026
+                            <h1 className="text-4xl md:text-5xl lg:text-7xl font-black text-white mb-8 tracking-tighter leading-[0.9] uppercase italic underline decoration-indigo-600/20 decoration-8 underline-offset-8">
+                                Complete Banking <br /> Mastery 2026
                             </h1>
-                            <p className="text-lg text-slate-400 mb-8 font-medium leading-relaxed max-w-xl">
-                                IBPS PO/Clerk, SBI, RBI Grade B – Strict sectional timings. Master speed and accuracy with the most authentic banking mocks on the web.
+                            <p className="text-lg md:text-2xl text-slate-400 mb-12 font-bold leading-relaxed max-w-2xl italic">
+                                IBPS PO/Clerk, SBI & RBI – Strict sectional timings. Master speed and accuracy with the most authentic banking mocks on the web.
                             </p>
 
-                            <div className="flex flex-col sm:flex-row items-center gap-4">
-                                <Link href="#courses" className="px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 w-full sm:w-auto text-lg shadow-lg shadow-indigo-500/20 active:scale-95">
-                                    Explore Bank Packs
+                            <div className="flex flex-col sm:flex-row items-center gap-5">
+                                <Link href="#courses" className="w-full sm:w-auto px-10 py-5 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-2xl transition-all flex items-center justify-center gap-3 text-xl shadow-2xl shadow-indigo-600/30 active:scale-95 uppercase tracking-[0.2em] border-b-4 border-indigo-800 leading-none">
+                                    Explore Packs
                                 </Link>
-                                <Link href="#demo" className="px-8 py-4 bg-slate-950 border border-slate-700 hover:border-slate-500 hover:text-white text-slate-300 font-bold rounded-xl transition-all flex items-center justify-center gap-2 w-full sm:w-auto text-lg active:scale-95 shadow-sm">
-                                    Start Speed Prelims Try
+                                <Link href="/dashboard/free-demo" className="w-full sm:w-auto px-10 py-5 bg-slate-950 border-2 border-slate-700 hover:border-slate-500 hover:text-white text-slate-300 font-black rounded-2xl transition-all flex items-center justify-center gap-3 text-lg shadow-xl active:scale-95 leading-none italic uppercase tracking-widest">
+                                    Free Demo
                                 </Link>
                             </div>
                         </div>
 
                         {/* Right Content - Stats */}
                         <div>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div className="p-6 rounded-3xl bg-slate-950/50 border border-slate-800 shadow-sm flex flex-col items-center sm:items-start text-center sm:text-left transition-colors hover:border-amber-500/50">
-                                    <div className="w-14 h-14 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-5 border border-amber-500/20">
-                                        <Star className="w-7 h-7 fill-amber-500" />
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6">
+                                {[
+                                    { t: "4.9/5", d: "Student Rating", i: Star, c: "text-amber-500", bg: "bg-amber-500/10", b: "hover:border-amber-500/50" },
+                                    { t: "1.5L+", d: "Enrolled Aspirants", i: Users, c: "text-indigo-400", bg: "bg-indigo-500/10", b: "hover:border-indigo-500/50" },
+                                    { t: "400+", d: "Sectional Timing Tests", i: Zap, c: "text-emerald-400", bg: "bg-emerald-500/10", b: "hover:border-emerald-500/50" },
+                                    { t: "HIN/ENG", d: "Bilingual Support", i: Languages, c: "text-purple-400", bg: "bg-purple-500/10", b: "hover:border-purple-500/50" }
+                                ].map((stat, i) => (
+                                    <div key={i} className={`p-8 rounded-[2.5rem] bg-slate-950/70 border border-slate-800 shadow-2xl flex flex-col items-center sm:items-start text-center sm:text-left transition-all ${stat.b} group/stat`}>
+                                        <div className={`w-14 h-14 rounded-2xl ${stat.bg} ${stat.c} flex items-center justify-center mb-6 border border-white/5 shadow-lg group-hover/stat:scale-110 transition-transform`}>
+                                            <stat.i className="w-8 h-8 md:w-9 md:h-9" />
+                                        </div>
+                                        <div className="text-3xl md:text-4xl font-black text-white tracking-tighter italic">{stat.t}</div>
+                                        <div className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] mt-2 group-hover/stat:text-slate-400 transition-colors uppercase italic">{stat.d}</div>
                                     </div>
-                                    <div className="text-3xl font-black text-white">4.9/5</div>
-                                    <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Student Rating</div>
-                                </div>
-                                <div className="p-6 rounded-3xl bg-slate-950/50 border border-slate-800 shadow-sm flex flex-col items-center sm:items-start text-center sm:text-left transition-colors hover:border-indigo-500/50">
-                                    <div className="w-14 h-14 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center mb-5 border border-indigo-500/20">
-                                        <Users className="w-7 h-7" />
-                                    </div>
-                                    <div className="text-3xl font-black text-white">1.5 Lakh+</div>
-                                    <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Enrolled Aspirants</div>
-                                </div>
-                                <div className="p-6 rounded-3xl bg-slate-950/50 border border-slate-800 shadow-sm flex flex-col items-center sm:items-start text-center sm:text-left transition-colors hover:border-emerald-500/50">
-                                    <div className="w-14 h-14 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-5 border border-emerald-500/20">
-                                        <BookOpen className="w-7 h-7" />
-                                    </div>
-                                    <div className="text-3xl font-black text-white">400+ Tests</div>
-                                    <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Sectional Timing Support</div>
-                                </div>
-                                <div className="p-6 rounded-3xl bg-slate-950/50 border border-slate-800 shadow-sm flex flex-col items-center sm:items-start text-center sm:text-left transition-colors hover:border-purple-500/50">
-                                    <div className="w-14 h-14 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center mb-5 border border-purple-500/20">
-                                        <Languages className="w-7 h-7" />
-                                    </div>
-                                    <div className="text-3xl font-black text-white">Eng/Hin</div>
-                                    <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Bilingual Support</div>
-                                </div>
+                                ))}
                             </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Section 2 - Available Test Series */}
-                <div id="courses" className="mb-20">
-                    <div className="flex flex-col md:flex-row md:items-end justify-between mb-8">
-                        <div>
-                            <h2 className="text-3xl font-black text-white mb-2">Target Banking/Insurance</h2>
-                            <p className="text-lg text-slate-400 font-medium">Select your targeted PO/Clerk exam to access specialized speed mocks.</p>
-                        </div>
+                <div id="courses" className="mb-24 md:mb-32">
+                    <div className="text-center md:text-left mb-12 md:mb-16">
+                        <h2 className="text-3xl md:text-5xl font-black text-white mb-4 uppercase tracking-tighter italic">Command Selection 2026</h2>
+                        <div className="w-24 h-2 bg-indigo-600 rounded-full md:ml-0 mx-auto"></div>
+                        <p className="text-lg md:text-2xl text-slate-500 font-bold mt-6 italic">Select your targeted officer/clerical cadre to access elite simulation modules.</p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch font-black">
 
-                        {/* IBPS PO CARD */}
-                        <div className="bg-slate-900 border-2 border-indigo-500 rounded-3xl p-8 lg:p-10 relative overflow-hidden group hover:shadow-[0_0_30px_rgba(99,102,241,0.15)] transition-all shadow-xl flex flex-col">
-                            <div className="absolute top-0 right-8 px-4 py-1.5 bg-indigo-600 text-white text-[10px] font-black rounded-b-xl uppercase tracking-widest shadow-lg">HIGHLY RECOMMENDED</div>
+                        {[
+                            {
+                                name: "IBPS PO 2026",
+                                slug: "ibps-po",
+                                tests: "110+ Tests",
+                                desc: "Probationary Officer mock series tuned purely for speed and hard-level DIs/Puzzles.",
+                                features: ["25 Prelims Mocks", "15 Mains Mocks", "40 Sectional Speed Tests", "Strict 20m Timings"],
+                                prices: { basic: "599", pro: "899", prem: "1199" },
+                                primary: true
+                            },
+                            {
+                                name: "IBPS Clerk 2026",
+                                slug: "ibps-clerk",
+                                tests: "95+ Tests",
+                                desc: "Hyper-speed focused clerical exams demanding extreme accuracy on simplification / syllogs.",
+                                features: ["25 Prelims Mocks", "10 Mains Mocks", "40 English/Quant tests", "State Cutoff Analytics"],
+                                prices: { basic: "499", pro: "699", prem: "999" },
+                                primary: false
+                            },
+                            {
+                                name: "SBI PO 2026",
+                                slug: "sbi-po",
+                                tests: "105+ Tests",
+                                desc: "The toughest banking exam requires high-level data interpretation and reasoning puzzles.",
+                                features: ["20 Prelims Mocks", "15 Extremely Hard Mains", "Descriptive Mocks", "Current Affairs PDF"],
+                                prices: { basic: "699", pro: "999", prem: "1299" },
+                                primary: false
+                            },
+                            {
+                                name: "RBI Grade B",
+                                slug: "rbi-grade-b",
+                                tests: "75+ Tests",
+                                desc: "Crack the central bank officer test with dedicated ESI and F&M descriptive practice.",
+                                features: ["15 Phase 1 Mocks", "10 Phase 2 Objective+Desc.", "ESI Current News", "Finance Mastery"],
+                                prices: { basic: "899", pro: "1299", prem: "1699" },
+                                primary: false
+                            }
+                        ].map((exam, i) => (
+                            <div key={i} className={`bg-slate-900 border-2 ${exam.primary ? 'border-indigo-600 shadow-[0_0_50px_rgba(99,102,241,0.15)]' : 'border-slate-800'} rounded-[3rem] p-8 md:p-10 relative overflow-hidden group hover:border-indigo-500/50 transition-all shadow-2xl flex flex-col`}>
+                                {exam.primary && (
+                                    <div className="absolute top-0 right-10 px-5 py-2 bg-indigo-600 text-white text-[10px] font-black rounded-b-2xl uppercase tracking-[0.25em] shadow-xl italic">Recommended</div>
+                                )}
 
-                            <div className="flex justify-between items-start mb-4 mt-2">
-                                <h3 className="text-3xl font-black text-white">IBPS PO 2026</h3>
-                                <div className="px-3 py-1 bg-slate-950 border border-slate-800 rounded-lg text-xs font-bold text-slate-400">110+ Tests</div>
-                            </div>
+                                <div className="flex justify-between items-start mb-6 mt-4">
+                                    <h3 className="text-2xl md:text-3xl font-black text-white italic tracking-tighter uppercase">{exam.name}</h3>
+                                    <div className="px-4 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-[10px] font-black text-slate-500 uppercase tracking-widest">{exam.tests}</div>
+                                </div>
 
-                            <p className="text-slate-400 text-sm mb-8 font-medium">Probationary Officer mock series tuned purely for speed and hard-level DIs/Puzzles.</p>
+                                <p className="text-slate-500 text-sm md:text-base mb-10 leading-relaxed italic border-l-4 border-slate-800 pl-4">{exam.desc}</p>
 
-                            <div className="grid grid-cols-2 gap-4 mb-8 flex-1">
-                                {["25 Prelims Mocks", "15 Mains Mocks", "40 Sectional Speed Tests", "Strict 20m Timings"].map((feature, i) => (
-                                    <div key={i} className="flex items-center gap-2 text-slate-300 text-xs md:text-sm font-bold">
-                                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" /> {feature}
+                                <div className="grid grid-cols-1 gap-3 mb-12 flex-1">
+                                    {exam.features.map((feature, idx) => (
+                                        <div key={idx} className="flex items-center gap-3 text-slate-300 text-xs md:text-sm font-black italic">
+                                            <CheckCircle2 className="w-5 h-5 text-indigo-500 shrink-0" /> {feature}
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="flex bg-slate-950/80 rounded-2xl border border-slate-800 p-4 mb-10 divide-x-2 divide-slate-800/50 text-center mt-auto shadow-inner group-hover:border-indigo-500/30 transition-all">
+                                    <div className="flex-1 px-2">
+                                        <div className="text-[10px] font-black uppercase text-slate-600 mb-1 tracking-widest">Basic</div>
+                                        <div className="text-xl font-black text-white tabular-nums">₹{exam.prices.basic}</div>
                                     </div>
-                                ))}
-                            </div>
-
-                            <div className="flex bg-slate-950/50 rounded-2xl border border-slate-800 p-3 mb-8 divide-x divide-slate-800 text-center mt-auto">
-                                <div className="flex-1 px-2 py-1">
-                                    <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Basic</div>
-                                    <div className="text-lg font-black text-white">₹599</div>
-                                </div>
-                                <div className="flex-1 px-2 py-1 bg-indigo-600/10 rounded-lg ring-1 ring-indigo-500/30">
-                                    <div className="text-[10px] font-black uppercase text-indigo-400 mb-1">Pro</div>
-                                    <div className="text-lg font-black text-indigo-400">₹899</div>
-                                </div>
-                                <div className="flex-1 px-2 py-1">
-                                    <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Premium</div>
-                                    <div className="text-lg font-black text-white">₹1199</div>
-                                </div>
-                            </div>
-
-                            <Link href="/government-exams/banking/ibps-po" className="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-lg rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-indigo-500/30">
-                                View Test Details <ChevronRight className="w-5 h-5" />
-                            </Link>
-                        </div>
-
-                        {/* IBPS CLERK CARD */}
-                        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 lg:p-10 relative overflow-hidden group hover:shadow-xl hover:border-slate-700 transition-all shadow-xl flex flex-col">
-                            <div className="flex justify-between items-start mb-4 mt-2">
-                                <h3 className="text-3xl font-black text-white">IBPS Clerk 2026</h3>
-                                <div className="px-3 py-1 bg-slate-950 border border-slate-800 rounded-lg text-xs font-bold text-slate-400">95+ Tests</div>
-                            </div>
-
-                            <p className="text-slate-400 text-sm mb-8 font-medium">Hyper-speed focused clerical exams demanding extreme accuracy on simplification / syllogs.</p>
-
-                            <div className="grid grid-cols-2 gap-4 mb-8 flex-1">
-                                {["25 Prelims Mocks", "10 Mains Mocks", "40 English/Quant tests", "State Cutoff Analytics"].map((feature, i) => (
-                                    <div key={i} className="flex items-center gap-2 text-slate-300 text-xs md:text-sm font-bold">
-                                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" /> {feature}
+                                    <div className="flex-1 px-2 bg-indigo-600/5 rounded-xl">
+                                        <div className="text-[10px] font-black uppercase text-indigo-400 mb-1 tracking-widest">Pro</div>
+                                        <div className="text-xl font-black text-indigo-400 tabular-nums">₹{exam.prices.pro}</div>
                                     </div>
-                                ))}
-                            </div>
-
-                            <div className="flex bg-slate-950/50 rounded-2xl border border-slate-800 p-3 mb-8 divide-x divide-slate-800 text-center mt-auto">
-                                <div className="flex-1 px-2 py-1">
-                                    <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Basic</div>
-                                    <div className="text-lg font-black text-slate-300">₹499</div>
-                                </div>
-                                <div className="flex-1 px-2 py-1">
-                                    <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Pro</div>
-                                    <div className="text-lg font-black text-slate-300">₹699</div>
-                                </div>
-                                <div className="flex-1 px-2 py-1">
-                                    <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Premium</div>
-                                    <div className="text-lg font-black text-slate-300">₹999</div>
-                                </div>
-                            </div>
-
-                            <Link href="/government-exams/banking/ibps-clerk" className="w-full py-4 bg-slate-950 border border-slate-700 hover:border-slate-500 hover:text-white text-slate-300 font-bold text-lg rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-sm">
-                                View Test Details <ChevronRight className="w-5 h-5" />
-                            </Link>
-                        </div>
-
-                        {/* SBI PO CARD */}
-                        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 lg:p-10 relative overflow-hidden group hover:shadow-xl hover:border-slate-700 transition-all shadow-xl flex flex-col">
-                            <div className="flex justify-between items-start mb-4 mt-2">
-                                <h3 className="text-3xl font-black text-white">SBI PO 2026</h3>
-                                <div className="px-3 py-1 bg-slate-950 border border-slate-800 rounded-lg text-xs font-bold text-slate-400">105+ Tests</div>
-                            </div>
-
-                            <p className="text-slate-400 text-sm mb-8 font-medium">The toughest banking exam requires high-level data interpretation and reasoning puzzles.</p>
-
-                            <div className="grid grid-cols-2 gap-4 mb-8 flex-1">
-                                {["20 Prelims Mocks", "15 Extremely Hard Mains", "Descriptive Mocks", "Current Affairs PDF"].map((feature, i) => (
-                                    <div key={i} className="flex items-center gap-2 text-slate-300 text-xs md:text-sm font-bold">
-                                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" /> {feature}
+                                    <div className="flex-1 px-2">
+                                        <div className="text-[10px] font-black uppercase text-slate-600 mb-1 tracking-widest">Ultra</div>
+                                        <div className="text-xl font-black text-white tabular-nums">₹{exam.prices.prem}</div>
                                     </div>
-                                ))}
+                                </div>
+
+                                <Link href={`/government-exams/banking/${exam.slug}`} className={`w-full py-5 ${exam.primary ? 'bg-indigo-600 hover:bg-indigo-500 text-white' : 'bg-slate-950 border-2 border-slate-800 text-slate-300 hover:text-white hover:border-slate-700'} font-black text-lg rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95 shadow-xl uppercase tracking-[0.2em] italic border-b-4 ${exam.primary ? 'border-indigo-800' : 'border-slate-900'} leading-none`}>
+                                    View Series <ChevronRight className="w-6 h-6" />
+                                </Link>
+                            </div>
+                        ))}
+
+                        {/* MAHA PACK CARD - SPECIAL DESIGN */}
+                        <div className="md:col-span-2 bg-gradient-to-br from-slate-900 to-indigo-950 border-[3px] border-indigo-600 rounded-[3.5rem] p-10 md:p-14 relative overflow-hidden group hover:shadow-[0_0_80px_rgba(99,102,241,0.25)] transition-all shadow-2xl flex flex-col font-black italic">
+                            <div className="absolute -bottom-20 -right-20 p-10 opacity-10 rotate-12 group-hover:rotate-0 transition-transform duration-1000">
+                                <Landmark className="w-80 h-80 text-indigo-400" />
                             </div>
 
-                            <div className="flex bg-slate-950/50 rounded-2xl border border-slate-800 p-3 mb-8 divide-x divide-slate-800 text-center mt-auto">
-                                <div className="flex-1 px-2 py-1">
-                                    <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Basic</div>
-                                    <div className="text-lg font-black text-slate-300">₹699</div>
+                            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+                                <div>
+                                    <h3 className="text-3xl md:text-6xl font-black text-indigo-300 uppercase tracking-tighter leading-none">Bank Maha Pack <span className="text-xl px-4 py-2 bg-amber-500 text-black rounded-xl align-middle inline-block ml-4 shadow-xl">PRO 2026</span></h3>
+                                    <p className="text-slate-400 text-lg md:text-2xl mt-6 font-bold max-w-2xl leading-relaxed">Don't subscribe multiple times. Every IBPS, SBI, RBI & LIC mock is unlocked immediately for 12 months.</p>
                                 </div>
-                                <div className="flex-1 px-2 py-1">
-                                    <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Pro</div>
-                                    <div className="text-lg font-black text-slate-300">₹999</div>
-                                </div>
-                                <div className="flex-1 px-2 py-1">
-                                    <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Premium</div>
-                                    <div className="text-lg font-black text-slate-300">₹1299</div>
-                                </div>
-                            </div>
-
-                            <Link href="/government-exams/banking/sbi-po" className="w-full py-4 bg-slate-950 border border-slate-700 hover:border-slate-500 hover:text-white text-slate-300 font-bold text-lg rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-sm">
-                                View Test Details <ChevronRight className="w-5 h-5" />
-                            </Link>
-                        </div>
-
-                        {/* RBI GRADE B CARD */}
-                        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 lg:p-10 relative overflow-hidden group hover:shadow-xl hover:border-slate-700 transition-all shadow-xl flex flex-col">
-                            <div className="flex justify-between items-start mb-4 mt-2">
-                                <h3 className="text-3xl font-black text-white">RBI Grade B</h3>
-                                <div className="px-3 py-1 bg-slate-950 border border-slate-800 rounded-lg text-xs font-bold text-slate-400">75+ Tests</div>
-                            </div>
-
-                            <p className="text-slate-400 text-sm mb-8 font-medium">Crack the central bank officer test with dedicated ESI and F&M descriptive practice.</p>
-
-                            <div className="grid grid-cols-2 gap-4 mb-8 flex-1">
-                                {["15 Phase 1 Mocks", "10 Phase 2 Objective+Desc.", "ESI Current Affairs", "Finance Management Mocks"].map((feature, i) => (
-                                    <div key={i} className="flex items-center gap-2 text-slate-300 text-xs md:text-sm font-bold">
-                                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" /> {feature}
+                                <div className="shrink-0 flex items-center gap-4 bg-slate-950/80 p-6 rounded-[2.5rem] border border-indigo-500/20 shadow-2xl">
+                                    <div className="text-center">
+                                        <div className="text-xs font-black text-slate-600 line-through tracking-widest uppercase mb-1">Total Value</div>
+                                        <div className="text-2xl text-slate-500">₹8,999</div>
                                     </div>
-                                ))}
-                            </div>
-
-                            <div className="flex bg-slate-950/50 rounded-2xl border border-slate-800 p-3 mb-8 divide-x divide-slate-800 text-center mt-auto">
-                                <div className="flex-1 px-2 py-1">
-                                    <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Basic</div>
-                                    <div className="text-lg font-black text-slate-300">₹899</div>
-                                </div>
-                                <div className="flex-1 px-2 py-1">
-                                    <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Pro</div>
-                                    <div className="text-lg font-black text-slate-300">₹1299</div>
-                                </div>
-                                <div className="flex-1 px-2 py-1">
-                                    <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Premium</div>
-                                    <div className="text-lg font-black text-slate-300">₹1699</div>
+                                    <div className="w-px h-10 bg-slate-800"></div>
+                                    <div className="text-center">
+                                        <div className="text-xs font-black text-emerald-400 tracking-widest uppercase mb-1">Maha Rate</div>
+                                        <div className="text-4xl text-white">₹2,499</div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <Link href="/government-exams/banking/rbi-grade-b" className="w-full py-4 bg-slate-950 border border-slate-700 hover:border-slate-500 hover:text-white text-slate-300 font-bold text-lg rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-sm">
-                                View Test Details <ChevronRight className="w-5 h-5" />
-                            </Link>
-                        </div>
-
-                        {/* BANK MAHA PACK CARD */}
-                        <div className="md:col-span-2 bg-gradient-to-br from-slate-900 to-indigo-950 border border-indigo-500/30 rounded-3xl p-8 lg:p-10 relative overflow-hidden group hover:shadow-[0_0_40px_rgba(99,102,241,0.2)] transition-all shadow-xl flex flex-col">
-                            <div className="absolute -bottom-10 -right-10 p-8 opacity-10">
-                                <Building className="w-64 h-64 text-indigo-400" />
-                            </div>
-
-                            <div className="relative z-10 flex justify-between items-start mb-4 mt-2">
-                                <h3 className="text-3xl lg:text-4xl font-black text-indigo-300">Bank Maha Pack <span className="text-xl px-3 py-1 bg-amber-500 text-black rounded-lg align-middle inline-block ml-2">PRO</span></h3>
-                                <div className="px-3 py-1 bg-indigo-500/20 border border-indigo-500/30 rounded-lg text-xs font-bold text-indigo-300">Unlimited DB</div>
-                            </div>
-
-                            <p className="text-slate-300 text-base mb-8 font-medium relative z-10 max-w-2xl">Don't buy separately! Every IBPS, SBI, RBI, and standard Insurance exam is fully open immediately inside the Bank Maha Pack for 12 months.</p>
-
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 flex-1 relative z-10">
+                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-14 relative z-10">
                                 {["All IBPS Exams", "All SBI Exams", "All RBI Level", "All Insurance (LIC)"].map((feature, i) => (
-                                    <div key={i} className="flex items-center gap-2 text-white text-xs md:text-sm font-bold bg-slate-950/40 p-3 rounded-xl border border-indigo-500/20">
-                                        <Trophy className="w-5 h-5 text-amber-400 shrink-0" /> {feature}
+                                    <div key={i} className="flex items-center gap-4 text-white text-xs md:text-sm font-black bg-slate-950/60 p-5 rounded-2xl border border-indigo-500/30 hover:bg-indigo-600/10 transition-colors shadow-xl">
+                                        <Trophy className="w-6 h-6 text-amber-500 shrink-0" /> {feature}
                                     </div>
                                 ))}
                             </div>
 
-                            <div className="flex flex-col md:flex-row items-center gap-6 mt-auto relative z-10 bg-slate-950/60 backdrop-blur rounded-2xl border border-indigo-500/20 p-6">
-                                <div className="flex-1 flex items-center justify-center md:justify-start gap-4">
-                                    <div className="text-lg font-black text-slate-500 line-through">₹4999</div>
-                                    <div className="text-4xl font-black text-indigo-400">₹2499</div>
-                                    <span className="text-xs font-bold text-emerald-400 px-2 py-1 bg-emerald-500/10 rounded">50% OFF</span>
-                                </div>
-
-                                <Link href="/checkout?plan=combo&exam=bank-maha-pack" className="w-full md:w-auto px-10 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xl rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-indigo-500/30">
-                                    Unlock Maha Pack <ChevronRight className="w-6 h-6" />
+                            <div className="mt-auto relative z-10">
+                                <Link href="/checkout?plan=bank-maha-pack" className="w-full py-7 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-2xl rounded-3xl flex items-center justify-center gap-4 transition-all active:scale-95 shadow-[0_20px_60px_rgba(99,102,241,0.4)] uppercase tracking-[0.3em] border-b-8 border-indigo-900 leading-none group/btn">
+                                    Get Ultimate Access <ChevronRight className="w-8 h-8 group-hover:translate-x-4 transition-transform" />
                                 </Link>
                             </div>
                         </div>
+
                     </div>
                 </div>
 
                 {/* Section 3 - Comparison Table */}
-                <div className="mb-20">
-                    <div className="text-center mb-10">
-                        <h2 className="text-3xl lg:text-4xl font-black text-white mb-4">Compare Plan Features</h2>
-                        <p className="text-lg text-slate-400 font-medium">See what is exactly included in our specific Bank mock tiers.</p>
+                <div className="mb-24 md:mb-32">
+                    <div className="text-center mb-16 px-4">
+                        <h2 className="text-3xl md:text-5xl font-black text-white mb-6 uppercase tracking-tighter italic">Strategic Benchmarking</h2>
+                        <p className="text-lg md:text-2xl text-slate-500 font-bold max-w-3xl mx-auto italic">Pick the intelligence tier that matches your banking ambition.</p>
                     </div>
 
-                    <div className="bg-slate-900 border border-slate-800 rounded-[2rem] overflow-hidden shadow-xl max-w-4xl mx-auto">
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-center border-collapse min-w-[600px]">
+                    <div className="bg-slate-900 border-[3px] border-slate-800 rounded-[3.5rem] overflow-hidden shadow-2xl max-w-5xl mx-auto font-black italic">
+                        <div className="overflow-x-auto no-scrollbar">
+                            <table className="w-full text-center border-collapse min-w-[700px]">
                                 <thead>
-                                    <tr className="bg-slate-950 border-b border-slate-800">
-                                        <th className="p-6 text-left font-bold text-slate-300 text-lg">Feature</th>
-                                        <th className="p-6 font-bold text-slate-400 text-lg">Basic</th>
-                                        <th className="p-6 font-black text-indigo-400 text-lg bg-indigo-500/5 relative border-x border-indigo-500/10">
-                                            <div className="absolute top-0 left-0 right-0 h-1 bg-indigo-600"></div>
-                                            Pro
+                                    <tr className="bg-slate-950 border-b-2 border-slate-800">
+                                        <th className="p-8 text-left font-black text-slate-500 text-lg uppercase tracking-widest pl-12 italic">Intel Spec</th>
+                                        <th className="p-8 font-black text-slate-500 text-lg uppercase tracking-widest">Entry</th>
+                                        <th className="p-8 font-black text-indigo-400 text-lg uppercase tracking-widest bg-indigo-600/5 relative border-x-2 border-indigo-500/20">
+                                            <div className="absolute top-0 inset-x-0 h-1.5 bg-indigo-500"></div>
+                                            Officer Pro
                                         </th>
-                                        <th className="p-6 font-bold text-amber-500 text-lg">Premium</th>
+                                        <th className="p-8 font-black text-slate-500 text-lg uppercase tracking-widest">Legendary</th>
                                     </tr>
                                 </thead>
-                                <tbody className="text-slate-300 font-medium tracking-wide">
-                                    <tr className="border-b border-slate-800/50 hover:bg-slate-800/50 transition-colors">
-                                        <td className="p-6 text-left text-white font-bold">Prelims Speed Full Mocks</td>
-                                        <td className="p-6"><Check className="w-5 h-5 text-emerald-400 mx-auto" strokeWidth={3} /></td>
-                                        <td className="p-6 bg-indigo-500/5 border-x border-indigo-500/10"><Check className="w-5 h-5 text-indigo-400 mx-auto" strokeWidth={3} /></td>
-                                        <td className="p-6"><Check className="w-5 h-5 text-emerald-400 mx-auto" strokeWidth={3} /></td>
-                                    </tr>
-                                    <tr className="border-b border-slate-800/50 hover:bg-slate-800/50 transition-colors">
-                                        <td className="p-6 text-left text-white font-bold">Mains Full Mocks (Hard Level)</td>
-                                        <td className="p-6 text-slate-500 font-semibold text-sm">Limited</td>
-                                        <td className="p-6 bg-indigo-500/5 text-indigo-400 font-bold border-x border-indigo-500/10">Full Access</td>
-                                        <td className="p-6 text-emerald-400 font-bold">Full Access</td>
-                                    </tr>
-                                    <tr className="border-b border-slate-800/50 hover:bg-slate-800/50 transition-colors">
-                                        <td className="p-6 text-left text-white font-bold">Sectional 20-min Mocks</td>
-                                        <td className="p-6"><X className="w-5 h-5 text-slate-600 mx-auto" strokeWidth={3} /></td>
-                                        <td className="p-6 bg-indigo-500/5 border-x border-indigo-500/10"><Check className="w-5 h-5 text-indigo-400 mx-auto" strokeWidth={3} /></td>
-                                        <td className="p-6"><Check className="w-5 h-5 text-emerald-400 mx-auto" strokeWidth={3} /></td>
-                                    </tr>
-                                    <tr className="border-b border-slate-800/50 hover:bg-slate-800/50 transition-colors">
-                                        <td className="p-6 text-left text-white font-bold">Descriptive Writing Portal</td>
-                                        <td className="p-6"><X className="w-5 h-5 text-slate-600 mx-auto" strokeWidth={3} /></td>
-                                        <td className="p-6 bg-indigo-500/5 border-x border-indigo-500/10"><Check className="w-5 h-5 text-indigo-400 mx-auto" strokeWidth={3} /></td>
-                                        <td className="p-6"><Check className="w-5 h-5 text-emerald-400 mx-auto" strokeWidth={3} /></td>
-                                    </tr>
-                                    <tr className="hover:bg-slate-800/50 transition-colors">
-                                        <td className="p-6 text-left text-white font-bold">Bank Interview Guide PDFs</td>
-                                        <td className="p-6"><X className="w-5 h-5 text-slate-600 mx-auto" strokeWidth={3} /></td>
-                                        <td className="p-6 bg-indigo-500/5 border-x border-indigo-500/10"><X className="w-5 h-5 text-slate-600 mx-auto" strokeWidth={3} /></td>
-                                        <td className="p-6"><Check className="w-5 h-5 text-emerald-400 mx-auto" strokeWidth={3} /></td>
-                                    </tr>
+                                <tbody className="text-slate-300 font-black text-sm md:text-base divide-y divide-slate-800/50">
+                                    {[
+                                        { f: "Full Length Mocks", b: "✓", p: "✓", u: "✓" },
+                                        { f: "Sectional Speedsets", b: "✓", p: "✓", u: "✓" },
+                                        { f: "Detailed AI Analysis", b: "Basic", p: "Advanced", u: "Real-time" },
+                                        { f: "Video Solutions", b: "×", p: "✓", u: "✓" },
+                                        { f: "Officer 1-on-1 Mentorship", b: "×", p: "×", u: "✓ (4/mo)" },
+                                        { f: "Hard Copy PDFs", b: "×", p: "✓", u: "✓" }
+                                    ].map((row, i) => (
+                                        <tr key={i} className="hover:bg-slate-800/30 transition-all transition-colors group">
+                                            <td className="p-7 text-left pl-12 text-slate-400 font-black uppercase tracking-tight italic group-hover:text-white transition-colors">{row.f}</td>
+                                            <td className="p-7 text-slate-500 uppercase">{row.b}</td>
+                                            <td className="p-7 text-indigo-400 font-black uppercase bg-indigo-600/5 border-x-2 border-indigo-500/10 shadow-inner group-hover:bg-indigo-600/10 transition-all">{row.p}</td>
+                                            <td className="p-7 text-slate-500 uppercase">{row.u}</td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                             </table>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Section 4 - Why Choose Xamsathi */}
-                <div className="mb-20">
-                    <div className="text-center mb-10">
-                        <h2 className="text-3xl font-black text-white mb-4">Why Xamsathi For Banking?</h2>
-                        <p className="text-lg text-slate-400 font-medium">Because banking means playing against the clock every single second.</p>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div className="bg-slate-900 border border-slate-800 p-8 rounded-3xl text-center shadow-xl hover:shadow-2xl hover:border-slate-700 hover:-translate-y-1 transition-all">
-                            <div className="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-500 flex items-center justify-center mx-auto mb-6">
-                                <Clock className="w-8 h-8" />
-                            </div>
-                            <h4 className="text-lg font-black text-white mb-3">Strict Interface Timers</h4>
-                            <p className="text-sm text-slate-400 font-medium">Auto-switching of sections at 20-minute bounds precisely mimicking IBPS/SBI interfaces.</p>
-                        </div>
-
-                        <div className="bg-slate-900 border border-slate-800 p-8 rounded-3xl text-center shadow-xl hover:shadow-2xl hover:border-slate-700 hover:-translate-y-1 transition-all">
-                            <div className="w-16 h-16 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center mx-auto mb-6">
-                                <BarChart3 className="w-8 h-8" />
-                            </div>
-                            <h4 className="text-lg font-black text-white mb-3">Accuracy vs Speed Sync</h4>
-                            <p className="text-sm text-slate-400 font-medium">Data modeling telling you exactly where speed forces your precision down.</p>
-                        </div>
-
-                        <div className="bg-slate-900 border border-slate-800 p-8 rounded-3xl text-center shadow-xl hover:shadow-2xl hover:border-slate-700 hover:-translate-y-1 transition-all">
-                            <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center mx-auto mb-6">
-                                <Building className="w-8 h-8" />
-                            </div>
-                            <h4 className="text-lg font-black text-white mb-3">Extreme Level DIs</h4>
-                            <p className="text-sm text-slate-400 font-medium">Mains tests carry very high-level data sufficiency checks standard for PO Mains.</p>
-                        </div>
-
-                        <div className="bg-slate-900 border border-slate-800 p-8 rounded-3xl text-center shadow-xl hover:shadow-2xl hover:border-slate-700 hover:-translate-y-1 transition-all">
-                            <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto mb-6">
-                                <Award className="w-8 h-8" />
-                            </div>
-                            <h4 className="text-lg font-black text-white mb-3">Percentile Rank</h4>
-                            <p className="text-sm text-slate-400 font-medium">Focus entirely on percentile over raw score against fierce mock competition.</p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Section 5 - Free Demo */}
-                <div id="demo">
-                    <div className="bg-gradient-to-r from-indigo-700 to-indigo-900 rounded-[2.5rem] p-10 md:p-16 text-center text-white shadow-[0_20px_40px_rgba(79,70,229,0.2)] relative overflow-hidden max-w-5xl mx-auto border border-indigo-500/50">
-                        {/* Background Decor */}
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
-                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-black/10 rounded-full blur-3xl -ml-20 -mb-20"></div>
-
-                        <div className="relative z-10 max-w-2xl mx-auto">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white text-sm font-bold mb-6 backdrop-blur-md shadow-sm">
-                                <ShieldCheck className="w-4 h-4" /> Try It Completely Free
-                            </div>
-
-                            <h2 className="text-3xl md:text-5xl font-black mb-6 tracking-tight leading-tight">
-                                Feel The Banking Pressure
-                            </h2>
-                            <p className="text-indigo-200 mb-10 font-medium leading-relaxed text-lg">
-                                Take an insanely fast IBPS PO Prelims mock right now and see if you can solve standard simplification and pure arithmetic under extreme pressure.
-                            </p>
-
-                            <Link href="/dashboard/test-series/banking-ibps-po" className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-white text-indigo-700 hover:bg-slate-100 font-black rounded-xl transition-all duration-300 shadow-xl active:scale-95 text-xl">
-                                <Play className="w-5 h-5 fill-indigo-700 text-indigo-700" />
-                                Start Bank Mock
-                            </Link>
                         </div>
                     </div>
                 </div>
