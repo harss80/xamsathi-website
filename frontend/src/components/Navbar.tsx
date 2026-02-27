@@ -140,9 +140,10 @@ const Navbar = () => {
             label: "Banking Exams",
             type: "dropdown",
             items: [
-                { title: "All Banking Exams", href: "/banking-exams", icon: BookOpen, desc: "SBI, IBPS and more" },
-                { title: "IBPS", href: "/banking-exams/ibps", icon: BookOpen, desc: "PO, Clerk practice" },
-                { title: "SBI PO", href: "/banking-exams/sbi-po", icon: BookOpen, desc: "Full mock drills" },
+                { title: "All Banking Exams", href: "/government-exams/banking", icon: BookOpen, desc: "SBI, IBPS and more" },
+                { title: "SBI PO 2026", href: "/government-exams/banking/sbi-po", icon: BookOpen, desc: "Full mock drills" },
+                { title: "IBPS PO 2026", href: "/government-exams/banking/ibps-po", icon: BookOpen, desc: "PO, Clerk practice" },
+                { title: "RBI Grade B", href: "/government-exams/banking/rbi-grade-b", icon: BookOpen, desc: "Officer level prep" },
             ]
         },
         {
@@ -150,8 +151,10 @@ const Navbar = () => {
             label: "Defence Exams",
             type: "dropdown",
             items: [
-                { title: "All Defence Exams", href: "/defence-exams", icon: Shield, desc: "NDA, CDS, AFCAT" },
-                { title: "NDA", href: "/defence-exams/nda", icon: Shield, desc: "Mock tests & practice" },
+                { title: "All Defence Exams", href: "/government-exams/defence", icon: Shield, desc: "NDA, CDS, AFCAT" },
+                { title: "NDA 2026", href: "/government-exams/defence/nda", icon: Shield, desc: "UPSC Level Simulation" },
+                { title: "CDS 2026", href: "/government-exams/defence/cds", icon: Shield, desc: "Graduate entry prep" },
+                { title: "AFCAT 2026", href: "/government-exams/defence/afcat", icon: Shield, desc: "Air Force Elite Series" },
             ]
         },
         {

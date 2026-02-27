@@ -1,29 +1,30 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { ArrowRight, FileCheck } from "lucide-react";
 import { trackLead } from "@/lib/trackLead";
 
 const tests = [
     {
         id: 1,
-        title: "SSC CGL Tier I & II",
+        title: "SSC CGL 2026 Elite",
         tag: "Trending",
-        description: "Speed enhancement and accuracy building series.",
+        description: "Speed enhancement and accuracy building series for Tier I & II.",
         tests: "50 Full Tests",
         price: "₹499",
         oldPrice: "₹999",
-        href: "/dashboard/test-series/free-series" // placeholder
+        href: "/government-exams/ssc/ssc-cgl"
     },
     {
         id: 2,
-        title: "SBI PO Prelims & Mains",
+        title: "SBI PO 2026 Master",
         tag: "Popular",
-        description: "Complete mock drill for Banking aspirants.",
+        description: "Complete mock drill for Banking aspirants. Prelims & Mains.",
         tests: "40 Sets",
         price: "₹499",
         oldPrice: "₹1,299",
-        href: "/dashboard/test-series/free-series"
+        href: "/government-exams/banking/sbi-po"
     },
     {
         id: 3,
@@ -33,7 +34,7 @@ const tests = [
         tests: "30 Full Tests",
         price: "₹999",
         oldPrice: "₹1,999",
-        href: "/dashboard/test-series/free-series"
+        href: "/engineering-exams/jee-main"
     },
     {
         id: 4,
@@ -43,7 +44,7 @@ const tests = [
         tests: "30 Full Tests",
         price: "₹999",
         oldPrice: "₹1,999",
-        href: "/dashboard/test-series/free-series"
+        href: "/medical-exams/neet"
     },
 ];
 
@@ -94,7 +95,8 @@ const TestSeries = () => {
                                     <span className="text-xs text-slate-500 font-bold line-through">{test.oldPrice}</span>
                                     <span className="text-2xl font-black text-white">{test.price}</span>
                                 </div>
-                                <button
+                                <Link
+                                    href={test.href}
                                     onClick={() => {
                                         trackLead({
                                             action: "testseries_card_click",
@@ -107,7 +109,7 @@ const TestSeries = () => {
                                     aria-label="View test series"
                                 >
                                     View <ArrowRight className="w-4 h-4" />
-                                </button>
+                                </Link>
                             </div>
                         </div>
                     ))}

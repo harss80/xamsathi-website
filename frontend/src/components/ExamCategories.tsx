@@ -10,22 +10,22 @@ const categories = [
         href: "/government-exams",
         icon: Building2,
         exams: [
-            { name: "SSC CGL", link: "/government-exams/ssc" },
-            { name: "SSC CHSL", link: "/government-exams/ssc" },
-            { name: "Railway NTPC", link: "/government-exams/railway" },
+            { name: "SSC CGL", link: "/government-exams/ssc/ssc-cgl" },
+            { name: "SSC CHSL", link: "/government-exams/ssc/ssc-chsl" },
+            { name: "Railway NTPC", link: "/government-exams/railway/ntpc" },
             { name: "UPSC Prelims", link: "/government-exams/upsc" },
-            { name: "State PSC", link: "/government-exams" },
+            { name: "State PSC", link: "/government-exams/state-psc" },
         ]
     },
     {
         title: "Banking Exams",
-        href: "/banking-exams",
+        href: "/government-exams/banking",
         icon: BookOpen,
         exams: [
-            { name: "SBI PO", link: "/banking-exams/sbi-po" },
-            { name: "IBPS PO", link: "/banking-exams/ibps" },
-            { name: "IBPS Clerk", link: "/banking-exams/ibps" },
-            { name: "RBI Grade B", link: "/banking-exams" },
+            { name: "SBI PO", link: "/government-exams/banking/sbi-po" },
+            { name: "IBPS PO", link: "/government-exams/banking/ibps-po" },
+            { name: "IBPS Clerk", link: "/government-exams/banking/ibps-clerk" },
+            { name: "RBI Grade B", link: "/government-exams/banking/rbi-grade-b" },
         ]
     },
     {
@@ -48,12 +48,12 @@ const categories = [
     },
     {
         title: "Defence Exams",
-        href: "/defence-exams",
+        href: "/government-exams/defence",
         icon: Shield,
         exams: [
-            { name: "NDA", link: "/defence-exams/nda" },
-            { name: "CDS", link: "/defence-exams" },
-            { name: "AFCAT", link: "/defence-exams" },
+            { name: "NDA", link: "/government-exams/defence/nda" },
+            { name: "CDS", link: "/government-exams/defence/cds" },
+            { name: "AFCAT", link: "/government-exams/defence/afcat" },
         ]
     },
     {
