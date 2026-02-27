@@ -5,24 +5,33 @@ import Navbar from "@/components/Navbar";
 export default function DEFENCEEXAMSCategory() {
   const exams = [
     {
-        id: 'nda',
-        title: 'NDA',
-        desc: 'Maths & GAT Mocks',
-        tests: 150,
-        users: '50k',
-        tag: 'Popular',
-        link: '/defence-exams/nda'
+      id: 'nda',
+      title: 'NDA 2026',
+      desc: 'UPSC Standard Maths & GAT Mocks',
+      tests: 150,
+      users: '50k',
+      tag: 'Popular',
+      link: '/government-exams/defence/nda'
     },
     {
-        id: 'cds',
-        title: 'CDS',
-        desc: 'IMA, INA, AFA, OTA',
-        tests: 120,
-        users: '40k',
-        tag: '',
-        link: '/defence-exams/cds'
+      id: 'cds',
+      title: 'CDS 2026',
+      desc: 'IMA, INA, AFA, OTA Officer Prep',
+      tests: 120,
+      users: '40k',
+      tag: 'Elite',
+      link: '/government-exams/defence/cds'
+    },
+    {
+      id: 'afcat',
+      title: 'AFCAT 2026',
+      desc: 'Air Force Flying & Ground Duty',
+      tests: 100,
+      users: '30k',
+      tag: 'Trending',
+      link: '/government-exams/defence/afcat'
     }
-];
+  ];
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200">
@@ -56,7 +65,7 @@ export default function DEFENCEEXAMSCategory() {
 
             {/* Quick filter capsules */}
             <div className="flex flex-wrap items-center justify-center gap-2 mt-6">
-              {['All','NDA','CDS','AFCAT'].map((filter) => (
+              {['All', 'NDA', 'CDS', 'AFCAT'].map((filter) => (
                 <button key={filter} className={`px-4 py-1.5 rounded-full text-sm font-bold border ${filter === 'All' ? 'bg-blue-600 border-blue-500 text-white' : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 shadow-sm'} transition-colors`}>
                   {filter}
                 </button>

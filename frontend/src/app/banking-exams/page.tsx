@@ -125,7 +125,7 @@ export default function BankingExamsCategoryPage() {
                 </div>
               </div>
 
-              <Link href="/banking-exams/ibps-po" className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 text-lg shadow-[0_0_20px_rgba(37,99,235,0.4)]">
+              <Link href="/government-exams/banking/ibps-po" className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 text-lg shadow-[0_0_20px_rgba(37,99,235,0.4)]">
                 View Details
               </Link>
             </div>
@@ -169,7 +169,7 @@ export default function BankingExamsCategoryPage() {
                 </div>
               </div>
 
-              <Link href="/banking-exams/ibps-clerk" className="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 text-lg">
+              <Link href="/government-exams/banking/ibps-clerk" className="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 text-lg">
                 View Details
               </Link>
             </div>
@@ -214,7 +214,7 @@ export default function BankingExamsCategoryPage() {
                 </div>
               </div>
 
-              <Link href="/banking-exams/sbi-po" className="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 text-lg">
+              <Link href="/government-exams/banking/sbi-po" className="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 text-lg">
                 View Details
               </Link>
             </div>
@@ -259,7 +259,7 @@ export default function BankingExamsCategoryPage() {
                 </div>
               </div>
 
-              <Link href="/banking-exams/rbi-grade-b" className="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 text-lg">
+              <Link href="/government-exams/banking/rbi-grade-b" className="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 text-lg">
                 View Details
               </Link>
             </div>
