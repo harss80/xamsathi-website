@@ -88,199 +88,104 @@ export default function StatePSCExamsCategoryPage() {
 
                 {/* Section 2 - Available Test Series */}
                 <div id="courses" className="mb-20">
-                    <div className="flex flex-col md:flex-row md:items-end justify-between mb-8">
-                        <div>
-                            <h2 className="text-3xl font-black text-white mb-2">Target Your State PSC</h2>
-                            <p className="text-lg text-slate-400 font-medium">Select your targeted State PSC exam to view our specialized mock packs.</p>
+                    <div className="flex flex-col md:flex-row md:items-end justify-between mb-10">
+                        <div className="max-w-2xl">
+                            <h2 className="text-3xl font-black text-white mb-3">Target Your State PSC</h2>
+                            <p className="text-lg text-slate-400 font-medium tracking-tight">Select your targeted State PSC exam to access specialized mock packs and state-specific GK content.</p>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                        {[
+                            {
+                                id: "uppsc",
+                                title: "UPPSC 2026",
+                                desc: "Complete mock series strictly focused on Uttar Pradesh PCS Prelims & CSAT.",
+                                tests: 320,
+                                users: "1.2 Lakh",
+                                tag: "Bestseller",
+                                link: "/government-exams/state-psc/uppsc"
+                            },
+                            {
+                                id: "bpsc",
+                                title: "BPSC 70th/71st",
+                                desc: "Detailed mock test suite targeting Bihar Public Service Commission exams.",
+                                tests: 280,
+                                users: "85k",
+                                tag: "Strategic",
+                                link: "/government-exams/state-psc/bpsc"
+                            },
+                            {
+                                id: "mppsc",
+                                title: "MPPSC 2026",
+                                desc: "Madhya Pradesh State Civil Services comprehensive Prelims test suite.",
+                                tests: 250,
+                                users: "65k",
+                                link: "/government-exams/state-psc/mppsc"
+                            },
+                            {
+                                id: "rpsc",
+                                title: "RPSC RAS 2026",
+                                desc: "Rajasthan Administrative Services Prelims detailed preparation.",
+                                tests: 240,
+                                users: "45k",
+                                link: "/government-exams/state-psc/rpsc"
+                            },
+                        ].map((exam) => (
+                            <Link href={exam.link} key={exam.id} className="group flex flex-col bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-red-500/50 hover:bg-slate-800/30 transition-all duration-300 relative overflow-hidden">
+                                {exam.tag && (
+                                    <span className="absolute top-4 right-4 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-red-500/10 border border-red-500/20 text-red-500">
+                                        {exam.tag}
+                                    </span>
+                                )}
+                                <div className="w-14 h-14 rounded-xl bg-slate-800 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-inner border border-slate-700">
+                                    <ShieldCheck className="w-7 h-7 text-red-500" />
+                                </div>
+                                <h3 className="text-xl font-black text-white mb-2 group-hover:text-red-500 transition-colors uppercase">{exam.title}</h3>
+                                <p className="text-sm text-slate-400 font-medium mb-6 line-clamp-2">{exam.desc}</p>
 
-                        {/* UPPSC CARD */}
-                        <div className="bg-slate-900 border-2 border-red-500 rounded-3xl p-8 lg:p-10 relative overflow-hidden group hover:shadow-[0_0_30px_rgba(239,68,68,0.15)] transition-all shadow-xl flex flex-col">
-                            <div className="absolute top-0 right-8 px-4 py-1.5 bg-red-600 text-white text-[10px] font-black rounded-b-xl uppercase tracking-widest shadow-lg">HIGHLY RECOMMENDED</div>
-
-                            <div className="flex justify-between items-start mb-4 mt-2">
-                                <h3 className="text-3xl font-black text-white">UPPSC 2026</h3>
-                                <div className="px-3 py-1 bg-slate-950 border border-slate-800 rounded-lg text-xs font-bold text-slate-400">100+ Tests</div>
-                            </div>
-
-                            <p className="text-slate-400 text-sm mb-8 font-medium">Complete mock series strictly focused on Uttar Pradesh PCS Prelims & CSAT.</p>
-
-                            <div className="grid grid-cols-2 gap-4 mb-8 flex-1">
-                                {["20 Full Length Mocks", "40 Sectional Tests", "15 PYQ Papers", "UP Special GK Included"].map((feature, i) => (
-                                    <div key={i} className="flex items-center gap-2 text-slate-300 text-xs md:text-sm font-bold">
-                                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" /> {feature}
+                                <div className="mt-auto space-y-3">
+                                    <div className="flex items-center gap-4 text-xs font-bold text-slate-300">
+                                        <div className="flex items-center gap-1.5 bg-slate-950 px-2.5 py-1.5 rounded-lg border border-slate-800">
+                                            <BookOpen className="w-3.5 h-3.5 text-emerald-400" /> {exam.tests} Tests
+                                        </div>
+                                        <div className="flex items-center gap-1.5 bg-slate-950 px-2.5 py-1.5 rounded-lg border border-slate-800">
+                                            <Users className="w-3.5 h-3.5 text-blue-400" /> {exam.users}
+                                        </div>
                                     </div>
-                                ))}
-                            </div>
-
-                            <div className="flex bg-slate-950/50 rounded-2xl border border-slate-800 p-3 mb-8 divide-x divide-slate-800 text-center mt-auto">
-                                <div className="flex-1 px-2 py-1">
-                                    <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Basic</div>
-                                    <div className="text-lg font-black text-white">₹799</div>
-                                </div>
-                                <div className="flex-1 px-2 py-1 bg-red-600/10 rounded-lg ring-1 ring-red-500/30">
-                                    <div className="text-[10px] font-black uppercase text-red-400 mb-1">Pro</div>
-                                    <div className="text-lg font-black text-red-500">₹999</div>
-                                </div>
-                                <div className="flex-1 px-2 py-1">
-                                    <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Premium</div>
-                                    <div className="text-lg font-black text-white">₹1499</div>
-                                </div>
-                            </div>
-
-                            <Link href="/government-exams/state-psc/uppsc" className="w-full py-4 bg-red-600 hover:bg-red-500 text-white font-black text-lg rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-red-500/30">
-                                View Test Details <ChevronRight className="w-5 h-5" />
-                            </Link>
-                        </div>
-
-                        {/* BPSC CARD */}
-                        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 lg:p-10 relative overflow-hidden group hover:shadow-xl hover:border-slate-700 transition-all shadow-xl flex flex-col">
-                            <div className="flex justify-between items-start mb-4 mt-2">
-                                <h3 className="text-3xl font-black text-white">BPSC 70th/71st</h3>
-                                <div className="px-3 py-1 bg-slate-950 border border-slate-800 rounded-lg text-xs font-bold text-slate-400">80+ Tests</div>
-                            </div>
-
-                            <p className="text-slate-400 text-sm mb-8 font-medium">Detailed mock test suite targeting Bihar Public Service Commission exams.</p>
-
-                            <div className="grid grid-cols-2 gap-4 mb-8 flex-1">
-                                {["15 Full Length Mocks", "35 Sectional Tests", "10 PYQ Papers", "Bihar Special GK"].map((feature, i) => (
-                                    <div key={i} className="flex items-center gap-2 text-slate-300 text-xs md:text-sm font-bold">
-                                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" /> {feature}
+                                    <div className="pt-4 border-t border-slate-800/60 flex items-center justify-between">
+                                        <span className="text-sm font-bold text-slate-300">View Series</span>
+                                        <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-red-500 group-hover:translate-x-1 transition-all" />
                                     </div>
-                                ))}
-                            </div>
-
-                            <div className="flex bg-slate-950/50 rounded-2xl border border-slate-800 p-3 mb-8 divide-x divide-slate-800 text-center mt-auto">
-                                <div className="flex-1 px-2 py-1">
-                                    <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Basic</div>
-                                    <div className="text-lg font-black text-slate-300">₹699</div>
                                 </div>
-                                <div className="flex-1 px-2 py-1">
-                                    <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Pro</div>
-                                    <div className="text-lg font-black text-slate-300">₹899</div>
-                                </div>
-                                <div className="flex-1 px-2 py-1">
-                                    <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Premium</div>
-                                    <div className="text-lg font-black text-slate-300">₹1299</div>
-                                </div>
-                            </div>
-
-                            <Link href="/government-exams/state-psc/bpsc" className="w-full py-4 bg-slate-950 border border-slate-700 hover:border-slate-500 hover:text-white text-slate-300 font-bold text-lg rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-sm">
-                                View Test Details <ChevronRight className="w-5 h-5" />
                             </Link>
-                        </div>
+                        ))}
 
-                        {/* MPPSC CARD */}
-                        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 lg:p-10 relative overflow-hidden group hover:shadow-xl hover:border-slate-700 transition-all shadow-xl flex flex-col">
-                            <div className="flex justify-between items-start mb-4 mt-2">
-                                <h3 className="text-3xl font-black text-white">MPPSC 2026</h3>
-                                <div className="px-3 py-1 bg-slate-950 border border-slate-800 rounded-lg text-xs font-bold text-slate-400">85+ Tests</div>
-                            </div>
-
-                            <p className="text-slate-400 text-sm mb-8 font-medium">Madhya Pradesh State Civil Services comprehensive Prelims test suite.</p>
-
-                            <div className="grid grid-cols-2 gap-4 mb-8 flex-1">
-                                {["15 Full Length Mocks", "40 Chapter Tests", "10 PYQ Papers", "MP Current Affairs"].map((feature, i) => (
-                                    <div key={i} className="flex items-center gap-2 text-slate-300 text-xs md:text-sm font-bold">
-                                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" /> {feature}
-                                    </div>
-                                ))}
-                            </div>
-
-                            <div className="flex bg-slate-950/50 rounded-2xl border border-slate-800 p-3 mb-8 divide-x divide-slate-800 text-center mt-auto">
-                                <div className="flex-1 px-2 py-1">
-                                    <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Basic</div>
-                                    <div className="text-lg font-black text-slate-300">₹699</div>
-                                </div>
-                                <div className="flex-1 px-2 py-1">
-                                    <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Pro</div>
-                                    <div className="text-lg font-black text-slate-300">₹899</div>
-                                </div>
-                                <div className="flex-1 px-2 py-1">
-                                    <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Premium</div>
-                                    <div className="text-lg font-black text-slate-300">₹1299</div>
-                                </div>
-                            </div>
-
-                            <Link href="/government-exams/state-psc/mppsc" className="w-full py-4 bg-slate-950 border border-slate-700 hover:border-slate-500 hover:text-white text-slate-300 font-bold text-lg rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-sm">
-                                View Test Details <ChevronRight className="w-5 h-5" />
-                            </Link>
-                        </div>
-
-                        {/* RPSC CARD */}
-                        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 lg:p-10 relative overflow-hidden group hover:shadow-xl hover:border-slate-700 transition-all shadow-xl flex flex-col">
-                            <div className="flex justify-between items-start mb-4 mt-2">
-                                <h3 className="text-3xl font-black text-white">RPSC RAS 2026</h3>
-                                <div className="px-3 py-1 bg-slate-950 border border-slate-800 rounded-lg text-xs font-bold text-slate-400">90+ Tests</div>
-                            </div>
-
-                            <p className="text-slate-400 text-sm mb-8 font-medium">Rajasthan Administrative Services Prelims detailed preparation.</p>
-
-                            <div className="grid grid-cols-2 gap-4 mb-8 flex-1">
-                                {["20 Full Length Mocks", "40 Chapter Tests", "12 PYQ Papers", "Rajasthan Static GK"].map((feature, i) => (
-                                    <div key={i} className="flex items-center gap-2 text-slate-300 text-xs md:text-sm font-bold">
-                                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" /> {feature}
-                                    </div>
-                                ))}
-                            </div>
-
-                            <div className="flex bg-slate-950/50 rounded-2xl border border-slate-800 p-3 mb-8 divide-x divide-slate-800 text-center mt-auto">
-                                <div className="flex-1 px-2 py-1">
-                                    <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Basic</div>
-                                    <div className="text-lg font-black text-slate-300">₹699</div>
-                                </div>
-                                <div className="flex-1 px-2 py-1">
-                                    <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Pro</div>
-                                    <div className="text-lg font-black text-slate-300">₹899</div>
-                                </div>
-                                <div className="flex-1 px-2 py-1">
-                                    <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Premium</div>
-                                    <div className="text-lg font-black text-slate-300">₹1299</div>
-                                </div>
-                            </div>
-
-                            <Link href="/government-exams/state-psc/rpsc" className="w-full py-4 bg-slate-950 border border-slate-700 hover:border-slate-500 hover:text-white text-slate-300 font-bold text-lg rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-sm">
-                                View Test Details <ChevronRight className="w-5 h-5" />
-                            </Link>
-                        </div>
-
-                        {/* STATE PSC COMBO CARD */}
-                        <div className="md:col-span-2 bg-gradient-to-br from-slate-900 to-slate-950 border border-amber-500/30 rounded-3xl p-8 lg:p-10 relative overflow-hidden group hover:shadow-[0_0_30px_rgba(245,158,11,0.15)] transition-all shadow-xl flex flex-col">
+                        {/* MAHA PACK CARD - SPANS REMAINING COLS */}
+                        <div className="lg:col-span-2 bg-gradient-to-br from-slate-900 to-red-950/30 border border-amber-500/30 rounded-3xl p-8 md:p-10 relative overflow-hidden group hover:shadow-[0_0_40px_rgba(245,158,11,0.1)] transition-all flex flex-col md:flex-row items-center justify-between gap-8 shadow-xl">
                             <div className="absolute top-0 right-0 p-8 opacity-5">
                                 <Landmark className="w-64 h-64 text-amber-500" />
                             </div>
-
-                            <div className="relative z-10 flex justify-between items-start mb-4 mt-2">
-                                <h3 className="text-3xl font-black text-amber-400">State PSC Maha Pack</h3>
-                                <div className="px-3 py-1 bg-amber-500/10 border border-amber-500/30 rounded-lg text-xs font-bold text-amber-400">All 350+ Tests</div>
-                            </div>
-
-                            <p className="text-slate-300 text-base mb-8 font-medium relative z-10 max-w-2xl">Preparing for multiple states? Get unlimited ongoing access to UPPSC, BPSC, MPPSC and RPSC tests in one extremely affordable package.</p>
-
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 flex-1 relative z-10">
-                                {["UPPSC Included", "BPSC Included", "MPPSC Included", "RPSC Included"].map((feature, i) => (
-                                    <div key={i} className="flex items-center gap-2 text-white text-xs md:text-sm font-bold bg-slate-900/50 p-3 rounded-xl border border-slate-800">
-                                        <Trophy className="w-5 h-5 text-amber-400 shrink-0" /> {feature}
-                                    </div>
-                                ))}
-                            </div>
-
-                            <div className="flex flex-col md:flex-row items-center gap-6 mt-auto relative z-10 bg-slate-950/80 rounded-2xl border border-slate-800 p-6">
-                                <div className="flex-1 flex items-center justify-center md:justify-start gap-4">
-                                    <div className="text-lg font-black text-slate-500 line-through">₹3996</div>
-                                    <div className="text-4xl font-black text-amber-400">₹1999</div>
+                            <div className="max-w-xl relative z-10">
+                                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[10px] font-black mb-4 uppercase tracking-widest">
+                                    All-In-One Access
                                 </div>
-
-                                <Link href="/checkout?plan=combo&exam=state-psc-combo" className="w-full md:w-auto px-10 py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xl rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-amber-500/20">
-                                    Unlock Maha Pack <ChevronRight className="w-6 h-6" />
+                                <h3 className="text-3xl font-black text-white mb-4 tracking-tighter">State PSC Maha Pack</h3>
+                                <p className="text-slate-300 font-medium leading-relaxed">Preparing for multiple states? Get 12 months unlimited access to UPPSC, BPSC, MPPSC and RPSC tests in one single discounted bundle.</p>
+                            </div>
+                            <div className="flex flex-col items-center gap-4 relative z-10 shrink-0">
+                                <div className="flex flex-col items-center">
+                                    <span className="text-slate-500 line-through text-sm font-bold tracking-widest uppercase">Value ₹3996</span>
+                                    <span className="text-4xl font-black text-amber-400">₹1999</span>
+                                </div>
+                                <Link href="/checkout?plan=combo&exam=state-psc-combo" className="px-8 py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-lg rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-amber-500/30">
+                                    Enroll Maha Pack <ChevronRight className="w-5 h-5" />
                                 </Link>
                             </div>
                         </div>
                     </div>
                 </div>
+
 
                 {/* Section 3 - Comparison Table */}
                 <div className="mb-20">

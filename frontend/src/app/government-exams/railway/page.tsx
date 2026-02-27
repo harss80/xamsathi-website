@@ -88,162 +88,96 @@ export default function RailwayExamsCategoryPage() {
 
         {/* Section 2 - Available Railway Test Series */}
         <div id="courses" className="mb-20">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8">
-            <div>
-              <h2 className="text-3xl font-black text-white mb-2">Target Railway Exams</h2>
-              <p className="text-lg text-slate-400 font-medium">Select your targeted RRB exam to access specialized mock tests.</p>
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10">
+            <div className="max-w-2xl">
+              <h2 className="text-3xl font-black text-white mb-3 tracking-tight">Available Railway Exams</h2>
+              <p className="text-lg text-slate-400 font-medium tracking-tight">Select your targeted RRB exam to access specialized mock tests and official interface simulations.</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {[
+              {
+                id: "ntpc",
+                title: "RRB NTPC 2026",
+                desc: "Complete mock series for all undergraduate and graduate non-technical posts.",
+                tests: 450,
+                users: "2.1 Lakh",
+                tag: "Bestseller",
+                link: "/government-exams/railway/ntpc"
+              },
+              {
+                id: "group-d",
+                title: "RRB Group D",
+                desc: "Level 1 single-stage CBT mocks focused on speed and 10th standard science.",
+                tests: 350,
+                users: "1.2 Lakh",
+                link: "/government-exams/railway/group-d"
+              },
+              {
+                id: "alp",
+                title: "RRB ALP 2026",
+                desc: "Assistant Loco Pilot complete test series with technical trade subjects included.",
+                tests: 380,
+                users: "85k",
+                tag: "Popular",
+                link: "/government-exams/railway/alp"
+              },
+            ].map((exam) => (
+              <Link href={exam.link} key={exam.id} className="group flex flex-col bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-blue-500/50 hover:bg-slate-800/30 transition-all duration-300 relative overflow-hidden">
+                {exam.tag && (
+                  <span className="absolute top-4 right-4 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-blue-500/10 border border-blue-500/20 text-blue-400">
+                    {exam.tag}
+                  </span>
+                )}
+                <div className="w-14 h-14 rounded-xl bg-slate-800 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-inner border border-slate-700">
+                  <ShieldCheck className="w-7 h-7 text-blue-400" />
+                </div>
+                <h3 className="text-xl font-black text-white mb-2 group-hover:text-blue-400 transition-colors uppercase">{exam.title}</h3>
+                <p className="text-sm text-slate-400 font-medium mb-6 line-clamp-2">{exam.desc}</p>
 
-            {/* RRB NTPC CARD */}
-            <div className="bg-slate-900 border-2 border-blue-500 rounded-3xl p-8 lg:p-10 relative overflow-hidden group hover:shadow-[0_0_30px_rgba(37,99,235,0.15)] transition-all shadow-xl flex flex-col">
-              <div className="absolute top-0 right-8 px-4 py-1.5 bg-blue-600 text-white text-[10px] font-black rounded-b-xl uppercase tracking-widest shadow-lg">HIGHLY RECOMMENDED</div>
-
-              <div className="flex justify-between items-start mb-4 mt-2">
-                <h3 className="text-3xl font-black text-white">RRB NTPC 2026</h3>
-                <div className="px-3 py-1 bg-slate-950 border border-slate-800 rounded-lg text-xs font-bold text-slate-400">85+ Tests</div>
-              </div>
-
-              <p className="text-slate-400 text-sm mb-8 font-medium">Complete mock series for all undergraduate and graduate non-technical posts.</p>
-
-              <div className="grid grid-cols-2 gap-4 mb-8 flex-1">
-                {["25 Full Length Mocks", "40 Sectional Tests", "20 PYQ Papers", "CBT 1 & CBT 2 Covered"].map((feature, i) => (
-                  <div key={i} className="flex items-center gap-2 text-slate-300 text-xs md:text-sm font-bold">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" /> {feature}
+                <div className="mt-auto space-y-3">
+                  <div className="flex items-center gap-4 text-xs font-bold text-slate-300">
+                    <div className="flex items-center gap-1.5 bg-slate-950 px-2.5 py-1.5 rounded-lg border border-slate-800">
+                      <BookOpen className="w-3.5 h-3.5 text-emerald-400" /> {exam.tests} Tests
+                    </div>
+                    <div className="flex items-center gap-1.5 bg-slate-950 px-2.5 py-1.5 rounded-lg border border-slate-800">
+                      <Users className="w-3.5 h-3.5 text-blue-400" /> {exam.users}
+                    </div>
                   </div>
-                ))}
-              </div>
-
-              <div className="flex bg-slate-950/50 rounded-2xl border border-slate-800 p-3 mb-8 divide-x divide-slate-800 text-center mt-auto">
-                <div className="flex-1 px-2 py-1">
-                  <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Basic</div>
-                  <div className="text-lg font-black text-white">₹499</div>
-                </div>
-                <div className="flex-1 px-2 py-1 bg-blue-600/10 rounded-lg ring-1 ring-blue-500/30">
-                  <div className="text-[10px] font-black uppercase text-blue-400 mb-1">Pro</div>
-                  <div className="text-lg font-black text-blue-400">₹799</div>
-                </div>
-                <div className="flex-1 px-2 py-1">
-                  <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Premium</div>
-                  <div className="text-lg font-black text-white">₹999</div>
-                </div>
-              </div>
-
-              <Link href="/government-exams/railway/ntpc" className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-black text-lg rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-blue-500/30">
-                View Test Details <ChevronRight className="w-5 h-5" />
-              </Link>
-            </div>
-
-            {/* RRB GROUP D CARD */}
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 lg:p-10 relative overflow-hidden group hover:shadow-xl hover:border-slate-700 transition-all shadow-xl flex flex-col">
-              <div className="flex justify-between items-start mb-4 mt-2">
-                <h3 className="text-3xl font-black text-white">RRB Group D</h3>
-                <div className="px-3 py-1 bg-slate-950 border border-slate-800 rounded-lg text-xs font-bold text-slate-400">65+ Tests</div>
-              </div>
-
-              <p className="text-slate-400 text-sm mb-8 font-medium">Level 1 single-stage CBT mocks focused on speed and latest 10th science standard.</p>
-
-              <div className="grid grid-cols-2 gap-4 mb-8 flex-1">
-                {["20 Full Length Mocks", "30 Sectional Tests", "15 PYQ Papers", "Physical Test PDF"].map((feature, i) => (
-                  <div key={i} className="flex items-center gap-2 text-slate-300 text-xs md:text-sm font-bold">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" /> {feature}
+                  <div className="pt-4 border-t border-slate-800/60 flex items-center justify-between">
+                    <span className="text-sm font-bold text-slate-300">View Series</span>
+                    <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-blue-400 group-hover:translate-x-1 transition-all" />
                   </div>
-                ))}
-              </div>
-
-              <div className="flex bg-slate-950/50 rounded-2xl border border-slate-800 p-3 mb-8 divide-x divide-slate-800 text-center mt-auto">
-                <div className="flex-1 px-2 py-1">
-                  <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Basic</div>
-                  <div className="text-lg font-black text-slate-300">₹399</div>
                 </div>
-                <div className="flex-1 px-2 py-1">
-                  <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Pro</div>
-                  <div className="text-lg font-black text-slate-300">₹699</div>
-                </div>
-                <div className="flex-1 px-2 py-1">
-                  <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Premium</div>
-                  <div className="text-lg font-black text-slate-300">₹899</div>
-                </div>
-              </div>
-
-              <Link href="/government-exams/railway/group-d" className="w-full py-4 bg-slate-950 border border-slate-700 hover:border-slate-500 hover:text-white text-slate-300 font-bold text-lg rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-sm">
-                View Test Details <ChevronRight className="w-5 h-5" />
               </Link>
-            </div>
+            ))}
 
-            {/* RRB ALP CARD */}
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 lg:p-10 relative overflow-hidden group hover:shadow-xl hover:border-slate-700 transition-all shadow-xl flex flex-col">
-              <div className="flex justify-between items-start mb-4 mt-2">
-                <h3 className="text-3xl font-black text-white">RRB ALP 2026</h3>
-                <div className="px-3 py-1 bg-slate-950 border border-slate-800 rounded-lg text-xs font-bold text-slate-400">78+ Tests</div>
-              </div>
-
-              <p className="text-slate-400 text-sm mb-8 font-medium">Assistant Loco Pilot complete test series with technical trade subjects included.</p>
-
-              <div className="grid grid-cols-2 gap-4 mb-8 flex-1">
-                {["25 Full Length Mocks", "35 Sectional Tests", "18 PYQ Papers", "Basic Science & Engg"].map((feature, i) => (
-                  <div key={i} className="flex items-center gap-2 text-slate-300 text-xs md:text-sm font-bold">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" /> {feature}
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex bg-slate-950/50 rounded-2xl border border-slate-800 p-3 mb-8 divide-x divide-slate-800 text-center mt-auto">
-                <div className="flex-1 px-2 py-1">
-                  <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Basic</div>
-                  <div className="text-lg font-black text-slate-300">₹599</div>
-                </div>
-                <div className="flex-1 px-2 py-1">
-                  <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Pro</div>
-                  <div className="text-lg font-black text-slate-300">₹899</div>
-                </div>
-                <div className="flex-1 px-2 py-1">
-                  <div className="text-[10px] font-bold uppercase text-slate-500 mb-1">Premium</div>
-                  <div className="text-lg font-black text-slate-300">₹1099</div>
-                </div>
-              </div>
-
-              <Link href="/government-exams/railway/alp" className="w-full py-4 bg-slate-950 border border-slate-700 hover:border-slate-500 hover:text-white text-slate-300 font-bold text-lg rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-sm">
-                View Test Details <ChevronRight className="w-5 h-5" />
-              </Link>
-            </div>
-
-            {/* RAILWAY COMBO CARD */}
-            <div className="bg-gradient-to-br from-slate-900 to-slate-950 border border-amber-500/30 rounded-3xl p-8 lg:p-10 relative overflow-hidden group hover:shadow-[0_0_30px_rgba(245,158,11,0.15)] transition-all shadow-xl flex flex-col">
+            {/* COMBO PACK CARD - SPANS FULL WIDTH OR SPECIAL TILE */}
+            <div className="lg:col-span-3 bg-gradient-to-br from-slate-900 to-blue-900/40 border border-amber-500/30 rounded-3xl p-8 md:p-10 relative overflow-hidden group hover:shadow-[0_0_40px_rgba(245,158,11,0.1)] transition-all flex flex-col md:flex-row items-center justify-between gap-8 mt-4 shadow-xl">
               <div className="absolute top-0 right-0 p-8 opacity-5">
-                <Train className="w-48 h-48 text-amber-500" />
+                <Train className="w-64 h-64 text-amber-500" />
               </div>
-
-              <div className="relative z-10 flex justify-between items-start mb-4 mt-2">
-                <h3 className="text-3xl font-black text-white">Railway Combo</h3>
-                <div className="px-3 py-1 bg-amber-500/10 border border-amber-500/30 rounded-lg text-xs font-bold text-amber-400">All 220+ Tests</div>
-              </div>
-
-              <p className="text-slate-400 text-sm mb-8 font-medium relative z-10">Get full unlimited access to NTPC, Group D, and ALP tests in a single discounted bundle.</p>
-
-              <div className="grid grid-cols-2 gap-4 mb-8 flex-1 relative z-10">
-                {["NTPC Complete Pack", "Group D Complete", "ALP Complete Pack", "Save ₹800+ instantly"].map((feature, i) => (
-                  <div key={i} className="flex items-center gap-2 text-white text-xs md:text-sm font-bold">
-                    <Trophy className="w-4 h-4 text-amber-400 shrink-0" /> {feature}
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex bg-slate-950/80 rounded-2xl border border-slate-800 p-3 mb-8 text-center mt-auto relative z-10">
-                <div className="flex-1 px-2 py-1 flex items-center justify-center gap-4">
-                  <div className="text-lg font-black text-slate-500 line-through">₹2297</div>
-                  <div className="text-3xl font-black text-amber-400">₹1499</div>
+              <div className="max-w-2xl relative z-10">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[10px] font-black mb-4 uppercase tracking-widest">
+                  Maximum Value
                 </div>
+                <h3 className="text-3xl font-black text-white mb-4 tracking-tighter">Railway Maha Combo Pack</h3>
+                <p className="text-slate-300 font-medium leading-relaxed">Get unlimited 12-month access to NTPC, Group D, and ALP tests. Every technical trade and CBT stage included in one discounted bundle.</p>
               </div>
-
-              <Link href="/checkout?plan=combo&exam=railway-combo" className="relative z-10 w-full py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-lg rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-amber-500/20">
-                Enroll Combo Package <ChevronRight className="w-5 h-5" />
-              </Link>
+              <div className="flex flex-col items-center gap-4 relative z-10 shrink-0">
+                <div className="flex flex-col items-center">
+                  <span className="text-slate-500 line-through text-sm font-bold tracking-widest uppercase">Value ₹2297</span>
+                  <span className="text-4xl font-black text-white">₹1499</span>
+                </div>
+                <Link href="/checkout?plan=combo&exam=railway-combo" className="px-8 py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-lg rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-amber-500/30">
+                  Buy Combo Pass <ChevronRight className="w-5 h-5" />
+                </Link>
+              </div>
             </div>
           </div>
         </div>
+
 
         {/* Section 3 - Comparison Table */}
         <div className="mb-20">
