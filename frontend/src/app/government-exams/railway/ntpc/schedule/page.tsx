@@ -210,7 +210,7 @@ export default function RRBNTPCSchedulePage() {
                                     <div className="mb-8">
                                         <h4 className="font-bold text-white text-lg mb-4 bg-slate-800 inline-block px-4 py-1.5 rounded-lg border border-slate-700">1. CBT 1 Exam Pattern (Prelims)</h4>
                                         <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950">
-                                            <table className="w-full text-left border-collapse">
+                                            <table className="w-full text-left border-collapse min-w-[500px]">
                                                 <thead>
                                                     <tr className="bg-slate-900 border-b border-slate-800">
                                                         <th className="p-4 font-bold text-slate-300">Subject</th>
@@ -253,7 +253,7 @@ export default function RRBNTPCSchedulePage() {
                                     <div className="mb-8">
                                         <h4 className="font-bold text-white text-lg mb-4 bg-slate-800 inline-block px-4 py-1.5 rounded-lg border border-slate-700">2. CBT 2 Exam Pattern (Mains)</h4>
                                         <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950">
-                                            <table className="w-full text-left border-collapse">
+                                            <table className="w-full text-left border-collapse min-w-[500px]">
                                                 <thead>
                                                     <tr className="bg-slate-900 border-b border-slate-800">
                                                         <th className="p-4 font-bold text-slate-300">Subject</th>

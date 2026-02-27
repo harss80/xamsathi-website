@@ -210,7 +210,7 @@ export default function RRBGroupDSchedulePage() {
 
                                     <div className="mb-8">
                                         <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950">
-                                            <table className="w-full text-left border-collapse">
+                                            <table className="w-full text-left border-collapse min-w-[500px]">
                                                 <thead>
                                                     <tr className="bg-slate-900 border-b border-slate-800">
                                                         <th className="p-4 font-bold text-slate-300">Subject</th>

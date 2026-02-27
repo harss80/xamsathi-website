@@ -146,18 +146,20 @@ export default function SSCMTSSchedulePage() {
                                             <h4 className="text-lg font-black text-white mb-2 relative z-10 flex items-center gap-2">Computer Based Test (CBT)</h4>
                                             <p className="text-slate-400 text-sm mb-4 font-medium">A single day test consisting of two sequential sessions.</p>
 
-                                            <div className="grid grid-cols-3 lg:grid-cols-3 gap-3 mb-6">
-                                                <div className="p-3 bg-slate-900 border border-slate-800 rounded-xl text-center">
-                                                    <span className="text-[10px] text-slate-500 uppercase font-black tracking-widest block mb-1">Total Time</span>
-                                                    <strong className="text-white text-lg">90 Minutes</strong>
-                                                </div>
-                                                <div className="p-3 bg-slate-900 border border-slate-800 rounded-xl text-center">
-                                                    <span className="text-[10px] text-slate-500 uppercase font-black tracking-widest block mb-1">Total Questions</span>
-                                                    <strong className="text-white text-lg">90 Qs</strong>
-                                                </div>
-                                                <div className="p-3 bg-slate-900 border border-slate-800 rounded-xl text-center">
-                                                    <span className="text-[10px] text-slate-500 uppercase font-black tracking-widest block mb-1">Total Marks</span>
-                                                    <strong className="text-white text-lg">270 Marks</strong>
+                                            <div className="overflow-x-auto mb-6">
+                                                <div className="grid grid-cols-3 lg:grid-cols-3 gap-3 min-w-[500px]">
+                                                    <div className="p-3 bg-slate-900 border border-slate-800 rounded-xl text-center">
+                                                        <span className="text-[10px] text-slate-500 uppercase font-black tracking-widest block mb-1">Total Time</span>
+                                                        <strong className="text-white text-lg">90 Minutes</strong>
+                                                    </div>
+                                                    <div className="p-3 bg-slate-900 border border-slate-800 rounded-xl text-center">
+                                                        <span className="text-[10px] text-slate-500 uppercase font-black tracking-widest block mb-1">Total Questions</span>
+                                                        <strong className="text-white text-lg">90 Qs</strong>
+                                                    </div>
+                                                    <div className="p-3 bg-slate-900 border border-slate-800 rounded-xl text-center">
+                                                        <span className="text-[10px] text-slate-500 uppercase font-black tracking-widest block mb-1">Total Marks</span>
+                                                        <strong className="text-white text-lg">270 Marks</strong>
+                                                    </div>
                                                 </div>
                                             </div>
 

@@ -208,7 +208,7 @@ export default function SSCCPOExamPage() {
 
                         <div className="space-y-4">
                           {category.tests.map((test, idx) => (
-                            <div key={idx} className="flex flex-col xl:flex-row xl:items-center justify-between p-5 bg-slate-900 border border-slate-800 rounded-2xl hover:border-blue-500/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.1)] transition-all gap-5 group">
+                            <div key={idx} className="flex flex-col lg:flex-row lg:items-center justify-between p-4 md:p-5 bg-slate-900 border border-slate-800 rounded-2xl hover:border-blue-500/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.1)] transition-all gap-5 group">
                               <div>
                                 <div className="flex items-center gap-3 mb-3">
                                   {test.isFree ? (
@@ -220,21 +220,21 @@ export default function SSCCPOExamPage() {
                                   )}
                                   <h4 className="font-bold text-white text-base md:text-lg group-hover:text-blue-100 transition-colors">{test.name}</h4>
                                 </div>
-                                <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-slate-400 bg-slate-950 w-fit px-3 py-1.5 rounded-lg border border-slate-800/50">
+                                <div className="flex flex-wrap items-center gap-3 md:gap-4 text-xs font-bold text-slate-400 bg-slate-950 w-fit px-3 py-1.5 rounded-lg border border-slate-800/50">
                                   <span className="flex items-center gap-1.5"><FileText className="w-4 h-4 text-blue-400" /> {test.q} Qs</span>
-                                  <div className="w-1 h-1 rounded-full bg-slate-700"></div>
+                                  <div className="hidden xs:block w-1 h-1 rounded-full bg-slate-700"></div>
                                   <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-emerald-400" /> {test.m} Marks</span>
-                                  <div className="w-1 h-1 rounded-full bg-slate-700"></div>
+                                  <div className="hidden xs:block w-1 h-1 rounded-full bg-slate-700"></div>
                                   <span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-amber-400" /> {test.time}</span>
                                 </div>
                               </div>
-                              <div className="shrink-0 w-full xl:w-auto">
+                              <div className="shrink-0 w-full lg:w-auto">
                                 {test.isFree ? (
-                                  <Link href={`/dashboard/test-series/ssc-cpo`} className="w-full xl:w-auto px-6 py-3 bg-blue-600/10 border border-blue-500/30 hover:bg-blue-600 hover:text-white text-blue-400 font-bold rounded-xl transition-colors flex items-center justify-center text-sm shadow-sm active:scale-95">
+                                  <Link href={`/dashboard/test-series/ssc-cpo`} className="w-full lg:w-auto px-6 py-3 bg-blue-600/10 border border-blue-500/30 hover:bg-blue-600 hover:text-white text-blue-400 font-bold rounded-xl transition-colors flex items-center justify-center text-sm shadow-sm active:scale-95">
                                     Start Test <ChevronRight className="w-4 h-4 ml-1" />
                                   </Link>
                                 ) : (
-                                  <a href="#pricing" className="w-full xl:w-auto px-6 py-3 bg-slate-950 text-slate-500 font-bold rounded-xl flex items-center justify-center text-sm hover:text-slate-300 transition-colors border border-slate-800">
+                                  <a href="#pricing" className="w-full lg:w-auto px-6 py-3 bg-slate-950 text-slate-500 font-bold rounded-xl flex items-center justify-center text-sm hover:text-slate-300 transition-colors border border-slate-800">
                                     <Lock className="w-4 h-4 mr-2" /> Unlock Now
                                   </a>
                                 )}
