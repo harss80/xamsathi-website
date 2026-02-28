@@ -23,6 +23,7 @@ function DashboardContent() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [purchasedCourseIds, setPurchasedCourseIds] = useState<Set<string>>(() => new Set());
     const [hasFreeAccess, setHasFreeAccess] = useState(false);
+    const [isTestRunning, setIsTestRunning] = useState(false);
     const [classGrade] = useState<number | null>(() => {
         try {
             if (typeof window === "undefined") return null;
@@ -282,18 +283,22 @@ function DashboardContent() {
             </div>
 
             {/* Sidebar */}
-            <Sidebar
-                isOpen={isSidebarOpen}
-                onClose={() => setIsSidebarOpen(false)}
-                onLogout={handleLogout}
-            />
+            {!isTestRunning && (
+                <Sidebar
+                    isOpen={isSidebarOpen}
+                    onClose={() => setIsSidebarOpen(false)}
+                    onLogout={handleLogout}
+                />
+            )}
 
             {/* Main Content Area */}
             <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative z-10">
-                <Header
-                    onMenuClick={() => setIsSidebarOpen(true)}
-                    user={user}
-                />
+                {!isTestRunning && (
+                    <Header
+                        onMenuClick={() => setIsSidebarOpen(true)}
+                        user={user}
+                    />
+                )}
 
                 <main className="flex-1 overflow-y-auto p-4 sm:p-8 scroll-smooth">
                     <div className="max-w-7xl mx-auto">
@@ -634,7 +639,7 @@ function DashboardContent() {
                         {activeTab === "leaderboard" && <Leaderboard />}
                         {activeTab === "profile" && <ProfilePage />}
                         {activeTab === "earn" && <EarnSection />}
-                        {activeTab === "autogenerate" && <AutoGenerate />}
+                        {activeTab === "autogenerate" && <AutoGenerate onTestActive={setIsTestRunning} />}
 
                         {['schedule', 'reports'].includes(activeTab) && (
                             <div className="flex flex-col items-center justify-center py-20 text-center bg-slate-900/50 rounded-3xl border border-slate-800">

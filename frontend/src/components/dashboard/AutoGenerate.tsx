@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     Zap, BookOpen, Layers, Target, ChevronRight, Calculator, Sliders,
@@ -8,6 +8,10 @@ import {
 } from "lucide-react";
 import TestSeriesPlayer from "@/components/dashboard/TestSeriesPlayer";
 import { trackLead } from "@/lib/trackLead";
+
+interface AutoGenerateProps {
+    onTestActive?: (active: boolean) => void;
+}
 
 type Subject = "Physics" | "Chemistry" | "Mathematics" | "Biology";
 
@@ -86,7 +90,7 @@ const itemVariants = {
     visible: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } }
 };
 
-export default function AutoGenerate() {
+export default function AutoGenerate({ onTestActive }: AutoGenerateProps) {
     const [step, setStep] = useState<1 | 2 | 3>(1);
     const [selectedSubject, setSelectedSubject] = useState<Subject | "">("");
     const [selectedChapters, setSelectedChapters] = useState<string[]>([]);
@@ -94,6 +98,10 @@ export default function AutoGenerate() {
     const [isGenerating, setIsGenerating] = useState(false);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [testQuestions, setTestQuestions] = useState<any[] | null>(null);
+
+    useEffect(() => {
+        if (onTestActive) onTestActive(!!testQuestions);
+    }, [testQuestions, onTestActive]);
 
     const handleSubjectSelect = (sub: Subject) => {
         setSelectedSubject(sub);
