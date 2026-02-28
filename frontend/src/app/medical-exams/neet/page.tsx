@@ -7,7 +7,7 @@ import {
   Lock, Sparkles, LayoutDashboard, Calculator, MonitorPlay, HelpCircle, X,
   ZapOff, Timer, GraduationCap, ChevronRight, School, Laptop, Microscope,
   MapPin, Building2, FlaskConical, TrendingUp, Search, Globe, Languages,
-  Library, FileText, Award, CreditCard, Info, HeartPulse, Dna, Activity, ListCheck, Flame
+  Library, FileText, Award, CreditCard, Info, HeartPulse, Dna, Activity, Flame
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Image from "next/image";
