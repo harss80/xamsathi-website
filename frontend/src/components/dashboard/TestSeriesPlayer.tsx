@@ -185,6 +185,7 @@ export default function TestSeriesPlayer({
     const [timeLeft, setTimeLeft] = useState(durationMins * 60);
     const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
     const [showPalette, setShowPalette] = useState(false);
+    const [reviewFilter, setReviewFilter] = useState<"all" | "correct" | "incorrect" | "skipped">("all");
 
     const handleSubmitRef = useRef<() => void>(() => { });
 
@@ -1261,144 +1262,224 @@ export default function TestSeriesPlayer({
                                 </div>
                             </div>
 
+                            {/* Detailed Analytics Grid */}
+                            <div className="bg-slate-900/50 border border-white/5 rounded-[3rem] p-8 md:p-12 mb-20">
+                                <h3 className="text-2xl font-black text-white italic tracking-tighter mb-8 flex items-center gap-4">
+                                    <Grid className="w-8 h-8 text-indigo-500" /> RESPONSE OVERVIEW
+                                </h3>
+
+                                <div className="grid grid-cols-5 sm:grid-cols-10 md:grid-cols-15 lg:grid-cols-20 gap-3">
+                                    {questions.map((q, idx) => {
+                                        const userAns = answers[q.id];
+                                        const format = q.format || "mcq";
+                                        const isSkipped = userAns === undefined || String(userAns).trim() === "";
+                                        const isCorrect = format === "integer"
+                                            ? (!isSkipped && Number(String(userAns).trim()) === q.correctInteger)
+                                            : (userAns === q.correctAnswer);
+
+                                        return (
+                                            <a
+                                                key={q.id}
+                                                href={`#solution-${q.id}`}
+                                                className={`w-10 h-10 rounded-xl flex items-center justify-center text-xs font-black transition-all hover:scale-110 active:scale-90 ${isCorrect ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
+                                                    isSkipped ? 'bg-slate-800 text-slate-500 border border-white/5' :
+                                                        'bg-red-500/20 text-red-400 border border-red-500/30'
+                                                    }`}
+                                            >
+                                                {idx + 1}
+                                            </a>
+                                        );
+                                    })}
+                                </div>
+
+                                <div className="flex flex-wrap gap-6 mt-8 pt-8 border-t border-white/5">
+                                    <div className="flex items-center gap-2 text-[10px] font-black uppercase text-emerald-400 tracking-widest">
+                                        <div className="w-3 h-3 rounded bg-emerald-500/20 border border-emerald-500/40"></div> Correct
+                                    </div>
+                                    <div className="flex items-center gap-2 text-[10px] font-black uppercase text-red-400 tracking-widest">
+                                        <div className="w-3 h-3 rounded bg-red-500/20 border border-red-500/40"></div> Incorrect
+                                    </div>
+                                    <div className="flex items-center gap-2 text-[10px] font-black uppercase text-slate-500 tracking-widest">
+                                        <div className="w-3 h-3 rounded bg-slate-800 border border-white/10"></div> Unattempted
+                                    </div>
+                                </div>
+                            </div>
+
                             {/* Solutions Section Header */}
-                            <div className="flex items-center gap-6 mb-12">
-                                <h2 className="text-4xl md:text-5xl font-black text-white italic tracking-tighter">SOLUTIONS</h2>
-                                <div className="h-px flex-1 bg-white/10"></div>
-                                <div className="w-16 h-16 rounded-3xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
-                                    <BookOpen className="w-8 h-8" />
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
+                                <div className="flex items-center gap-6">
+                                    <h2 className="text-4xl md:text-5xl font-black text-white italic tracking-tighter">SOLUTIONS</h2>
+                                    <div className="w-16 h-16 rounded-3xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                                        <BookOpen className="w-8 h-8" />
+                                    </div>
+                                </div>
+
+                                <div className="flex bg-slate-900 border border-white/10 rounded-2xl p-1.5 p-1 gap-1 overflow-x-auto no-scrollbar">
+                                    {[
+                                        { id: "all", label: "All Qs" },
+                                        { id: "incorrect", label: "Wrong", color: "text-red-400" },
+                                        { id: "skipped", label: "Skipped", color: "text-yellow-400" },
+                                        { id: "correct", label: "Correct", color: "text-emerald-400" }
+                                    ].map((f) => (
+                                        <button
+                                            key={f.id}
+                                            onClick={() => setReviewFilter(f.id as any)}
+                                            className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${reviewFilter === f.id
+                                                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20'
+                                                : `text-slate-400 hover:text-white hover:bg-white/5 ${f.color || ''}`
+                                                }`}
+                                        >
+                                            {f.label}
+                                        </button>
+                                    ))}
                                 </div>
                             </div>
 
                             <div className="space-y-12">
-                                {questions.map((q, idx) => {
-                                    const userAns = answers[q.id];
-                                    const format = q.format || "mcq";
-                                    const isSkipped = userAns === undefined || String(userAns).trim() === "";
-                                    const isCorrect = format === "integer"
-                                        ? (!isSkipped && Number(String(userAns).trim()) === q.correctInteger)
-                                        : (userAns === q.correctAnswer);
-                                    const statusColor = isCorrect ? 'text-emerald-400' : isSkipped ? 'text-yellow-400' : 'text-red-400';
-                                    const StatusIcon = isCorrect ? CheckCircle2 : isSkipped ? HelpCircle : XCircle;
+                                {questions
+                                    .map((q, idx) => ({ q, idx }))
+                                    .filter(({ q }) => {
+                                        if (reviewFilter === "all") return true;
+                                        const userAns = answers[q.id];
+                                        const format = q.format || "mcq";
+                                        const isSkipped = userAns === undefined || String(userAns).trim() === "";
+                                        const isCorrect = format === "integer"
+                                            ? (!isSkipped && Number(String(userAns).trim()) === q.correctInteger)
+                                            : (userAns === q.correctAnswer);
 
-                                    return (
-                                        <div key={q.id} className="relative group/sol">
-                                            <div className={`absolute -inset-1 bg-gradient-to-r ${isCorrect ? 'from-emerald-500/20 to-transparent' : isSkipped ? 'from-yellow-500/10 to-transparent' : 'from-red-500/20 to-transparent'} rounded-[3rem] blur-xl opacity-0 group-hover/sol:opacity-100 transition duration-500`}></div>
-                                            <div className="relative bg-slate-900/50 border border-white/10 rounded-[2.5rem] p-8 md:p-12 hover:border-white/20 transition-all duration-300">
-                                                <div className="flex flex-col md:flex-row items-start justify-between gap-6 mb-10">
-                                                    <div className="flex-1">
-                                                        <div className="flex flex-wrap items-center gap-4 mb-6">
-                                                            <span className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center font-black text-slate-400 italic">{idx + 1}</span>
-                                                            <span className="px-5 py-2 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[10px] font-black tracking-widest uppercase">
-                                                                {q.type}
-                                                            </span>
-                                                            <div className={`flex items-center gap-2 px-5 py-2 rounded-2xl bg-white/5 border border-white/10 font-black text-[10px] tracking-widest uppercase ${statusColor}`}>
-                                                                <StatusIcon className="w-4 h-4" />
-                                                                {isCorrect ? 'Correct' : isSkipped ? 'Skipped' : 'Incorrect'}
+                                        if (reviewFilter === "incorrect") return !isCorrect && !isSkipped;
+                                        if (reviewFilter === "skipped") return isSkipped;
+                                        if (reviewFilter === "correct") return isCorrect;
+                                        return true;
+                                    })
+                                    .map(({ q, idx }) => {
+                                        const userAns = answers[q.id];
+                                        const format = q.format || "mcq";
+                                        const isSkipped = userAns === undefined || String(userAns).trim() === "";
+                                        const isCorrect = format === "integer"
+                                            ? (!isSkipped && Number(String(userAns).trim()) === q.correctInteger)
+                                            : (userAns === q.correctAnswer);
+                                        const statusColor = isCorrect ? 'text-emerald-400' : isSkipped ? 'text-yellow-400' : 'text-red-400';
+                                        const StatusIcon = isCorrect ? CheckCircle2 : isSkipped ? HelpCircle : XCircle;
+
+                                        return (
+                                            <div key={q.id} id={`solution-${q.id}`} className="relative group/sol scroll-mt-24">
+                                                <div className={`absolute -inset-1 bg-gradient-to-r ${isCorrect ? 'from-emerald-500/20 to-transparent' : isSkipped ? 'from-yellow-500/10 to-transparent' : 'from-red-500/20 to-transparent'} rounded-[3rem] blur-xl opacity-0 group-hover/sol:opacity-100 transition duration-500`}></div>
+                                                <div className="relative bg-slate-900/50 border border-white/10 rounded-[2.5rem] p-8 md:p-12 hover:border-white/20 transition-all duration-300">
+                                                    <div className="flex flex-col md:flex-row items-start justify-between gap-6 mb-10">
+                                                        <div className="flex-1">
+                                                            <div className="flex flex-wrap items-center gap-4 mb-6">
+                                                                <span className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center font-black text-slate-400 italic">{idx + 1}</span>
+                                                                <span className="px-5 py-2 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[10px] font-black tracking-widest uppercase">
+                                                                    {q.type}
+                                                                </span>
+                                                                <div className={`flex items-center gap-2 px-5 py-2 rounded-2xl bg-white/5 border border-white/10 font-black text-[10px] tracking-widest uppercase ${statusColor}`}>
+                                                                    <StatusIcon className="w-4 h-4" />
+                                                                    {isCorrect ? 'Correct' : isSkipped ? 'Skipped' : 'Incorrect'}
+                                                                </div>
+                                                            </div>
+                                                            {q.context && (
+                                                                <div className="p-6 bg-white/5 border border-white/10 rounded-2xl mb-8">
+                                                                    <div className="flex items-center gap-2 text-indigo-400 mb-2 text-sm font-bold uppercase tracking-wider">
+                                                                        <FileText className="w-4 h-4" /> Case Study / Context
+                                                                    </div>
+                                                                    <p className="text-slate-400 italic font-serif leading-relaxed">
+                                                                        {q.context}
+                                                                    </p>
+                                                                </div>
+                                                            )}
+
+                                                            <h4 className="text-xl md:text-3xl font-bold text-white leading-tight">
+                                                                {q.text}
+                                                            </h4>
+
+                                                            {q.image && (
+                                                                <div className="mt-8 relative w-full aspect-video bg-white rounded-3xl overflow-hidden border border-white/10">
+                                                                    <Image
+                                                                        src={q.image}
+                                                                        alt="Question illustration"
+                                                                        fill
+                                                                        className="object-contain p-4"
+                                                                    />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+
+                                                    {format === "integer" ? (
+                                                        <div className="rounded-[2.5rem] border border-white/10 bg-white/5 p-8 mb-10">
+                                                            <div className="grid md:grid-cols-2 gap-6">
+                                                                <div>
+                                                                    <div className="text-xs font-black tracking-widest uppercase text-slate-500 mb-2">Your Answer</div>
+                                                                    <div className={`text-2xl font-black ${isSkipped ? 'text-yellow-300' : isCorrect ? 'text-emerald-300' : 'text-red-300'}`}>
+                                                                        {isSkipped ? "Skipped" : String(userAns)}
+                                                                    </div>
+                                                                </div>
+                                                                <div>
+                                                                    <div className="text-xs font-black tracking-widest uppercase text-slate-500 mb-2">Correct Answer</div>
+                                                                    <div className="text-2xl font-black text-emerald-300">{String(q.correctInteger ?? "-")}</div>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        {q.context && (
-                                                            <div className="p-6 bg-white/5 border border-white/10 rounded-2xl mb-8">
-                                                                <div className="flex items-center gap-2 text-indigo-400 mb-2 text-sm font-bold uppercase tracking-wider">
-                                                                    <FileText className="w-4 h-4" /> Case Study / Context
+                                                    ) : (
+                                                        <div className="grid md:grid-cols-2 gap-4 mb-10">
+                                                            {q.options.map((option, optIdx) => {
+                                                                const userAnsIdx = typeof userAns === "number" ? userAns : undefined;
+                                                                const isSelected = userAnsIdx === optIdx;
+                                                                const isAnswer = q.correctAnswer === optIdx;
+
+                                                                let borderClass = 'border-white/5 bg-white/5';
+                                                                let textClass = 'text-slate-500';
+
+                                                                if (isAnswer) {
+                                                                    borderClass = 'border-emerald-500/50 bg-emerald-500/10 ring-1 ring-emerald-500/30';
+                                                                    textClass = 'text-white font-black';
+                                                                } else if (isSelected) {
+                                                                    borderClass = 'border-red-500/50 bg-red-500/10 ring-1 ring-red-500/30';
+                                                                    textClass = 'text-white font-black';
+                                                                }
+
+                                                                return (
+                                                                    <div
+                                                                        key={optIdx}
+                                                                        className={`p-6 rounded-[2rem] border-2 ${borderClass} flex items-center gap-4 transition-all group/opt`}
+                                                                    >
+                                                                        <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black shrink-0 ${isAnswer ? 'bg-emerald-500 text-white' :
+                                                                            isSelected ? 'bg-red-500 text-white' :
+                                                                                'bg-white/10 text-slate-500 group-hover/opt:text-white'
+                                                                            }`}>
+                                                                            {String.fromCharCode(65 + optIdx)}
+                                                                        </div>
+                                                                        <span className={`text-lg transition-colors ${textClass}`}>{option}</span>
+                                                                        {isAnswer && <div className="ml-auto w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center"><CheckCircle2 className="w-5 h-5 text-emerald-500" /></div>}
+                                                                    </div>
+                                                                )
+                                                            })}
+                                                        </div>
+                                                    )}
+
+                                                    {/* Explanation Card */}
+                                                    <div className="group/exp relative overflow-hidden">
+                                                        <div className="absolute inset-0 bg-indigo-500/5 backdrop-blur-3xl rounded-[2rem]"></div>
+                                                        <div className="relative p-8 md:p-10 border border-white/5 rounded-[2rem] flex flex-col md:flex-row gap-8">
+                                                            <div className="shrink-0">
+                                                                <div className="w-16 h-16 rounded-[1.5rem] bg-indigo-500 shadow-xl shadow-indigo-500/30 flex items-center justify-center text-white transform group-hover/exp:rotate-12 transition-transform">
+                                                                    <GraduationCap className="w-8 h-8" />
                                                                 </div>
-                                                                <p className="text-slate-400 italic font-serif leading-relaxed">
-                                                                    {q.context}
+                                                            </div>
+                                                            <div>
+                                                                <h5 className="text-indigo-400 font-black text-xs uppercase tracking-[0.2em] mb-4">TEACHER&apos;S EXPLANATION</h5>
+                                                                <p className="text-slate-300 leading-relaxed text-lg font-medium italic">
+                                                                    &quot;{q.explanation}&quot;
                                                                 </p>
                                                             </div>
-                                                        )}
-
-                                                        <h4 className="text-xl md:text-3xl font-bold text-white leading-tight">
-                                                            {q.text}
-                                                        </h4>
-
-                                                        {q.image && (
-                                                            <div className="mt-8 relative w-full aspect-video bg-white rounded-3xl overflow-hidden border border-white/10">
-                                                                <Image
-                                                                    src={q.image}
-                                                                    alt="Question illustration"
-                                                                    fill
-                                                                    className="object-contain p-4"
-                                                                />
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </div>
-
-                                                {format === "integer" ? (
-                                                    <div className="rounded-[2.5rem] border border-white/10 bg-white/5 p-8 mb-10">
-                                                        <div className="grid md:grid-cols-2 gap-6">
-                                                            <div>
-                                                                <div className="text-xs font-black tracking-widest uppercase text-slate-500 mb-2">Your Answer</div>
-                                                                <div className={`text-2xl font-black ${isSkipped ? 'text-yellow-300' : isCorrect ? 'text-emerald-300' : 'text-red-300'}`}>
-                                                                    {isSkipped ? "Skipped" : String(userAns)}
-                                                                </div>
-                                                            </div>
-                                                            <div>
-                                                                <div className="text-xs font-black tracking-widest uppercase text-slate-500 mb-2">Correct Answer</div>
-                                                                <div className="text-2xl font-black text-emerald-300">{String(q.correctInteger ?? "-")}</div>
-                                                            </div>
+                                                            <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-indigo-500/10 rounded-full blur-3xl"></div>
                                                         </div>
-                                                    </div>
-                                                ) : (
-                                                    <div className="grid md:grid-cols-2 gap-4 mb-10">
-                                                        {q.options.map((option, optIdx) => {
-                                                            const userAnsIdx = typeof userAns === "number" ? userAns : undefined;
-                                                            const isSelected = userAnsIdx === optIdx;
-                                                            const isAnswer = q.correctAnswer === optIdx;
-
-                                                            let borderClass = 'border-white/5 bg-white/5';
-                                                            let textClass = 'text-slate-500';
-
-                                                            if (isAnswer) {
-                                                                borderClass = 'border-emerald-500/50 bg-emerald-500/10 ring-1 ring-emerald-500/30';
-                                                                textClass = 'text-white font-black';
-                                                            } else if (isSelected) {
-                                                                borderClass = 'border-red-500/50 bg-red-500/10 ring-1 ring-red-500/30';
-                                                                textClass = 'text-white font-black';
-                                                            }
-
-                                                            return (
-                                                                <div
-                                                                    key={optIdx}
-                                                                    className={`p-6 rounded-[2rem] border-2 ${borderClass} flex items-center gap-4 transition-all group/opt`}
-                                                                >
-                                                                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black shrink-0 ${isAnswer ? 'bg-emerald-500 text-white' :
-                                                                        isSelected ? 'bg-red-500 text-white' :
-                                                                            'bg-white/10 text-slate-500 group-hover/opt:text-white'
-                                                                        }`}>
-                                                                        {String.fromCharCode(65 + optIdx)}
-                                                                    </div>
-                                                                    <span className={`text-lg transition-colors ${textClass}`}>{option}</span>
-                                                                    {isAnswer && <div className="ml-auto w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center"><CheckCircle2 className="w-5 h-5 text-emerald-500" /></div>}
-                                                                </div>
-                                                            )
-                                                        })}
-                                                    </div>
-                                                )}
-
-                                                {/* Explanation Card */}
-                                                <div className="group/exp relative overflow-hidden">
-                                                    <div className="absolute inset-0 bg-indigo-500/5 backdrop-blur-3xl rounded-[2rem]"></div>
-                                                    <div className="relative p-8 md:p-10 border border-white/5 rounded-[2rem] flex flex-col md:flex-row gap-8">
-                                                        <div className="shrink-0">
-                                                            <div className="w-16 h-16 rounded-[1.5rem] bg-indigo-500 shadow-xl shadow-indigo-500/30 flex items-center justify-center text-white transform group-hover/exp:rotate-12 transition-transform">
-                                                                <GraduationCap className="w-8 h-8" />
-                                                            </div>
-                                                        </div>
-                                                        <div>
-                                                            <h5 className="text-indigo-400 font-black text-xs uppercase tracking-[0.2em] mb-4">TEACHER&apos;S EXPLANATION</h5>
-                                                            <p className="text-slate-300 leading-relaxed text-lg font-medium italic">
-                                                                &quot;{q.explanation}&quot;
-                                                            </p>
-                                                        </div>
-                                                        <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-indigo-500/10 rounded-full blur-3xl"></div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    })}
                             </div>
                         </motion.div>
                     )
