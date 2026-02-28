@@ -218,8 +218,8 @@ export default function AutoGenerate() {
                 transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                 className="bg-[#0f1016]/80 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden"
             >
-                <div className="px-8 py-6 border-b border-white/5 bg-white/[0.02]">
-                    <div className="flex items-center justify-between relative max-w-3xl mx-auto">
+                <div className="px-4 sm:px-8 py-6 border-b border-white/5 bg-white/[0.02] overflow-x-auto no-scrollbar">
+                    <div className="flex items-center justify-between relative min-w-[320px] max-w-3xl mx-auto">
                         <div className="absolute top-1/2 left-0 w-full h-[2px] bg-white/5 -translate-y-1/2" />
                         <motion.div
                             className="absolute top-1/2 left-0 h-[2px] bg-gradient-to-r from-indigo-500 to-purple-500 -translate-y-1/2 rounded-full"
@@ -236,19 +236,19 @@ export default function AutoGenerate() {
                             <button
                                 key={s.num}
                                 onClick={() => s.num < step ? setStep(s.num as 1 | 2 | 3) : null}
-                                className={`relative flex flex-col items-center gap-3 focus:outline-none group z-10 ${s.num <= step ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+                                className={`relative flex flex-col items-center gap-2 sm:gap-3 focus:outline-none group z-10 ${s.num <= step ? 'cursor-pointer' : 'cursor-not-allowed'}`}
                             >
                                 <motion.div
-                                    className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 ${step === s.num
+                                    className={`w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center transition-all duration-300 ${step === s.num
                                         ? 'bg-gradient-to-br from-indigo-500 to-purple-600 shadow-[0_0_30px_rgba(99,102,241,0.4)] text-white scale-110'
                                         : s.num < step
                                             ? 'bg-[#1a1b23] border border-indigo-500/30 text-indigo-400'
                                             : 'bg-[#13141a] border border-white/5 text-slate-500'
                                         }`}
                                 >
-                                    {s.num < step ? <Check className="w-5 h-5" /> : <s.icon className="w-5 h-5" />}
+                                    {s.num < step ? <Check className="w-4 h-4 sm:w-5 sm:h-5" /> : <s.icon className="w-4 h-4 sm:w-5 sm:h-5" />}
                                 </motion.div>
-                                <span className={`text-xs font-bold uppercase tracking-widest transition-colors ${step === s.num ? 'text-white' : s.num < step ? 'text-indigo-300' : 'text-slate-600'
+                                <span className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-colors ${step === s.num ? 'text-white' : s.num < step ? 'text-indigo-300' : 'text-slate-600'
                                     }`}>
                                     {s.label}
                                 </span>
@@ -257,7 +257,7 @@ export default function AutoGenerate() {
                     </div>
                 </div>
 
-                <div className="p-8 md:p-12 min-h-[480px]">
+                <div className="p-6 md:p-12 min-h-[480px]">
                     <AnimatePresence mode="wait">
                         {step === 1 && (
                             <motion.div
@@ -397,12 +397,12 @@ export default function AutoGenerate() {
                                 </div>
 
                                 <div className="bg-[#13141a] border border-white/5 rounded-3xl p-8 max-w-2xl mx-auto w-full">
-                                    <label className="flex items-center justify-between font-bold text-slate-300 mb-6">
+                                    <label className="flex flex-col sm:flex-row sm:items-center justify-between font-bold text-slate-300 mb-6 gap-2">
                                         <span className="text-lg">Number of Questions</span>
-                                        <span className="bg-indigo-500/20 text-indigo-300 px-4 py-1.5 rounded-full text-base border border-indigo-500/20">{numQuestions} Questions</span>
+                                        <span className="bg-indigo-500/20 text-indigo-300 px-4 py-1.5 rounded-full text-base border border-indigo-500/20 w-fit">{numQuestions} Questions</span>
                                     </label>
 
-                                    <div className="grid grid-cols-4 gap-4 mb-6">
+                                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
                                         {[10, 20, 30, 50].map((num) => (
                                             <button
                                                 key={num}
@@ -417,23 +417,27 @@ export default function AutoGenerate() {
                                         ))}
                                     </div>
 
-                                    <div className="rounded-2xl bg-indigo-500/5 border border-indigo-500/10 p-5 flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center">
-                                            <Clock className="w-6 h-6 text-indigo-400" />
-                                        </div>
-                                        <div>
-                                            <div className="text-sm font-bold text-slate-400">Estimated Duration</div>
-                                            <div className="text-xl font-black text-white">{Math.ceil(numQuestions * 1.5)} Mins</div>
+                                    <div className="rounded-2xl bg-indigo-500/5 border border-indigo-500/10 p-5 grid grid-cols-1 sm:flex sm:items-center gap-6 sm:gap-4">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center shrink-0">
+                                                <Clock className="w-6 h-6 text-indigo-400" />
+                                            </div>
+                                            <div>
+                                                <div className="text-sm font-bold text-slate-400">Duration</div>
+                                                <div className="text-xl font-black text-white whitespace-nowrap">{Math.ceil(numQuestions * 1.5)} Mins</div>
+                                            </div>
                                         </div>
 
-                                        <div className="w-[1px] h-10 bg-white/10 mx-2"></div>
+                                        <div className="hidden sm:block w-[1px] h-10 bg-white/10 mx-2"></div>
 
-                                        <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center">
-                                            <Target className="w-6 h-6 text-purple-400" />
-                                        </div>
-                                        <div>
-                                            <div className="text-sm font-bold text-slate-400">Total Marks</div>
-                                            <div className="text-xl font-black text-white">{numQuestions * 4} Marks</div>
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center shrink-0">
+                                                <Target className="w-6 h-6 text-purple-400" />
+                                            </div>
+                                            <div>
+                                                <div className="text-sm font-bold text-slate-400">Total Marks</div>
+                                                <div className="text-xl font-black text-white whitespace-nowrap">{numQuestions * 4} Marks</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -468,7 +472,7 @@ export default function AutoGenerate() {
                         )}
                     </AnimatePresence>
                 </div>
-            </motion.div>
-        </div>
+            </motion.div >
+        </div >
     );
 }
