@@ -7,214 +7,130 @@ import {
   Lock, Sparkles, LayoutDashboard, Calculator, MonitorPlay, HelpCircle, X,
   ZapOff, Timer, GraduationCap, ChevronRight, School, Laptop, Microscope,
   MapPin, Building2, FlaskConical, TrendingUp, Search, Globe, Languages,
-  Library, FileText, Award, CreditCard, Info, HeartPulse, Dna, Activity
+  Library, FileText, Award, CreditCard, Info, HeartPulse, Dna, Activity, ListCheck
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Image from "next/image";
 
-export default function NEETExamPage() {
+export default function TargetNCERTFoundationPage() {
+  const syllabus = [
+    {
+      class: "Class 11th - NCERT Phase",
+      subjects: [
+        {
+          name: "Biology (Core Foundation)",
+          chapters: ["Diversity in Living World", "Structural Organization (Plants/Animals)", "Cell: The Unit of Life", "Plant Physiology", "Human Physiology (Full Block)"]
+        },
+        {
+          name: "Physics (Concepts & Logic)",
+          chapters: ["Physical World & Measurement", "Laws of Motion & Kinematics", "Work, Energy, Power", "Gravitation", "Thermodynamics & Kinetic Theory", "Oscillations & Waves"]
+        },
+        {
+          name: "Chemistry (Structural Base)",
+          chapters: ["Basic Concepts of Chemistry", "Structure of Atom", "Chemical Bonding", "Equilibrium & Redox", "s-Block & p-Block Elements", "General Organic Chemistry"]
+        }
+      ]
+    },
+    {
+      class: "Class 12th - Board & NEET Sync",
+      subjects: [
+        {
+          name: "Biology (Advanced Application)",
+          chapters: ["Reproduction Concepts", "Genetics & Evolution (Crucial)", "Biotechnology & Its Applications", "Biology in Human Welfare", "Ecology & Environment"]
+        },
+        {
+          name: "Physics (Electrodynamics & Optics)",
+          chapters: ["Electrostatics & Current", "Magnetism & Magnetic Effects", "EMI & Alternating Current", "Ray & Wave Optics", "Modern Physics (Atoms/Nuclei)", "Semiconductors"]
+        },
+        {
+          name: "Chemistry (Functional Group Focus)",
+          chapters: ["Solid State & Solutions", "Chemical Kinetics & Surface Che", "d & f Block Elements", "Coordination Compounds", "Haloalkanes to Amines (Organic)", "Biomolecules & Polymers"]
+        }
+      ]
+    }
+  ];
+
+  const testBreakdown = [
+    { type: "Chapter-wise Tests", count: "97 Tests", desc: "Covers every single chapter of NCERT Class 11 & 12." },
+    { type: "Unit-wise Mocks", count: "25 Tests", desc: "Combined tests for related units (e.g. Human Physio Unit)." },
+    { type: "Full Length Mocks", count: "20 Tests", desc: "Exact NTA 720 marks pattern simulation." },
+    { type: "PYQ Collections", count: "10 Years", desc: "Last 10 years papers solved with NCERT references." }
+  ];
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 selection:bg-emerald-500/30 font-sans">
+    <div className="min-h-screen bg-slate-950 text-slate-200 selection:bg-emerald-500/30">
       <Navbar />
 
-      {/* 🔥 Hero Section */}
+      {/* 🔥 Hero Detail Section */}
       <section className="pt-32 pb-20 relative overflow-hidden bg-slate-950 border-b border-slate-800">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-600/10 rounded-full blur-[120px] -mr-64 -mt-64 pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-emerald-600/5 rounded-full blur-[120px] -ml-64 -mb-64 pointer-events-none"></div>
-
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-600/5 rounded-full blur-[120px] -mr-64 -mt-64 pointer-events-none"></div>
         <div className="container mx-auto px-4 md:px-6 relative z-10">
-          <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-12 text-left">
-            <div className="lg:w-3/5 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-black mb-8 uppercase tracking-widest shadow-sm">
-                <Trophy className="w-4 h-4" /> NTA NEET UG 2026 Core Simulator
-              </div>
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6 tracking-tight leading-tight">
-                Score <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 uppercase">720/720</span> <br />
-                with Xamsathi Elite
-              </h1>
-              <p className="text-lg md:text-xl text-slate-400 mb-10 max-w-2xl lg:mx-0 mx-auto font-bold leading-relaxed">
-                Curated Mock Papers with AI-Driven Question Generation. Strictly aligned with NTA NEET UG 2026 Core Patterns.
-              </p>
+          <div className="max-w-6xl mx-auto">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-black mb-8 uppercase tracking-widest">
+              <ShieldCheck className="w-4 h-4" /> Comprehensive Pre-Purchase Breakdown
+            </div>
+            <h1 className="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight leading-tight">
+              Target NCERT Foundation <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 tracking-tighter uppercase">Series Details</span>
+            </h1>
+            <p className="text-lg md:text-xl text-slate-400 mb-10 max-w-2xl font-bold leading-relaxed">
+              Aapki GMC (Govt Medical College) ki raah yahan se shuru hoti hai. Har chota-bada detail check karein pehle kharidne se taaki aapko pata ho ki aap kya padh rahe hain.
+            </p>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-6 mb-12">
-                <Link href="/dashboard/test-series/neet-free" className="px-10 py-5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl transition-all flex items-center justify-center gap-3 w-full sm:w-auto text-xl shadow-lg shadow-emerald-500/40 active:scale-95 group">
-                  <Activity className="w-6 h-6 text-white group-hover:animate-pulse" /> Try Free Mock
-                </Link>
-                <Link href="#pricing" className="px-10 py-5 bg-slate-950 border-2 border-slate-800 hover:border-slate-600 text-white font-black rounded-2xl shadow-xl transition-all flex items-center justify-center gap-3 w-full sm:w-auto text-xl active:scale-95 group">
-                  <Sparkles className="w-6 h-6 text-emerald-400 group-hover:scale-110 transition-transform" /> View Elite Packs
-                </Link>
+            <div className="flex flex-wrap gap-4 mb-12">
+              <div className="px-6 py-4 bg-slate-900 border border-slate-800 rounded-3xl">
+                <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest block mb-1">Target Score</span>
+                <span className="text-2xl font-black text-emerald-400">650+ / 720</span>
               </div>
-
-              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-8 border-t border-slate-800/50 pt-10">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-slate-900 flex items-center justify-center border border-slate-800">
-                    <Users className="w-5 h-5 text-emerald-400" />
-                  </div>
-                  <div className="text-left">
-                    <div className="text-xl font-black text-white leading-none">8 Lakh+</div>
-                    <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Medical Aspirants</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-slate-900 flex items-center justify-center border border-slate-800">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                  </div>
-                  <div className="text-left">
-                    <div className="text-xl font-black text-white leading-none">99.9%ile</div>
-                    <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Success Aim</div>
-                  </div>
-                </div>
+              <div className="px-6 py-4 bg-slate-900 border border-slate-800 rounded-3xl">
+                <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest block mb-1">Total MCQs</span>
+                <span className="text-2xl font-black text-blue-400">15,000+</span>
+              </div>
+              <div className="px-6 py-4 bg-slate-900 border border-slate-800 rounded-3xl">
+                <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest block mb-1">Validity</span>
+                <span className="text-2xl font-black text-amber-500">NEET 2026 Exam</span>
               </div>
             </div>
 
-            <div className="lg:w-2/5 w-full">
-              <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-800 rounded-[3.5rem] p-8 shadow-2xl relative group">
-                <div className="absolute -top-6 -right-6 w-24 h-24 bg-emerald-500/20 rounded-full blur-2xl animate-pulse"></div>
-                <h3 className="text-2xl font-black text-white mb-8 flex items-center gap-3 uppercase tracking-tighter italic">
-                  <HeartPulse className="w-6 h-6 text-emerald-400" /> NTA Quick Facts
+            <Link href="/checkout?plan=medical-lite" className="inline-flex items-center gap-3 px-10 py-5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-3xl transition-all shadow-2xl shadow-emerald-900/40 text-2xl active:scale-95 group uppercase tracking-widest outline outline-8 outline-emerald-500/10">
+              Get Access Now ₹499 <ArrowRight className="w-8 h-8 group-hover:translate-x-2 transition-transform" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 📊 Chapter-wise Matrix */}
+      <section className="py-24 bg-slate-900">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="max-w-4xl mx-auto text-center mb-20 underline decoration-slate-800 decoration-offset-[16px]">
+            <h2 className="text-3xl md:text-5xl font-black text-white mb-6 uppercase tracking-tighter italic">NCERT Mastery Matrix</h2>
+            <p className="text-slate-500 font-black uppercase text-xs tracking-[0.4em] leading-relaxed">Every Block | Every Subject | Every Chapter Covered</p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
+            {syllabus.map((phase, i) => (
+              <div key={i} className="bg-slate-950 rounded-[3rem] p-10 border border-slate-800 relative overflow-hidden group shadow-2xl">
+                <div className="absolute top-0 right-0 p-12 opacity-5 -mr-12 -mt-12 group-hover:scale-110 transition-all"><BookOpen className="w-48 h-48" /></div>
+                <h3 className="text-2xl font-black text-white mb-10 flex items-center gap-4 uppercase tracking-tight">
+                  <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center font-black">{i + 1}</div>
+                  {phase.class}
                 </h3>
-                <div className="space-y-4">
-                  {[
-                    { label: "Conducting Body", val: "NTA (Medical Division)", i: Building2, c: "text-blue-400 shadow-sm" },
-                    { label: "Exam Pattern", val: "Physics + Chemistry + Biology", i: Microscope, c: "text-emerald-400 shadow-sm" },
-                    { label: "Marking Scheme", val: "+4 Correct | -1 Negative", i: Award, c: "text-amber-400 shadow-sm" },
-                    { label: "Platform", val: "Xamsathi CBT Simulator", i: MonitorPlay, c: "text-rose-400 shadow-sm" }
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-slate-950 border border-slate-800/50 hover:bg-slate-900 transition-colors group/item shadow-inner">
-                      <div className={`w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center border border-white/5 ${item.c}`}>
-                        <item.i className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.15em] leading-none mb-1.5">{item.label}</p>
-                        <p className="text-sm font-black text-slate-200">{item.val}</p>
+
+                <div className="space-y-10">
+                  {phase.subjects.map((sub, j) => (
+                    <div key={j} className="relative z-10">
+                      <h4 className="text-sm font-black text-emerald-400 uppercase tracking-widest mb-4 border-b border-white/5 pb-2 flex items-center justify-between">
+                        {sub.name} <Activity className="w-4 h-4 opacity-50" />
+                      </h4>
+                      <div className="flex flex-wrap gap-2">
+                        {sub.chapters.map((chap, k) => (
+                          <div key={k} className="px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-xs font-bold text-slate-400 hover:text-white hover:border-emerald-500/30 transition-all shadow-sm">
+                            {chap}
+                          </div>
+                        ))}
                       </div>
                     </div>
                   ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 🥈 Pricing & Series Section (The Core Request) */}
-      <section id="pricing" className="py-24 bg-slate-900 border-b border-slate-800 relative">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="max-w-4xl mx-auto text-center mb-20 underline decoration-emerald-800 decoration-8 underline-offset-[16px]">
-            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 uppercase tracking-tighter leading-none italic">Choose Your Victory Plan</h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto items-end">
-
-            {/* Plan 1 - 499 (Mock Papers Only) */}
-            <div className="bg-slate-950 border border-slate-800 rounded-[3rem] p-10 hover:border-slate-700 transition-all shadow-lg relative h-full flex flex-col group">
-              <div className="absolute top-0 right-10 -translate-y-1/2 px-4 py-2 bg-slate-800 text-slate-400 text-[10px] font-black rounded-full uppercase tracking-[0.3em] border border-slate-700 shadow-xl">🥉 Starter</div>
-              <h3 className="text-2xl font-black text-white mb-2 uppercase tracking-tight">Pure Mock Lite</h3>
-              <div className="flex items-baseline gap-2 mb-8">
-                <span className="text-5xl font-black text-white tracking-tighter">₹499</span>
-                <span className="text-slate-600 font-bold text-sm uppercase">/ Annual</span>
-              </div>
-              <div className="space-y-4 mb-10 flex-1">
-                {[
-                  "50+ Premium Mock Papers",
-                  "Strict NTA NEET Pattern",
-                  "Complete Solution PDFs",
-                  "Basic All India Ranking",
-                  "6 Months Full Validity"
-                ].map((feature, i) => (
-                  <div key={i} className="flex items-center gap-3 text-slate-400 text-sm font-bold">
-                    <Check className="w-4 h-4 text-emerald-400 shrink-0 shadow-inner" /> {feature}
-                  </div>
-                ))}
-                <div className="pt-4 flex items-center gap-3 text-slate-600 text-sm font-bold opacity-30 italic">
-                  <X className="w-4 h-4 text-rose-500 shrink-0" /> AI Question Generator
-                </div>
-              </div>
-              <Link href="/checkout?plan=neet-lite" className="w-full py-5 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-2xl flex justify-center transition-all border border-slate-800 uppercase tracking-widest shadow-xl active:scale-95 leading-none px-4">Subscribe Lite</Link>
-            </div>
-
-            {/* Plan 2 - 1499 (Mock + AutoGen) */}
-            <div className="bg-slate-950 border-2 border-emerald-600 rounded-[3.5rem] p-12 relative scale-100 lg:scale-110 z-10 shadow-[0_0_50px_rgba(16,185,129,0.15)] h-full flex flex-col group">
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-6 py-2 bg-emerald-600 text-white text-[10px] font-black rounded-full uppercase tracking-[0.4em] flex items-center gap-2 shadow-2xl border border-white/20">
-                <Sparkles className="w-4 h-4 fill-white" /> Recommended
-              </div>
-              <h3 className="text-3xl font-black text-white mb-2 uppercase tracking-tight mt-4 italic">NEET Elite Pro</h3>
-              <div className="flex items-baseline gap-2 mb-8">
-                <span className="text-6xl font-black text-white tracking-tighter shadow-sm">₹1,499</span>
-                <span className="text-slate-600 line-through text-lg font-bold opacity-50">₹2,999</span>
-              </div>
-              <div className="space-y-5 mb-12 flex-1">
-                {[
-                  "200+ Full Subject Mocks",
-                  "AI Question Auto-Generator",
-                  "Customizable Practice Drills",
-                  "NCERT Highlighter Solutions",
-                  "Advanced Predictive AIR",
-                  "1 Year Unlimited Access"
-                ].map((feature, i) => (
-                  <div key={i} className="flex items-center gap-3 text-white text-sm font-bold">
-                    <Check className="w-5 h-5 text-emerald-500 shrink-0 shadow-emerald-500/20 shadow-md" /> {feature}
-                  </div>
-                ))}
-              </div>
-              <Link href="/checkout?plan=neet-pro" className="w-full py-6 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-3xl flex justify-center transition-all shadow-2xl shadow-emerald-900/60 uppercase tracking-widest active:scale-95 leading-none px-4 text-xl group/btn overflow-hidden relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover/btn:animate-[shimmer_1s_infinite] transition-all"></div>
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  Enrol Elite <ArrowRight className="w-6 h-6 group-hover/btn:translate-x-2 transition-transform" />
-                </span>
-              </Link>
-            </div>
-
-            {/* Plan 3 - 1999 (The Ultimate Best Series) */}
-            <div className="bg-slate-950 border border-slate-800 rounded-[3rem] p-10 hover:border-emerald-500/30 transition-all shadow-lg relative h-full flex flex-col group">
-              <div className="absolute top-0 right-10 -translate-y-1/2 px-4 py-2 bg-emerald-500/10 text-emerald-400 text-[10px] font-black rounded-full uppercase tracking-[0.2em] border border-emerald-500/20 shadow-xl">🥇 Ultra-Prime</div>
-              <h3 className="text-2xl font-black text-white mb-2 uppercase tracking-tight">Prime Medical Pass</h3>
-              <div className="flex items-baseline gap-2 mb-8">
-                <span className="text-5xl font-black text-white tracking-tighter shadow-sm">₹1,999</span>
-              </div>
-              <div className="space-y-4 mb-10 flex-1">
-                {[
-                  "Everything in Elite Pro",
-                  "Unlimited Auto-Gen Tests",
-                  "Weekly Clinical Masterclasses",
-                  "Priority Expert Doubt Solving",
-                  "Hardcopy Mock Set Delivered",
-                  "2 Years Full Validity"
-                ].map((feature, i) => (
-                  <div key={i} className="flex items-center gap-3 text-slate-400 text-sm font-bold">
-                    <Check className="w-4 h-4 text-emerald-400 shrink-0 shadow-inner" /> {feature}
-                  </div>
-                ))}
-              </div>
-              <Link href="/checkout?plan=neet-prime" className="w-full py-5 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-2xl flex justify-center transition-all border border-slate-800 uppercase tracking-widest shadow-xl active:scale-95 leading-none px-4">Buy Prime Pass</Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 🎯 What You Get Details */}
-      <section className="py-24 bg-slate-950">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 uppercase tracking-tighter underline decoration-emerald-800 decoration-offset-[16px]">Features built for Toppers</h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {[
-              { title: "Audio-Video Solutions", desc: "Don't just read, watch and hear the logic behind every complex NEET question.", icon: MonitorPlay, color: "text-blue-400" },
-              { title: "NCERT Biology Matrix", desc: "Detailed page numbers from NCERT for every Bio answer to verify your source.", icon: Microscope, color: "text-emerald-400" },
-              { title: "AI-Weakness Mapper", desc: "Personalized question banks generated based on your weak physics chapters.", icon: Brain, color: "text-amber-400" },
-              { title: "Sectional Stamina", desc: "Practice 200 minutes of continuous focus with our actual exam simulator.", icon: Timer, color: "text-rose-400" },
-              { title: "Benchmarking Dashboard", desc: "See where you stand among 8 lakh aspirants in real-time.", icon: BarChart3, color: "text-indigo-400" },
-              { title: "Previous Year Mastery", desc: "Every NEET/AIPMT paper from 1998 to 2025 included with detailed updates.", icon: Library, color: "text-cyan-400" },
-            ].map((feature, i) => (
-              <div key={i} className="bg-slate-900 border border-slate-800 rounded-[2.5rem] p-8 hover:border-emerald-500/50 hover:bg-slate-800/80 transition-all flex flex-col gap-6 group shadow-xl">
-                <div className={`w-14 h-14 rounded-2xl bg-slate-950 flex items-center justify-center shrink-0 border border-white/5 ${feature.color} group-hover:scale-110 transition-transform shadow-inner shadow-black/40`}>
-                  <feature.icon className="w-7 h-7" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-black text-white mb-3 uppercase tracking-tighter italic">{feature.title}</h3>
-                  <p className="text-sm text-slate-400 font-bold leading-relaxed">{feature.desc}</p>
                 </div>
               </div>
             ))}
@@ -222,15 +138,94 @@ export default function NEETExamPage() {
         </div>
       </section>
 
-      {/* 🎯 CTA Banner */}
+      {/* 📋 Test Series Structure Details */}
+      <section className="py-24 bg-slate-950 border-y border-slate-800">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <h2 className="text-3xl md:text-5xl font-black text-white mb-8 tracking-tighter uppercase underline decoration-emerald-600 decoration-8 underline-offset-[12px]">Detailed Test Structure</h2>
+              <p className="text-lg text-slate-400 mb-10 font-bold leading-relaxed">
+                Series purchase karne par aapko ye sections milenge dashboard me:
+              </p>
+
+              <div className="space-y-4">
+                {testBreakdown.map((test, i) => (
+                  <div key={i} className="flex gap-6 p-6 bg-slate-900/50 border border-slate-800 rounded-[2rem] hover:bg-slate-900 transition-all group">
+                    <div className="w-14 h-14 rounded-2xl bg-blue-500/10 text-blue-400 flex items-center justify-center font-black text-xl shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-inner border border-white/5">{test.count}</div>
+                    <div>
+                      <h4 className="text-lg font-black text-white mb-1 uppercase tracking-tight">{test.type}</h4>
+                      <p className="text-sm text-slate-500 font-bold leading-relaxed">{test.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-indigo-900 to-slate-950 p-1 rounded-[3.5rem] shadow-2xl">
+              <div className="bg-slate-950 rounded-[3.3rem] p-12 relative overflow-hidden border border-white/5">
+                <div className="absolute top-0 right-0 p-10 opacity-5 rotate-12"><Sparkles className="w-48 h-48" /></div>
+                <h3 className="text-2xl font-black text-white mb-10 uppercase tracking-tighter italic">Small Details That Matter:</h3>
+                <ul className="space-y-6 relative z-10">
+                  {[
+                    { t: "Rationalized Syllabus", v: "Hamare mocks 2026 ke updated rationalized NCERT syllabus par based hain." },
+                    { t: "Rational Logic Solutions", v: "Sirf answer nahi, 'Kyu hai' aur 'Kyu nahi hai' dono logic explained hain." },
+                    { t: "AIR Projection", v: "Real-time leaderboard among thousands of students." },
+                    { t: "Desktop & Mobile", v: "Prepare on laptop like real NTA UI or on app for quick mcqs." },
+                    { t: "NCERT Mapping", v: "Har Biology answer ke saath NCERT Page Number mentioned hai." }
+                  ].map((item, i) => (
+                    <li key={i} className="flex gap-4">
+                      <CheckCircle2 className="w-6 h-6 text-emerald-400 shrink-0 mt-0.5" />
+                      <div>
+                        <span className="block text-sm font-black text-emerald-400 uppercase tracking-widest leading-none mb-1">{item.t}</span>
+                        <p className="text-xs text-slate-400 font-bold leading-relaxed">{item.v}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-12 pt-8 border-t border-white/5">
+                  <div className="text-amber-500 font-black uppercase text-[10px] tracking-widest mb-4 animate-pulse">Pre-Order Bonus:</div>
+                  <p className="text-sm font-bold text-slate-300 italic leading-relaxed">Early users get 5 exclusive chemistry formula cheat sheets in PDF format.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Comparison Mini Section */}
+      <section className="py-24 bg-slate-900 border-b border-slate-800">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="max-w-4xl mx-auto text-center mb-16 underline decoration-slate-800 decoration-offset-[16px]">
+            <h2 className="text-3xl font-black text-white uppercase tracking-tighter italic">Why Foundation?</h2>
+          </div>
+          <div className="max-w-4xl mx-auto bg-slate-950 border border-slate-800 rounded-[3rem] p-12 shadow-xl grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div className="space-y-4">
+              <h4 className="text-emerald-400 font-black uppercase tracking-widest text-sm mb-6 flex items-center gap-2 italic">Foundation (₹499) <Trophy className="w-4 h-4" /></h4>
+              <div className="flex items-center gap-3 text-sm font-bold text-slate-300"><Check className="w-4 h-4 text-emerald-400" /> Full Mock Papers</div>
+              <div className="flex items-center gap-3 text-sm font-bold text-slate-300"><Check className="w-4 h-4 text-emerald-400" /> 11th & 12th Syllabus</div>
+              <div className="flex items-center gap-3 text-sm font-bold text-slate-300"><Check className="w-4 h-4 text-emerald-400" /> Topic-wise Strength</div>
+              <div className="flex items-center gap-3 text-slate-600 font-bold opacity-30 italic"><X className="w-4 h-4 text-rose-500" /> AI Auto-Gen Matrix</div>
+            </div>
+            <div className="space-y-4 border-l border-white/5 pl-0 md:pl-12">
+              <h4 className="text-blue-400 font-black uppercase tracking-widest text-sm mb-6 flex items-center gap-2 italic">Matrix Pro (₹1499) <Zap className="w-4 h-4" /></h4>
+              <div className="flex items-center gap-3 text-sm font-bold text-slate-300"><Check className="w-4 h-4 text-emerald-400" /> Everything in Foundation</div>
+              <div className="flex items-center gap-3 text-sm font-bold text-white"><Check className="w-5 h-5 text-blue-400" /> AI-Generated Unique Tests</div>
+              <div className="flex items-center gap-3 text-sm font-bold text-white"><Check className="w-5 h-5 text-blue-400" /> Personalized Weakness Maps</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA Banner */}
       <section className="py-24 bg-slate-950">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="max-w-6xl mx-auto bg-gradient-to-br from-emerald-950 via-slate-900 to-emerald-950 rounded-[4rem] p-12 md:p-24 text-center relative overflow-hidden shadow-2xl group border border-slate-800">
-            <div className="absolute top-0 left-0 w-full h-full bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <h2 className="text-4xl md:text-6xl font-black text-white mb-10 tracking-tighter uppercase relative z-10 leading-none underline decoration-emerald-600 decoration-8 underline-offset-[16px]">Your Seat in AIIMS <br /> Starts with a Mock.</h2>
+          <div className="max-w-6xl mx-auto bg-gradient-to-br from-blue-900 via-slate-900 to-indigo-950 rounded-[4rem] p-12 md:p-24 text-center relative overflow-hidden shadow-2xl group border border-slate-800">
+            <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:scale-125 transition-transform"><Trophy className="w-64 h-64 text-emerald-400" /></div>
+            <h2 className="text-4xl md:text-6xl font-black text-white mb-10 tracking-tighter uppercase relative z-10 leading-none underline decoration-emerald-600 decoration-8 underline-offset-[16px]">Ready to start your <br /> Foundation properly?</h2>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 relative z-10 pt-10">
-              <Link href="/dashboard/test-series/neet" className="px-14 py-6 bg-emerald-600 text-white font-black rounded-3xl text-2xl shadow-2xl hover:scale-105 active:scale-95 transition-all uppercase tracking-widest leading-none">
-                Start Training Now <ArrowRight className="w-8 h-8 inline-block ml-2" />
+              <Link href="/checkout?plan=medical-lite" className="px-14 py-6 bg-white text-blue-900 font-black rounded-3xl text-2xl shadow-2xl hover:scale-105 active:scale-95 transition-all uppercase tracking-widest leading-none">
+                Yes, Enrol Now <ArrowRight className="w-8 h-8 inline-block ml-2" />
               </Link>
             </div>
           </div>
