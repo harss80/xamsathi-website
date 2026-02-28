@@ -5,7 +5,7 @@ import {
     Star, Users, CheckCircle2, Play, BookOpen, BarChart3, Clock, Trophy,
     ShieldCheck, Check, Atom, Plus, ArrowRight, Zap, Target, Brain,
     Lock, Sparkles, LayoutDashboard, Calculator, MonitorPlay, HelpCircle, X,
-    ZapOff, Timer, GraduationCap, ChevronRight, School, Laptop
+    ZapOff, Timer, GraduationCap, ChevronRight, School, Laptop, Microscope
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
