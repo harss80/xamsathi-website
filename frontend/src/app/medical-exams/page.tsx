@@ -12,45 +12,62 @@ import Navbar from "@/components/Navbar";
 export default function MedicalExamsCategoryPage() {
   const series = [
     {
-      id: "target-ncert",
-      title: "Target NCERT Foundation",
-      desc: "Precision set of 120+ mocks. Strictly NCERT-aligned for core medical foundation.",
-      tests: "120+ Tests",
-      users: "1.2 Lakh+",
+      id: "premium-neet-advanced",
+      title: "NEET Advanced Mock Pro",
+      desc: "15 Full-Length Mocks + 10 Part Tests. Real exam feel with strict timer.",
+      tests: "25 Total",
+      users: "12k+",
       tag: "Bestseller",
-      link: "/medical-exams/neet",
-      color: "from-blue-600/20 to-indigo-600/20",
-      iconColor: "text-blue-400",
+      link: "/dashboard/test-series/premium-neet-advanced",
+      color: "from-yellow-500/20 to-orange-500/20",
+      iconColor: "text-yellow-400",
       price: "₹499",
-      gradientBg: "hover:shadow-blue-500/10"
+      gradientBg: "hover:shadow-yellow-500/10",
+      featured: true,
+      icon: Sparkles
     },
     {
-      id: "ai-matrix",
-      title: "AI-Matrix Pro Evolution",
-      desc: "AI-Driven test generation engine. Personalized mocks based on your weak anatomy and logic.",
-      tests: "Unlimited",
-      users: "85k+",
-      tag: "Recommended",
-      link: "/medical-exams/ai-matrix",
+      id: "premium-neet-rank-booster",
+      title: "NEET Rank Booster Pack",
+      desc: "20 Part Tests for quick revision and accuracy building. Perfect for daily practice.",
+      tests: "20 Tests",
+      users: "8k+",
+      tag: "Speed Pro",
+      link: "/dashboard/test-series/premium-neet-rank-booster",
       color: "from-emerald-600/20 to-teal-600/20",
       iconColor: "text-emerald-400",
-      price: "₹1499",
+      price: "₹199",
       gradientBg: "hover:shadow-emerald-500/10",
-      featured: true
+      icon: Zap
     },
     {
-      id: "medical-legend",
-      title: "Medical Legend Ultra",
-      desc: "The ultimate cockpit for medical toppers. Mocks, Auto-Gen, and AIIMS standard mentorship.",
-      tests: "Elite Access",
-      users: "40k+",
-      tag: "Legendary",
-      link: "/medical-exams/medical-legend",
-      color: "from-amber-600/20 to-orange-600/20",
-      iconColor: "text-amber-400",
-      price: "₹1999",
-      gradientBg: "hover:shadow-amber-500/10"
+      id: "premium-neet-concept-mastery",
+      title: "NEET Concept Mastery",
+      desc: "30 Chapter Tests to strengthen your core fundamentals in Physics, Chem & Bio.",
+      tests: "30 Tests",
+      users: "5k+",
+      tag: "Core Focus",
+      link: "/dashboard/test-series/premium-neet-concept-mastery",
+      color: "from-indigo-600/20 to-blue-600/20",
+      iconColor: "text-indigo-400",
+      price: "₹299",
+      gradientBg: "hover:shadow-indigo-500/10",
+      icon: Brain
     },
+    {
+      id: "premium-neet-intensive-papers",
+      title: "NEET Intensive Papers Series",
+      desc: "20 Full Papers designed on actual NEET pattern. Best for final month push.",
+      tests: "20 Full Papers",
+      users: "3k+",
+      tag: "Elite Pack",
+      link: "/dashboard/test-series/premium-neet-intensive-papers",
+      color: "from-pink-600/20 to-rose-600/20",
+      iconColor: "text-pink-400",
+      price: "₹1999",
+      gradientBg: "hover:shadow-pink-500/10",
+      icon: ShieldCheck
+    }
   ];
 
   return (
@@ -95,12 +112,12 @@ export default function MedicalExamsCategoryPage() {
 
       <div className="py-24 relative">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-[90rem] mx-auto">
             {series.map((item) => (
               <Link
                 href={item.link}
                 key={item.id}
-                className={`group relative flex flex-col bg-slate-900/40 backdrop-blur-xl border border-slate-800/80 rounded-[3rem] p-10 transition-all duration-700 overflow-hidden shadow-2xl ${item.gradientBg} ${item.featured ? 'scale-105 ring-2 ring-emerald-500/20 z-10 bg-slate-900/60' : ''}`}
+                className={`group relative flex flex-col bg-slate-900/40 backdrop-blur-xl border border-slate-800/80 rounded-[3rem] p-8 transition-all duration-700 overflow-hidden shadow-2xl ${item.gradientBg} ${item.featured ? 'scale-105 ring-2 ring-yellow-500/20 z-10 bg-slate-900/60' : ''}`}
               >
                 {/* Advanced Bio-metric Decor */}
                 <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
@@ -114,11 +131,11 @@ export default function MedicalExamsCategoryPage() {
                 {/* Hero Icon */}
                 <div className={`w-20 h-20 rounded-[2rem] bg-gradient-to-br ${item.color} flex items-center justify-center mb-10 group-hover:scale-110 transition-transform duration-700 shadow-xl border border-white/5 relative`}>
                   <div className="absolute inset-0 bg-white/10 rounded-[2rem] animate-ping opacity-0 group-hover:opacity-10 transition-opacity"></div>
-                  <Activity className={`w-10 h-10 ${item.iconColor} group-hover:animate-pulse`} />
+                  <item.icon className={`w-8 h-8 ${item.iconColor} group-hover:animate-pulse`} />
                 </div>
 
                 <div className="flex-1">
-                  <h3 className="text-3xl font-black text-white mb-2 group-hover:text-emerald-400 transition-colors tracking-tighter uppercase italic leading-none">{item.title}</h3>
+                  <h3 className="text-2xl font-black text-white mb-2 group-hover:text-yellow-400 transition-colors tracking-tighter uppercase italic leading-none">{item.title}</h3>
                   <div className="flex items-center gap-3 mb-6">
                     <span className="text-xl font-serif font-black text-emerald-400">{item.price}</span>
                     <div className="h-1 w-1 rounded-full bg-slate-700"></div>
