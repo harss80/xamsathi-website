@@ -5,7 +5,7 @@ import {
     Calendar, Clock, CheckCircle2, BookOpen, ShieldCheck, Trophy,
     Zap, Target, Brain, ArrowRight, Microscope, Atom, Calculator,
     Plus, HelpCircle, MonitorPlay, School, Info, Award, GraduationCap,
-    Check, Sparkles, Timer, MapPin, CreditCard, ChevronRight
+    Check, Sparkles, Timer, MapPin, CreditCard, ChevronRight, TrendingUp
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 

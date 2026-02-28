@@ -6,7 +6,7 @@ import {
     Zap, Target, Brain, ArrowRight, Microscope, Atom, Calculator,
     Plus, HelpCircle, MonitorPlay, School, Info, Award, GraduationCap,
     Check, Sparkles, Timer, MapPin, CreditCard, ChevronRight, Building2,
-    FlaskConical
+    FlaskConical, ZapOff
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
