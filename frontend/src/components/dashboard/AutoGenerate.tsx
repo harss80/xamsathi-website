@@ -47,6 +47,7 @@ const generateMockQuestions = (subject: string, chapters: string[], numQuestions
     return Array.from({ length: numQuestions }).map((_, i) => {
         const randomChapter = chapters[Math.floor(Math.random() * chapters.length)];
         return {
+            id: i + 1,
             text: `Q${i + 1}. A conceptual question based on ${randomChapter} from ${subject}. Which of the following is correct?`,
             options: [
                 `Option A derived from ${randomChapter} concept`,
@@ -137,7 +138,10 @@ export default function AutoGenerate() {
                 if (res.ok) {
                     const data = await res.json();
                     if (data.questions && data.questions.length > 0) {
-                        setTestQuestions(data.questions);
+                        setTestQuestions(data.questions.map((q: any, idx: number) => ({
+                            ...q,
+                            id: q.id || idx + 1
+                        })));
                         setIsGenerating(false);
                         return;
                     }
@@ -156,35 +160,20 @@ export default function AutoGenerate() {
 
     if (testQuestions) {
         return (
-            <div className="absolute inset-0 z-50 bg-[#0A0A0B] overflow-y-auto w-full h-full">
-                <div className="p-4 flex items-center justify-between border-b border-white/5 bg-[#0A0A0B]/80 backdrop-blur-xl sticky top-0 z-50">
-                    <button
-                        onClick={() => setTestQuestions(null)}
-                        className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm font-medium"
-                    >
-                        <ArrowLeft className="w-5 h-5" /> Back to Customizer
-                    </button>
-                    <div className="text-white font-bold tracking-wide flex items-center gap-2">
-                        <Sparkles className="w-4 h-4 text-indigo-400" />
-                        AI Generated Test: <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">{selectedSubject}</span>
-                    </div>
-                    <div className="w-32"></div>
-                </div>
-                <div className="min-h-[calc(100vh-64px)] relative">
-                    <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 to-transparent pointer-events-none" />
-                    <TestSeriesPlayer
-                        title={`Custom ${selectedSubject} Test`}
-                        description={`Generated based on ${selectedChapters.length} selected chapters. Powered by AI.`}
-                        testSeriesId={`custom-gen-${Date.now()}`}
-                        questions={testQuestions}
-                        durationMins={Math.max(5, Math.ceil(numQuestions * 1.5))}
-                        totalMarks={numQuestions * 4}
-                        positiveMarking={4}
-                        negativeMarking={1}
-                        subjects={[selectedSubject]}
-                        onFinish={() => { }}
-                    />
-                </div>
+            <div className="fixed inset-0 z-[100] bg-[#020617] w-full h-full">
+                <TestSeriesPlayer
+                    title={`Custom ${selectedSubject} Test`}
+                    description={`Generated based on ${selectedChapters.length} selected chapters. Powered by AI.`}
+                    testSeriesId={`custom-gen-${Date.now()}`}
+                    questions={testQuestions}
+                    durationMins={Math.max(5, Math.ceil(numQuestions * 1.5))}
+                    totalMarks={numQuestions * 4}
+                    positiveMarking={4}
+                    negativeMarking={1}
+                    subjects={[selectedSubject]}
+                    onFinish={() => { }}
+                    onClose={() => setTestQuestions(null)}
+                />
             </div>
         );
     }

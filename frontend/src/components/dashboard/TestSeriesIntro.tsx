@@ -34,6 +34,9 @@ interface TestSeriesIntroProps {
     totalMarks: number;
     subjects: string[];
     onStart: () => void;
+    onClose?: () => void;
+    positiveMarking?: number;
+    negativeMarking?: number;
 }
 
 export default function TestSeriesIntro({
@@ -44,7 +47,10 @@ export default function TestSeriesIntro({
     questionsCount,
     totalMarks,
     subjects,
-    onStart
+    onStart,
+    onClose,
+    positiveMarking = 4,
+    negativeMarking = 1
 }: TestSeriesIntroProps) {
     const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -98,13 +104,20 @@ export default function TestSeriesIntro({
     ];
 
     return (
-        <div className="min-h-screen bg-[#0B1120] text-white p-6 md:p-12">
-            <div className="max-w-6xl mx-auto">
+        <div className="min-h-screen bg-[#020617] text-white p-4 md:p-12 relative overflow-hidden">
+            {/* Background Effects */}
+            <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-indigo-600/10 blur-[120px] rounded-full -translate-y-1/2 pointer-events-none" />
+            <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-purple-600/10 blur-[120px] rounded-full translate-y-1/2 pointer-events-none" />
+
+            <div className="max-w-7xl mx-auto relative z-10">
                 {/* Back Button */}
-                <Link href="/dashboard" className="inline-flex items-center text-slate-400 hover:text-white mb-8 transition-colors group px-4 py-2 rounded-full hover:bg-white/5 border border-transparent hover:border-white/10">
-                    <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
-                    Back to Dashboard
-                </Link>
+                <button
+                    onClick={onClose}
+                    className="inline-flex items-center text-slate-500 hover:text-white mb-8 transition-all group px-5 py-2.5 rounded-2xl hover:bg-white/5 border border-white/5 hover:border-white/10 active:scale-95"
+                >
+                    <ArrowLeft className="w-5 h-5 mr-3 group-hover:-translate-x-1 transition-transform" />
+                    <span className="text-sm font-black uppercase tracking-widest">Return to Dashboard</span>
+                </button>
 
                 <div className="grid lg:grid-cols-12 gap-12">
                     {/* Left Column: Leaderboard */}
@@ -282,22 +295,22 @@ export default function TestSeriesIntro({
                                         <div className="h-px flex-1 bg-slate-800" />
                                     </h3>
                                     <div className="grid grid-cols-2 gap-3 md:gap-4">
-                                        <div className="flex items-center gap-3 bg-emerald-500/5 border border-emerald-500/10 p-3 md:p-4 rounded-xl">
-                                            <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-500 shrink-0">
-                                                <CheckCircle2 className="w-4 h-4" />
+                                        <div className="flex items-center gap-4 bg-emerald-500/5 border border-emerald-500/10 p-4 md:p-5 rounded-[1.5rem] group hover:bg-emerald-500/10 transition-colors">
+                                            <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-emerald-500/20 flex items-center justify-center text-emerald-500 shrink-0 group-hover:scale-110 transition-transform">
+                                                <CheckCircle2 className="w-5 h-5 md:w-6 md:h-6" />
                                             </div>
                                             <div>
-                                                <div className="text-emerald-400 font-bold text-sm md:text-base">+{4} Marks</div>
-                                                <div className="text-[10px] text-slate-500 font-medium uppercase tracking-wide">For Correct Answer</div>
+                                                <div className="text-emerald-400 font-black text-sm md:text-xl">+{positiveMarking} Marks</div>
+                                                <div className="text-[10px] text-slate-500 font-black uppercase tracking-[0.1em]">For Correct Answer</div>
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-3 bg-red-500/5 border border-red-500/10 p-3 md:p-4 rounded-xl">
-                                            <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center text-red-500 shrink-0">
-                                                <XCircle className="w-4 h-4" />
+                                        <div className="flex items-center gap-4 bg-red-500/5 border border-red-500/10 p-4 md:p-5 rounded-[1.5rem] group hover:bg-red-500/10 transition-colors">
+                                            <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-red-500/20 flex items-center justify-center text-red-500 shrink-0 group-hover:scale-110 transition-transform">
+                                                <XCircle className="w-5 h-5 md:w-6 md:h-6" />
                                             </div>
                                             <div>
-                                                <div className="text-red-400 font-bold text-sm md:text-base">-1 Mark</div>
-                                                <div className="text-[10px] text-slate-500 font-medium uppercase tracking-wide">Negative Marking</div>
+                                                <div className="text-red-400 font-black text-sm md:text-xl">-{negativeMarking} Mark</div>
+                                                <div className="text-[10px] text-slate-500 font-black uppercase tracking-[0.1em]">Negative Marking</div>
                                             </div>
                                         </div>
                                     </div>
@@ -305,10 +318,12 @@ export default function TestSeriesIntro({
 
                                 <button
                                     onClick={onStart}
-                                    className="hidden md:flex w-full py-5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-2xl font-black text-lg hover:shadow-xl hover:shadow-indigo-600/20 transition-all active:scale-[0.98] items-center justify-center gap-3 hover:-translate-y-1"
+                                    className="hidden md:flex w-full py-6 bg-white text-black rounded-3xl font-black text-xl hover:bg-indigo-50 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_20px_50px_rgba(255,255,255,0.1)] items-center justify-center gap-4 group"
                                 >
-                                    Start Final Assessment
-                                    <ChevronRight className="w-5 h-5" />
+                                    START ASSESSMENT
+                                    <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center transition-transform group-hover:translate-x-1">
+                                        <ChevronRight className="w-5 h-5 text-white" />
+                                    </div>
                                 </button>
                             </div>
                         </section>

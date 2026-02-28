@@ -6,7 +6,8 @@ import {
     ArrowLeft, AlertCircle, CheckCircle2, XCircle,
     HelpCircle, ChevronRight, ChevronLeft, Flag,
     BarChart2, Timer, RotateCcw, BookOpen, GraduationCap,
-    Menu, X, Trophy, FileText, MessageCircle, ThumbsUp, Send, Reply
+    Menu, X, Trophy, FileText, MessageCircle, ThumbsUp, Send, Reply,
+    Grid, Sparkles
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -63,6 +64,7 @@ interface TestSeriesPlayerProps {
     positiveMarking?: number;
     subjects: string[];
     onFinish?: (results: { score: number; accuracy: number; subjectStats: Record<string, SubjectStat> }) => void;
+    onClose?: () => void;
 }
 
 interface QuestionPaletteProps {
@@ -82,36 +84,37 @@ const QuestionPalette = ({
     setCurrentQuestionIndex,
     setShowPalette
 }: QuestionPaletteProps) => (
-    <div className="flex flex-col h-full bg-slate-900/80 backdrop-blur-xl border-l border-white/10">
-        <div className="p-6 border-b border-white/5 flex justify-between items-center">
-            <h3 className="font-bold text-white flex items-center gap-2">
-                <Menu className="w-5 h-5 text-indigo-400" />
-                Question Palette
-            </h3>
-            <span className="text-xs bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-full border border-indigo-500/30">
-                {Object.keys(answers).length}/{questions.length} Done
-            </span>
+    <div className="flex flex-col h-full bg-[#0B1120]/95 backdrop-blur-3xl border-l border-white/5 shadow-[-20px_0_50px_rgba(0,0,0,0.5)]">
+        <div className="p-6 border-b border-white/5 flex justify-between items-center shrink-0">
+            <div>
+                <h3 className="font-black text-white text-sm uppercase tracking-widest flex items-center gap-2">
+                    <Grid className="w-4 h-4 text-indigo-400" /> Palette
+                </h3>
+            </div>
+            <div className="px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-[10px] font-black text-indigo-300 uppercase tracking-widest">
+                {Object.keys(answers).length} / {questions.length}
+            </div>
         </div>
 
-        <div className="p-6 grid grid-cols-2 gap-4 text-[10px] uppercase tracking-widest font-bold text-slate-500 mb-2 border-b border-white/5">
-            <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/20"></div> Answered</div>
-            <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-sm shadow-indigo-500/20"></div> Marked</div>
-            <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-slate-700 shadow-sm shadow-slate-700/20"></div> Unvisited</div>
-            <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full border border-red-500/50 bg-red-500/10"></div> Skipped</div>
+        <div className="p-6 grid grid-cols-2 gap-x-6 gap-y-3 text-[10px] uppercase tracking-[0.15em] font-black text-slate-500 border-b border-white/5 shrink-0 bg-white/[0.01]">
+            <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]"></div> Answered</div>
+            <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.3)]"></div> Marked</div>
+            <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-slate-700"></div> Unvisited</div>
+            <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full border border-red-500/50 bg-red-500/10"></div> Skipped</div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
-            <div className="grid grid-cols-5 gap-3">
+        <div className="flex-1 overflow-y-auto p-6 custom-scrollbar scroll-smooth">
+            <div className="grid grid-cols-4 sm:grid-cols-5 gap-3">
                 {questions.map((q, idx) => {
                     const ans = answers[q.id];
                     const isAnswered = ans !== undefined && String(ans).trim() !== "";
                     const isMarked = markedForReview.has(q.id);
                     const isCurrent = idx === currentQuestionIndex;
 
-                    let style = "bg-slate-800/50 text-slate-400 border-white/5 hover:border-white/20";
-                    if (isCurrent) style = "ring-2 ring-indigo-500 bg-indigo-500/20 text-white border-indigo-500/50 shadow-lg shadow-indigo-500/10";
-                    else if (isMarked) style = "bg-indigo-600/80 text-white border-indigo-400 shadow-md";
-                    else if (isAnswered) style = "bg-emerald-600/80 text-white border-emerald-400 shadow-md";
+                    let style = "bg-slate-800/30 text-slate-500 border-white/5 hover:bg-slate-800/50 hover:border-slate-700 hover:text-slate-300";
+                    if (isCurrent) style = "bg-indigo-600 text-white border-indigo-500 ring-4 ring-indigo-500/20 shadow-xl shadow-indigo-600/20 z-10 scale-110";
+                    else if (isMarked) style = "bg-indigo-500/20 text-indigo-300 border-indigo-500/40 shadow-[0_0_15px_rgba(99,102,241,0.15)]";
+                    else if (isAnswered) style = "bg-emerald-500/10 text-emerald-400 border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.1)]";
 
                     return (
                         <button
@@ -120,12 +123,26 @@ const QuestionPalette = ({
                                 setCurrentQuestionIndex(idx);
                                 if (window.innerWidth < 1280) setShowPalette(false);
                             }}
-                            className={`w-full aspect-square rounded-xl border text-[13px] font-bold transition-all transform active:scale-90 flex items-center justify-center ${style}`}
+                            className={`w-full aspect-square rounded-xl border text-[13px] font-black transition-all duration-300 transform active:scale-95 flex items-center justify-center ${style}`}
                         >
                             {idx + 1}
                         </button>
                     );
                 })}
+            </div>
+        </div>
+
+        <div className="p-6 border-t border-white/5 bg-white/[0.01] shrink-0">
+            <div className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-2 text-center">Summary Statistics</div>
+            <div className="grid grid-cols-2 gap-2">
+                <div className="bg-emerald-500/5 rounded-xl p-2.5 border border-emerald-500/10 text-center">
+                    <div className="text-sm font-black text-emerald-400">{Object.keys(answers).length}</div>
+                    <div className="text-[8px] font-black text-slate-500 uppercase tracking-tighter">Answered</div>
+                </div>
+                <div className="bg-indigo-500/5 rounded-xl p-2.5 border border-indigo-500/10 text-center">
+                    <div className="text-sm font-black text-indigo-400">{markedForReview.size}</div>
+                    <div className="text-[8px] font-black text-slate-500 uppercase tracking-tighter">Marked</div>
+                </div>
             </div>
         </div>
     </div>
@@ -141,7 +158,8 @@ export default function TestSeriesPlayer({
     negativeMarking = 1,
     positiveMarking = 4,
     subjects,
-    onFinish
+    onFinish,
+    onClose
 }: TestSeriesPlayerProps) {
     const router = useRouter();
 
@@ -225,7 +243,11 @@ export default function TestSeriesPlayer({
         if (!ok) return;
         setIsSubmitModalOpen(false);
         setStatus("intro");
-        router.push("/dashboard");
+        if (onClose) {
+            onClose();
+        } else {
+            router.push("/dashboard");
+        }
     };
 
     const canGoPrev = currentQuestionIndex > 0;
@@ -552,6 +574,9 @@ export default function TestSeriesPlayer({
                             totalMarks={totalMarks}
                             subjects={subjects.map(s => s.charAt(0).toUpperCase() + s.slice(1))}
                             onStart={startTest}
+                            onClose={handleCancelExam}
+                            positiveMarking={positiveMarking}
+                            negativeMarking={negativeMarking}
                         />
                     </motion.div>
                 )}
@@ -566,54 +591,46 @@ export default function TestSeriesPlayer({
                         className="absolute inset-0 z-50 bg-[#020617] flex flex-col w-full h-full"
                     >
                         {/* Mobile Optimized Header */}
-                        <header className="bg-[#0B1120]/80 backdrop-blur-xl border-b border-white/5 h-16 md:h-20 shrink-0 z-40 relative">
-                            <div className="h-full px-4 md:px-8 flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                    <div className="lg:hidden">
+                        <header className="bg-[#0B1120] border-b border-white/5 h-16 md:h-20 shrink-0 z-40 relative">
+                            <div className="h-full px-4 md:px-8 space-x-4 flex items-center justify-between max-w-[100vw]">
+                                <div className="flex items-center gap-3 overflow-hidden min-w-0">
+                                    <div className="xl:hidden shrink-0">
                                         <button
                                             onClick={() => setShowPalette(!showPalette)}
-                                            title="Open question palette"
-                                            aria-label="Open question palette"
-                                            className="p-2 -ml-2 rounded-full hover:bg-white/5 text-slate-300"
+                                            className="p-2.5 rounded-xl bg-white/5 text-slate-300 active:scale-90 transition-all"
                                         >
-                                            <Menu className="w-6 h-6" />
+                                            <Menu className="w-5 h-5" />
                                         </button>
                                     </div>
-                                    <h1 className="font-bold text-white truncate max-w-[150px] md:max-w-md text-sm md:text-lg">{title}</h1>
+                                    <div className="flex flex-col min-w-0">
+                                        <h1 className="font-black text-white truncate text-xs md:text-sm uppercase tracking-widest">{title}</h1>
+                                        <div className="hidden md:flex items-center gap-2 text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                                            <Sparkles className="w-3 h-3 text-indigo-500" /> AI Practice Session
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div className="flex items-center gap-3">
-                                    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all ${timeLeft < 300 ? 'bg-red-500/10 border-red-500/20 text-red-400' : 'bg-white/5 border-white/5 text-slate-300'}`}>
-                                        <Timer className="w-4 h-4" />
-                                        <span className="font-mono text-sm md:text-base font-bold tabular-nums">{formatTime(timeLeft)}</span>
+                                <div className="flex items-center gap-2 md:gap-6 shrink-0">
+                                    <div className={`flex items-center gap-2.5 px-4 md:px-5 py-2 md:py-2.5 rounded-2xl border-2 transition-all duration-500 ${timeLeft < 300 ? 'bg-red-500/10 border-red-500/30 text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.15)] animate-pulse' : 'bg-white/5 border-white/5 text-slate-300'}`}>
+                                        <Timer className={`w-4 h-4 md:w-5 md:h-5 ${timeLeft < 300 ? 'text-red-500' : 'text-indigo-400'}`} />
+                                        <span className="font-mono text-sm md:text-xl font-black tabular-nums tracking-tighter">{formatTime(timeLeft)}</span>
                                     </div>
+
+                                    {status === "active" && (
+                                        <button
+                                            onClick={() => setIsSubmitModalOpen(true)}
+                                            className="hidden md:flex items-center gap-2 bg-white text-black px-6 py-2.5 rounded-2xl font-black text-sm transition-all hover:bg-indigo-50 hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255,255,255,0.1)]"
+                                        >
+                                            <CheckCircle2 className="w-4 h-4" /> SUBMIT TEST
+                                        </button>
+                                    )}
 
                                     <button
                                         onClick={handleCancelExam}
-                                        title="Close exam"
-                                        aria-label="Close exam"
-                                        className="w-9 h-9 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 border border-white/5 text-slate-300"
+                                        className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-2xl bg-white/5 border border-white/5 text-slate-400 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20 transition-all active:scale-90"
                                     >
-                                        <X className="w-5 h-5" />
+                                        <X className="w-5 h-5 md:w-6 md:h-6" />
                                     </button>
-                                    {status === "active" && (
-                                        <>
-                                            <button
-                                                onClick={() => setIsSubmitModalOpen(true)}
-                                                className="hidden md:flex bg-white/5 hover:bg-white/10 border border-white/5 text-white px-5 py-2 rounded-xl font-bold text-sm transition-all"
-                                            >
-                                                Submit Test
-                                            </button>
-                                            <button
-                                                onClick={() => setIsSubmitModalOpen(true)}
-                                                title="Submit test"
-                                                aria-label="Submit test"
-                                                className="md:hidden w-9 h-9 flex items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg shadow-indigo-600/20"
-                                            >
-                                                <CheckCircle2 className="w-5 h-5" />
-                                            </button>
-                                        </>
-                                    )}
                                 </div>
                             </div>
                         </header>
@@ -704,44 +721,48 @@ export default function TestSeriesPlayer({
                                             {/* Answer */}
                                             {(currentQ.format || "mcq") === "integer" ? (
                                                 <div className="pt-2">
-                                                    <div className="rounded-2xl border border-white/10 bg-slate-900/40 p-4">
-                                                        <div className="text-xs font-black uppercase tracking-wider text-slate-400 mb-2">Integer Answer</div>
+                                                    <div className="rounded-[2rem] border border-white/5 bg-white/[0.02] p-8 md:p-12 text-center">
+                                                        <div className="text-xs font-black uppercase tracking-[0.2em] text-indigo-400 mb-6 font-sans">Numerical Integer Entry</div>
                                                         <input
                                                             type="number"
                                                             inputMode="numeric"
                                                             value={typeof answers[currentQ.id] === "string" ? String(answers[currentQ.id]) : ""}
                                                             onChange={(e) => handleIntegerAnswerChange(e.target.value)}
                                                             disabled={status !== "active"}
-                                                            className="w-full px-4 py-3 rounded-xl bg-slate-950/40 border border-white/10 text-white font-bold outline-none focus:ring-2 focus:ring-emerald-500/40"
-                                                            placeholder="Enter integer answer"
+                                                            className="w-full max-w-sm mx-auto px-8 py-6 rounded-3xl bg-[#020617] border-2 border-white/5 text-center text-4xl font-black text-white outline-none focus:border-indigo-500/50 focus:ring-4 focus:ring-indigo-500/10 transition-all placeholder:text-slate-800"
+                                                            placeholder="00"
                                                         />
-                                                        <div className="mt-3 text-xs text-slate-500 font-semibold">
-                                                            Enter a whole number. Leave blank to skip.
+                                                        <div className="mt-8 flex items-center justify-center gap-4 text-xs text-slate-500 font-bold uppercase tracking-widest">
+                                                            <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Whole Number</div>
+                                                            <div className="w-1 h-1 rounded-full bg-slate-700"></div>
+                                                            <div className="flex items-center gap-2"><XCircle className="w-4 h-4 text-red-500" /> No Decimals</div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <div className="grid gap-3 pt-2">
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                                                     {currentQ.options.map((option, idx) => {
                                                         const isSelected = answers[currentQ.id] === idx;
                                                         return (
                                                             <button
                                                                 key={idx}
                                                                 onClick={() => handleAnswer(idx)}
-                                                                className={`w-full text-left p-4 rounded-xl border transition-all duration-200 flex items-center gap-4 group active:scale-[0.99] ${isSelected
-                                                                    ? 'bg-indigo-500/10 border-indigo-500 ring-1 ring-indigo-500/50'
-                                                                    : 'bg-slate-800/30 border-white/5 hover:bg-slate-800/60'
+                                                                className={`w-full text-left p-5 md:p-6 rounded-[1.5rem] border-2 transition-all duration-300 flex items-center gap-5 group active:scale-[0.98] ${isSelected
+                                                                    ? 'bg-indigo-600 border-indigo-500 text-white shadow-xl shadow-indigo-600/20'
+                                                                    : 'bg-white/[0.02] border-white/5 hover:bg-white/[0.05] hover:border-white/10'
                                                                     }`}
                                                             >
-                                                                <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border transition-colors ${isSelected
-                                                                    ? 'bg-indigo-500 border-indigo-500 text-white'
-                                                                    : 'border-slate-600/50 text-slate-400 bg-slate-800/50 group-hover:border-slate-500'
+                                                                <div className={`flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-2xl flex items-center justify-center text-sm md:text-lg font-black border-2 transition-all duration-300 ${isSelected
+                                                                    ? 'bg-white text-indigo-600 border-white'
+                                                                    : 'border-white/10 text-slate-500 bg-[#020617] group-hover:border-white/20 group-hover:text-slate-300'
                                                                     }`}>
                                                                     {String.fromCharCode(65 + idx)}
                                                                 </div>
-                                                                <span className={`text-sm md:text-base leading-snug ${isSelected ? 'text-white font-medium' : 'text-slate-300'}`}>
-                                                                    {option}
-                                                                </span>
+                                                                <div className="flex-1">
+                                                                    <span className={`text-sm md:text-lg leading-snug font-bold ${isSelected ? 'text-white' : 'text-slate-300'}`}>
+                                                                        {option}
+                                                                    </span>
+                                                                </div>
                                                             </button>
                                                         );
                                                     })}
@@ -1097,9 +1118,18 @@ export default function TestSeriesPlayer({
                                     </p>
                                 </div>
                                 <div className="flex gap-4">
-                                    <Link href="/dashboard" className="px-8 py-4 bg-white/5 border border-white/10 rounded-2xl text-white font-black text-sm hover:bg-white/10 transition-all flex items-center gap-3 active:scale-95">
-                                        <ArrowLeft className="w-5 h-5" /> DASHBOARD
-                                    </Link>
+                                    {onClose ? (
+                                        <button
+                                            onClick={onClose}
+                                            className="px-8 py-4 bg-white/5 border border-white/10 rounded-2xl text-white font-black text-sm hover:bg-white/10 transition-all flex items-center gap-3 active:scale-95"
+                                        >
+                                            <ArrowLeft className="w-5 h-5" /> DASHBOARD
+                                        </button>
+                                    ) : (
+                                        <Link href="/dashboard" className="px-8 py-4 bg-white/5 border border-white/10 rounded-2xl text-white font-black text-sm hover:bg-white/10 transition-all flex items-center gap-3 active:scale-95">
+                                            <ArrowLeft className="w-5 h-5" /> DASHBOARD
+                                        </Link>
+                                    )}
                                     <button
                                         onClick={startReview}
                                         className="px-8 py-4 bg-emerald-600 rounded-2xl text-white font-black text-sm hover:bg-emerald-500 transition-all shadow-xl shadow-emerald-600/20 flex items-center gap-3 active:scale-95"
