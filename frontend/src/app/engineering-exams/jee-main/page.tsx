@@ -34,8 +34,8 @@ export default function JEEMains2026Page() {
               <Link href="/dashboard/test-series/jee-main-free" className="px-10 py-5 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-2xl transition-all flex items-center justify-center gap-3 w-full sm:w-auto text-xl shadow-lg shadow-blue-500/40 active:scale-95 group">
                 <Zap className="w-6 h-6 fill-white" /> Attempt Free Test
               </Link>
-              <Link href="#plan-structure" className="px-10 py-5 bg-slate-950 border-2 border-slate-800 hover:border-slate-600 text-white font-black rounded-2xl shadow-xl transition-all flex items-center justify-center gap-3 w-full sm:w-auto text-xl active:scale-95">
-                <BookOpen className="w-6 h-6 text-blue-400" /> View Main Plan
+              <Link href="/engineering-exams/jee-main/schedule" className="px-10 py-5 bg-slate-950 border-2 border-slate-800 hover:border-slate-600 text-white font-black rounded-2xl shadow-xl transition-all flex items-center justify-center gap-3 w-full sm:w-auto text-xl active:scale-95 group">
+                <BookOpen className="w-6 h-6 text-blue-400 group-hover:scale-110 transition-transform" /> View Complete Guide
               </Link>
             </div>
 
